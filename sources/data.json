@@ -1,0 +1,37 @@
+{
+    "DB": {
+        "host": "127.0.0.1",
+        "user": "ClassAdmin",
+        "password": "12345678",
+        "database": "ClassAdmin"
+    },
+    "OTP": {
+        "key": "XWER3KDAXQJB56QUATD7XXPX",
+        "recoveryCodes": [
+            "427-103",
+            "264-743",
+            "963-263",
+            "879-130",
+            "584-047",
+            "760-598",
+            "362-695",
+            "695-891",
+            "029-286",
+            "524-376",
+            "941-601",
+            "495-873",
+            "490-802",
+            "615-518",
+            "042-291"
+        ]
+    },
+    "pageLogin": {
+        "title": "ClassAdmin",
+        "id": "pageLogin",
+        "nameApp": "ClassAdmin"
+    },
+    "pageDashboard": {
+        "title": "Dashboard | ClassAdmin",
+        "id": "pageDashboard"
+    }
+}

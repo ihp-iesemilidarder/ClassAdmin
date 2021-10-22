@@ -1,0 +1,45 @@
+{% extends "src/base.html" %}
+{% load static %}
+{% block content %}
+    <div class="clients">
+        {% for client in clients %}
+            <div data-id="{{client.id}}" class="client">
+                <div class="info">
+                    <img src="{% static 'images/logoUser.png' %}" alt="logo">
+                    <span>{{client.nick}}</span>
+                    <span title="ip address">{{client.address}}</span>
+                    <span title="port">{{client.port}}</span>
+                </div>
+                <div class="actions">
+                    <i class="fa fa-trash" title="delete"></i>
+                    <i class="fa fa-user-edit" title="edit data"></i>
+                    <i class="fa fa-redo" title="reboot computer"></i>
+                    <i class="fa fa-power-off" title="shutdown computer"></i>
+                    <i class="fa fa-pause-circle" title="suspend computer"></i>
+                    <i class="fa fa-video" title="start streamming"></i>
+                    <i class="fa fa-camera" title="screenshot"></i>
+                    <i class="fa fa-paper-plane" title="send message"></i>
+                    <i class="fa fa-wifi {{client.status}}" title="status"></i>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <i class="fa fa-sign-out-alt icon"></i>
+    <i class="fa fa-cog icon"></i>
+    <div id="config">
+        <i class="fa fa-close"></i>
+        <form action="" method="POST">
+            <input type="password" name="newPassword" placeholder="new password" class="input">
+            <input type="password" name="againNewPassword" placeholder="repeat new password" class="input">
+            <input type="number" name="port" min="1024" max="65535" placeholder="new port" class="input">
+            <small>Current port: {{port}}</small>
+            <img src="{{otpQR}}" alt="otpQR">
+            <div id="actions">
+                <i class="fa fa-plus" title="reload new OTP"></i>
+                <a class="fa fa-download" href="{{URIRecoveryCodes}}" download="{{nameFileRecoveryCodes}}" title="Download recovery codes"></a>
+            </div>
+            <div id="send"><input type="submit" value="save"></div>
+            {% csrf_token %}
+        </form>
+    </div>
+{% endblock %}

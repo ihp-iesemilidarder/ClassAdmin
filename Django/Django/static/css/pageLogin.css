@@ -1,0 +1,110 @@
+/*Title*/
+    #pageLogin{
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: 30% auto;
+        height: 100vh;
+    }
+    #pageLogin h1{
+        font-size: 8em;
+        font-weight:normal;
+        font-family: "Allura";
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+    }
+/*Form*/
+    #pageLogin form{
+        text-align:center;
+        margin:0 20%;
+    }
+    #pageLogin form input[type="password"]{
+        width: 100%;
+        display: inline-block;
+        margin: 2% 0;
+        padding: 1%;
+        font-size: 1.2em;
+        background: rgba(255,255,255,.3);
+        border: none;
+        border-radius:5px 5px 0 0;
+        border-bottom: 2px solid white;
+        color: black;
+        transition:.3s;
+    }
+    #pageLogin form input[type="password"]::placeholder{
+        color:rgba(0,0,0,.8);
+    }
+    #pageLogin form input[type="password"]:focus{
+        outline:none;
+        background:rgba(255,255,255,.5);
+    }
+    #pageLogin form input[type="button"]{
+        width: 80%;
+        margin-top: 3%;
+        font-size: 1.3em;
+        padding: 1%;
+        border-radius: 10px 0;
+        border: 2px solid transparent;
+        background: white;
+        color: black;
+        cursor:pointer;
+        transition:.3s;
+    }
+    #pageLogin form input[type="button"]:hover{
+        background: transparent;
+        color: white;
+        border:2px solid white;
+    }
+    #pageLogin form input[type="checkbox"]{
+        display:none;
+    }
+    #pageLogin form label{
+        color:white;
+        font-size: 1.3em;
+        margin-right:1%;
+        cursor: pointer;
+    }
+    #pageLogin form label:after{
+        content:"";
+        display:inline-block;
+        width: 20px;
+        height: 20px;
+        background: transparent;
+        top: 5px;
+        position: relative;
+        margin: 0 0 0 2%;
+        border-radius: 100px;
+        border: 1px solid white;
+        transition: .3s;
+    }
+    #pageLogin form input[type="checkbox"]:checked + label:after{
+        background: white;
+    }
+    #pageLogin form div#checkbox{
+        margin-bottom:5%;
+    }
+/*Tablet*/
+    @media (max-width:987px){
+        #pageLogin form{
+            margin:0 10%;
+        }
+    }
+    @media (max-width:768px){
+        #pageLogin h1{
+            font-size: 4em;
+        }
+        #pageLogin form input[type="password"]{
+            margin:6% 0;
+            padding:2%;
+        }
+    }
+/*Mobile*/
+    @media (max-width:600px){
+        #pageLogin form input[type="button"]{
+            padding:2%;
+        }
+        #pageLogin form label{
+            font-size: 1em;
+        }
+    }
