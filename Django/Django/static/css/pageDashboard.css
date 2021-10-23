@@ -1,0 +1,227 @@
+div#pageDashboard{
+    position: absolute;
+    top: 0;
+    background: transparent;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border:15px solid #800000; /*disconnect: connect: #008037*/
+    overflow: auto;
+}
+body > div.DISCONNECTED{
+    border:15px solid #800000!important;
+}
+body > div.CONNECTED{
+    border:15px solid #008037!important;
+}
+#pageDashboard .icon{
+    position:fixed;
+    right: 0;
+    font-size:3em;
+    margin:2%;
+    padding:1%;
+    border-radius: 100px;
+    cursor: pointer;
+    transition:.3s;
+}
+#pageDashboard .fa-cog{
+    bottom: 0;
+    color: #636363;
+    background: rgb(202 202 202);
+}
+#pageDashboard .fa-cog:hover{
+    background: transparent;
+    color:rgb(202 202 202);
+}
+#pageDashboard .fa-sign-out-alt{
+    bottom: 10%;
+    color: #ff0707;
+    background: rgb(255 130 130);
+}
+#pageDashboard .fa-sign-out-alt:hover{
+    background: transparent;
+    color:rgb(255 130 130);
+}
+/*clients*/
+    #pageDashboard .clients{
+        display: grid;
+        grid-template-columns: auto;
+        grid-gap: 2em;
+        margin: 2%;
+    }
+    #pageDashboard .client{
+        display:grid;
+        grid-template-columns: 30% auto;
+        grid-gap: 10%;
+    }
+    #pageDashboard .client img{
+        width:4em;
+    }
+    #pageDashboard .client div{
+        display: flex;
+        justify-content: space-around;
+    }
+    #pageDashboard .client div span,#pageDashboard .client div i{
+        display: flex;
+        justify-items: center;
+        margin: auto;
+        font-size: 1.5em;
+    }
+    #pageDashboard .client div i:hover{
+        transform:scale(1.5);
+    }
+    #pageDashboard .client div i{
+        cursor:pointer;
+        transition:.3s;
+    }
+    .fa-trash{
+        color:red;
+    }
+    .fa-user-edit{
+        color:blue;
+    }
+    .fa-redo{
+        color:orange;
+    }
+    .fa-power-off{
+        color:darkred;
+    }
+    .fa-pause-circle{
+        color:darkorange;
+    }
+    .fa-video,.fa-camera{
+        color:gray;
+    }
+    .fa-paper-plane{
+        color:skyblue;
+        cursor:normal;
+    }
+    .fa-wifi{
+        transform:scale(1.5);
+        cursor: default!important;
+        padding: .5%;
+    }
+    #pageDashboard .client div i.DISCONNECTED{
+        color:red;
+        border: 2px solid red;
+        background: #ffa0a0;
+    }
+    #pageDashboard .client div i.CONNECTED{
+        color:green;
+        border: 2px solid green;
+        background: #bcffa0;
+    }
+/*config*/
+    #pageDashboard #config{
+        position: fixed;
+        background: #f8f8ee;
+        width: 20%;
+        right: -100%;
+        transition:.5s;
+        height: 100vh;
+        top: 0;
+        box-shadow: 1px 1px 20px rgba(0,0,0,.2);
+    }
+    #pageDashboard #config form{
+        display:flex;
+        flex-direction:column;
+        margin:5%;
+    }
+    #pageDashboard #config form .input{
+        margin:5% 0;
+        background:transparent;
+        border:none;
+        padding:0 2%;
+        border-bottom:1px solid rgba(0,0,0);
+        font-size:1.2em;
+        outline:none;
+    }
+    #pageDashboard #config .fa-close{
+        position: absolute;
+        font-size: 2em;
+        margin: 2% 4%;
+        right: 0;
+        color: rgba(0,0,0,.2);
+        cursor: pointer;
+    }
+    #pageDashboard #config #actions{
+        display: flex;
+        align-content: space-around;
+    }
+    #pageDashboard #config i,#pageDashboard #config a{
+        font-size:1.5em;
+        margin:5%;
+        cursor:pointer;
+        color:black;
+    }
+    #pageDashboard #config div#send {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        text-align: center;
+        bottom: 2%;
+    }
+    #pageDashboard #config input[type="submit"]{
+        background:gray;
+        color:white;
+        border-radius:10px;
+        font-size:1.5em;
+        padding:1%;
+        cursor:pointer;
+        border: none;
+        width: 90%;
+    }
+    #pageDashboard #config .fa-plus{
+        color: green;
+        background: lime;
+        padding: 3%;
+        border-radius: 100px;
+    }
+    #pageDashboard #config .fa-download{
+        color: darkorange;
+        padding: 3%;
+    }
+@media (max-width:768px){
+    #pageDashboard .fa-sign-out-alt{
+        bottom: 12%;
+    }
+    #pageDashboard #config{
+        width: 50%;
+    }
+    #pageDashboard .client{
+        grid-template-columns: auto;
+    }
+    #pageDashboard .clients{
+        display: grid;
+        grid-template-columns: auto;
+        grid-gap: 4em;
+        margin: 2%;
+    }
+    #pageDashboard .icon{
+        margin: 4%;
+        padding: 3%;
+    }
+}
+@media (max-width:600px){
+    #pageDashboard .fa-sign-out-alt{
+        bottom: 10%;
+    }
+    #pageDashboard #config{
+        width: 100%;
+    }
+    #pageDashboard .icon{
+        margin: 6%;
+        padding: 5%;
+        font-size:2em;
+    }
+    #pageDashboard .client div span,#pageDashboard .client div i{
+        font-size: 1em;
+    }
+    #pageDashboard .client img{
+        width:2em;
+    }
+    #pageDashboard #config img{
+        width:50%;
+        margin:auto;
+    }
+}
