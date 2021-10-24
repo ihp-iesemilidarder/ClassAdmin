@@ -6,10 +6,12 @@ use ClassAdmin;
 CREATE TABLE server (
 	id		INT		AUTO_INCREMENT,
 	password	VARCHAR(500)	NOT NULL,
+	address		VARCHAR(15)	NOT NULL,
 	port		INT(5)		NOT NULL,
 	status		VARCHAR(50)	NOT NULL,
 	CONSTRAINT 	server_PK 	PRIMARY KEY (id),
-	CONSTRAINT port_CK CHECK (port BETWEEN 0 AND 65535)
+	CONSTRAINT port_CK CHECK (port BETWEEN 0 AND 65535),
+	CONSTRAINT_address_CK CHECK (address REGEXP "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
 );
 
 CREATE TABLE clients (

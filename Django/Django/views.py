@@ -3,12 +3,12 @@ import sys,platform
 from django.shortcuts import render, redirect
 from Django.reqDashboard import ReqDashboard,RecoveryCodes
 from django.http import HttpResponse,JsonResponse
-from sources import generateQR, Environment
-if platform.system() == "Linux":
+from sources.django import generateQR, Environment
+if platform.system().upper() == "LINUX":
     sys.path.append("/etc/ClassAdmin")
-elif platform.system() == "Windows":
+elif platform.system().upper() == "WINDOWS":
     sys.path.append("C:\\Program Files\\ClassAdmin")
-from sources import *
+from sources.django import *
 jsonFile = Json(Environment().pathData()).print()
 
 def pageLogin(req):

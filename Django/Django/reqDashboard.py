@@ -1,6 +1,6 @@
 import base64,binascii,os,math
 import random
-from sources import Json, Environment, logFile, generateQR
+from sources.django import Json, Environment, logFile, generateQR
 
 class ReqDashboard:
     def __init__(self,request):
@@ -72,7 +72,7 @@ class RecoveryCodes:
             return False
 
     def authRecoveryCodes(self,key:str) -> bool:
-        codes = Json(Environment().pathData()).print(["OTP","recoveryCodes"])
+        codes = Json(Environment().pathData()).print(["OTP", "recoveryCodes"])
         if key in codes:
             self.__removeRecoveryCode(key,codes)
             return True
@@ -80,4 +80,4 @@ class RecoveryCodes:
 
     def __removeRecoveryCode(self,key:str,array:list):
         array.remove(key)
-        Json(Environment().pathData()).update(["OTP","recoveryCodes"],array)
+        Json(Environment().pathData()).update(["OTP", "recoveryCodes"], array)

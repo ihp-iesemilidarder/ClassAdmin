@@ -1,11 +1,37 @@
-import os,sys,socket,signal,platform,requests,urllib3
+#!/usr/bin/python3
+import os,sys,socket,signal,platform,requests,urllib3,signal
 if platform.system().upper()=="LINUX":
     sys.path.append("/etc/ClassAdmin")
 elif platform.system().upper()=="WINDOWS":
     sys.path.append("C:\\Program Files\\ClassAdmin")
-from sources import Environment,Json
+from sources.handlerSignals import Handler
+
 urllib3.disable_warnings()
 PORT = requests.get("https://localhost/api/server/port",headers={
     "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
     "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-})
+},cert=('/etc/ClassAdmin/ssl/ClassAdmin.crt',"/etc/ClassAdmin/ssl/ClassAdmin.key")).json()["result"][0]["port"]
+
+requests.put("https://localhost/api/server/?id=1",headers={
+    "Content-Type":"application/x-www-form-urlencoded",
+    "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+    "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+},data=f"address={socket.gethostbyname(socket.gethostname())}",cert=('/etc/ClassAdmin/ssl/ClassAdmin.crt',"/etc/ClassAdmin/ssl/ClassAdmin.key"))
+
+def shutdown():
+    raise "error"
+
+print(os.getpid())
+try:
+    signal.signal(signal.SIGTERM, Handler.shutdown)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("",PORT))
+    sock.listen()
+    connection,address = sock.accept()
+    print("running server")
+except:
+    try:
+        print("shutdown server...")
+        sock.close()
+    except:
+        None
