@@ -12,6 +12,7 @@ from sources import *
 jsonFile = Json(Environment().pathData()).print()
 
 def pageLogin(req):
+    # When the user does click, or event AJAX
     if req.is_ajax():
         try:
             login = loginAdmin(req.POST["password"],str(req.POST["otp"]))

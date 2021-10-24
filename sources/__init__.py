@@ -3,6 +3,8 @@ import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mysql.connecto
 from io import BytesIO
 from Django import reqDashboard
 from Django.settings import CLASSADMIN_HOME,DB_PATH
+
+#This class storages all the paths for uses it in all the project
 class Environment:
     def __init__(self):
         self.directory = os.environ["CLASSADMIN_HOME"]
@@ -12,6 +14,8 @@ class Environment:
         return f"{os.environ['CLASSADMIN_LOG']}"
     def pathData(self) -> str:
         return f"{self.directory}/sources/data.json"
+
+#This class write lines in the log file /var/log/ClassAdmin.log
 class logFile:
     def __init__(self,django:bool=False):
         if django:
@@ -37,6 +41,8 @@ class logFile:
             return mess
         else:
             return ""
+
+# This class operates with JSON files (show,save and write)
 class Json:
     def __init__(self,file:str):
         self.file=file
@@ -72,6 +78,7 @@ class Json:
         exec(command)
         self.__save()
 
+# Function specify for get the ClassAdmin DB password
 def getPasswordDB(sql:str,output:bool=False):
     try:
         dataDB = Json(Environment().pathData()).print(["DB"])
@@ -94,6 +101,7 @@ def getPasswordDB(sql:str,output:bool=False):
         else:
             return dict({"error":str(err.msg)})
 
+# This function checks if the OTP code is valid, return boolean
 def authOTP(key:str,type:bool) -> bool:
     # if the type is recoveryCodes, compare the otp with user's recovery code, if this is true or false
     if type:
@@ -108,6 +116,7 @@ def authOTP(key:str,type:bool) -> bool:
         return False
 
 ## IMPORTANT: This doesn't run with the API because else enter in while
+# This function checks the password/otp typed by user with the DB password. return boolean
 def loginAdmin(password:str,otp:str,recovery:bool=False) -> bool:
     try:
         passwordUser = hashlib.sha512(str(password).encode()).hexdigest()

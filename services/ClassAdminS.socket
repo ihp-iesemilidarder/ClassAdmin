@@ -1,0 +1,11 @@
+import os,sys,socket,signal,platform,requests,urllib3
+if platform.system().upper()=="LINUX":
+    sys.path.append("/etc/ClassAdmin")
+elif platform.system().upper()=="WINDOWS":
+    sys.path.append("C:\\Program Files\\ClassAdmin")
+from sources import Environment,Json
+urllib3.disable_warnings()
+PORT = requests.get("https://localhost/api/server/port",headers={
+    "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+    "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+})

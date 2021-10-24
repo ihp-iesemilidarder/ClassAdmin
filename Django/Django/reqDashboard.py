@@ -10,6 +10,7 @@ class ReqDashboard:
         if self.req.POST["action"] == "newOTP":
             return self.__reloadOTP()
 
+    #Reloads the OTP QR code
     def __reloadOTP(self):
         try:
             code = binascii.b2a_hex(os.urandom(15))
@@ -20,6 +21,7 @@ class ReqDashboard:
             logFile(True).message(f"Error during the OTP reload: {err}", False)
             return False
 
+# This class generates the OTP recovery Codes
 class RecoveryCodes:
     def __init__(self):
         return None
