@@ -3,7 +3,8 @@ import sys,platform
 from django.shortcuts import render, redirect
 from Django.reqDashboard import ReqDashboard,RecoveryCodes
 from django.http import HttpResponse,JsonResponse
-from sources.django import generateQR, Environment
+from sources.django import generateQR
+from sources import Environment
 if platform.system().upper() == "LINUX":
     sys.path.append("/etc/ClassAdmin")
 elif platform.system().upper() == "WINDOWS":

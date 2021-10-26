@@ -5,21 +5,18 @@ if platform.system().upper()=="LINUX":
 elif platform.system().upper()=="WINDOWS":
     sys.path.append("C:\\Program Files\\ClassAdmin")
 from sources.handlerSignals import Handler
-
+from sources import Environment, getIpAddress
 urllib3.disable_warnings()
 PORT = requests.get("https://localhost/api/server/port",headers={
     "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
     "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-},cert=('/etc/ClassAdmin/ssl/ClassAdmin.crt',"/etc/ClassAdmin/ssl/ClassAdmin.key")).json()["result"][0]["port"]
+},cert=(f"{Environment.pathSSL('crt')}",f"{Environment.pathSSL('key')}")).json()["result"][0]["port"]
 
 requests.put("https://localhost/api/server/?id=1",headers={
     "Content-Type":"application/x-www-form-urlencoded",
     "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
     "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-},data=f"address={socket.gethostbyname(socket.gethostname())}",cert=('/etc/ClassAdmin/ssl/ClassAdmin.crt',"/etc/ClassAdmin/ssl/ClassAdmin.key"))
-
-def shutdown():
-    raise "error"
+},data=f"address={getIpAddress()}",cert=(f"{Environment.pathSSL('crt')}",f"{Environment.pathSSL('key')}"))
 
 print(os.getpid())
 try:

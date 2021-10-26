@@ -6,17 +6,7 @@ try:
 except:
     from Django.Django import reqDashboard
 from Django.settings import CLASSADMIN_HOME,DB_PATH
-
-#This class storages all the paths for uses it in all the project
-class Environment:
-    def __init__(self):
-        self.directory = os.environ["CLASSADMIN_HOME"]
-    def pathDB(self) -> str:
-        return DB_PATH
-    def pathLog(self) -> str:
-        return f"{os.environ['CLASSADMIN_LOG']}"
-    def pathData(self) -> str:
-        return f"{self.directory}/sources/data.json"
+from sources import Environment
 
 #This class write lines in the log file /var/log/ClassAdmin.log
 class logFile:
@@ -27,7 +17,7 @@ class logFile:
             Django = ''
         log_format = f"%(asctime)s - %(levelname)s {Django}: %(message)s"
         date_format = "%m/%d/%Y %I:%M:%S %p"
-        logging.basicConfig(filename=Environment().pathLog(), level=logging.DEBUG, format=log_format,
+        logging.basicConfig(filename=Environment.pathLog(), level=logging.DEBUG, format=log_format,
                             datefmt=date_format)
         self.logger = logging.getLogger()
     def message(self,mess:str,output:bool=False,level:str=None) -> str:
