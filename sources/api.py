@@ -179,8 +179,13 @@ class API:
                 conn.close()
                 return JsonResponse({"result": True})
         except Exception as err:
-            message = err.msg
-            code = err.errno
+            ## the err.msg and err.errno aren't exist if the exception is throw by a raise
+            try:
+                message = err.msg
+                code = err.errno
+            except:
+                message = err
+                code = -5001
         finally:
             try:
                return JsonResponse({"code":code,"message":f"{logFile(True).message(message,True)}"})

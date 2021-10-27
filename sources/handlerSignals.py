@@ -1,4 +1,4 @@
 class Handler:
     @staticmethod
     def shutdown():
-        raise "error"
+        raise "shutdownSocket"
