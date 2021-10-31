@@ -5,7 +5,7 @@ div#pageDashboard{
     left: 0;
     right: 0;
     bottom: 0;
-    border:15px solid #800000; /*disconnect: connect: #008037*/
+    border:15px solid transparent; /*disconnect:#747373; error: #800000;connect: #008037;*/
     overflow: auto;
 }
 body > div.DISCONNECTED{

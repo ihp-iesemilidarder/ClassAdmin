@@ -1,4 +1,6 @@
+import os,time,signal
 class Handler:
-    @staticmethod
-    def shutdown():
-        raise "shutdownSocket"
+    def __init__(self):
+        signal.signal(signal.SIGTERM,self.shutdown)
+    def shutdown(self,code,msg):
+        raise SystemExit

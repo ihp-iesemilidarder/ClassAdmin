@@ -1,5 +1,5 @@
 import os
-import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mysql.connector
+import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mysql.connector,requests
 from io import BytesIO
 try:
     from Django import reqDashboard
@@ -71,6 +71,21 @@ class Json:
         exec(command)
         self.__save()
 
+#This function gets service status color
+def styleStatusColor():
+    try:
+        color = requests.get("https://localhost/api/server/status",headers={
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        },cert=(f"{Environment.pathSSL('crt')}", f"{Environment.pathSSL('key')}")).json()["result"][0]["status"]
+        if color.upper() == "CONNECTED":
+            return "border:15px solid #008037"
+        elif color.upper()=="DISCONNECTED":
+            return "border:15px solid #747373"
+        else:
+            return "border:15px solid #800000"
+    except:
+        return "border:15px solid transparent"
 # Function specify for get the ClassAdmin DB password
 def getPasswordDB(sql:str,output:bool=False):
     try:
