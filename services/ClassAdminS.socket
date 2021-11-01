@@ -5,17 +5,21 @@ if platform.system().upper()=="LINUX":
 elif platform.system().upper()=="WINDOWS":
     sys.path.append("C:\\Program Files\\ClassAdmin")
 from sources.handlerSignals import Handler
-from sources import Environment, getIpAddress
-from sources import logFile
-urllib3.disable_warnings()
-PORT = requests.get("https://localhost/api/server/port",headers={
-    "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-    "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-},cert=(f"{Environment.pathSSL('crt')}",f"{Environment.pathSSL('key')}")).json()["result"][0]["port"]
-
-print(os.getpid())
+from sources.utils import Environment, getIpAddress, logFile
+from sources.notification import Notify
 try:
+    urllib3.disable_warnings()
+    try:
+        PORT = requests.get("https://localhost/api/server/port", headers={
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        }, cert=(f"{Environment.pathSSL('crt')}", f"{Environment.pathSSL('key')}"))
+        PORT=PORT.json()["result"][0]["port"]
+    except:
+        raise ConnectionError
+    print(os.getpid())
     Handler()
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(("",PORT))
     sock.listen()
@@ -24,23 +28,30 @@ try:
         "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
         "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
     }, data=f"address={getIpAddress()}&status=CONNECTED",cert=(f"{Environment.pathSSL('crt')}", f"{Environment.pathSSL('key')}"))
-
-    print(logFile().message("running ClassAdmin server...",True,"INFO"))
+    Notify("showinfo",logFile().message("running ClassAdmin server...",True,"INFO"))
     connection,address = sock.accept()
+
+#When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
-        print(logFile().message("shutdown ClassAdmin server...", True, "INFO"))
+        Notify("showwarning",logFile().message("shutdown ClassAdmin server...", True, "INFO"))
         requests.put("https://localhost/api/server?id=1", headers={
             "Content-Type": "application/x-www-form-urlencoded",
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
         }, data=f"status=DISCONNECTED")
+
+#When the service has a error unexpected
 except BaseException as err:
-        print(logFile().message(f"{err}",True,"ERROR"))
+        if type(err)==ConnectionError:
+            Notify("showerror", logFile().message(f"Connection at database failed", True, "ERROR"))
+        else:
+            Notify("showerror",logFile().message(f"{err}",True,"ERROR"))
         requests.put("https://localhost/api/server?id=1",headers={
             "Content-Type": "application/x-www-form-urlencoded",
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
         },data=f"status=ERROR")
+
 finally:
     try:
         sock.close()

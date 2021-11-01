@@ -1,15 +1,14 @@
 import os
-import sys,platform,urllib3
+import sys,platform,urllib3,requests
 from django.shortcuts import render, redirect
 from Django.reqDashboard import ReqDashboard,RecoveryCodes
 from django.http import HttpResponse,JsonResponse
-from sources.django import generateQR
-from sources import Environment
+from sources.django import generateQR, styleStatusColor, loginAdmin
+from sources.utils import Environment, Json
 if platform.system().upper() == "LINUX":
     sys.path.append("/etc/ClassAdmin")
 elif platform.system().upper() == "WINDOWS":
     sys.path.append("C:\\Program Files\\ClassAdmin")
-from sources.django import *
 urllib3.disable_warnings()
 jsonFile = Json(Environment().pathData()).print()
 

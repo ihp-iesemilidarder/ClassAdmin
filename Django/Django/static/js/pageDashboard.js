@@ -45,7 +45,7 @@ async function sendConfig(data){
             body:bodyData,
             headers:{
                 "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-                "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                "password":data.get("currentPassword"),
                 "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
             }
         });
@@ -57,14 +57,15 @@ async function sendConfig(data){
         }
     }catch(err){
         if(err["code"]==2003){
-            err="Connection at database failed";
+            messg("Connection at database failed",false);
+        }else{
+            messg(`Error unexpected: ${err.message}`,false);
         }
-        messg(`Error unexpected: ${err}`,false);
     }
 }
 
 const validateConf=(data)=>{
-    if(data.get("newPassword").length==0 || data.get("againNewPassword").length==0 || data.get("port").length==0){
+    if(data.get("currentPassword").length==0 || data.get("newPassword").length==0 || data.get("againNewPassword").length==0 || data.get("port").length==0){
         messg("There are fields empties",false);
         return false;
     }else if(data.get("newPassword")!=data.get("againNewPassword")){

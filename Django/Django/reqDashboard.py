@@ -1,7 +1,7 @@
 import base64,binascii,os,math
 import random
-from sources.django import Json, logFile, generateQR
-from sources import Environment
+from sources.django import generateQR
+from sources.utils import Environment, logFile, Json
 
 class ReqDashboard:
     def __init__(self,request):
