@@ -10,7 +10,7 @@ if platform.system().upper() == "LINUX":
 elif platform.system().upper() == "WINDOWS":
     sys.path.append("C:\\Program Files\\ClassAdmin")
 urllib3.disable_warnings()
-jsonFile = Json(Environment().pathData()).print()
+jsonFile = Json(Environment.data).print()
 
 def pageLogin(req):
     # When the user does click, or event AJAX
@@ -27,15 +27,15 @@ def pageDashboard(req):
     if req.method == "POST":
         return JsonResponse({"result":ReqDashboard(req).run()})
     else:
-        port = requests.get("https://localhost/api/server/port",headers={
+        port = requests.get("https://localhost/api/server/port", headers={
             "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        },cert=(f"{Environment.pathSSL('crt')}", f"{Environment.pathSSL('key')}")).json()["result"][0]["port"]
+        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}")).json()["result"][0]["port"]
 
-        clients = requests.get("https://localhost/api/clients",headers={
+        clients = requests.get("https://localhost/api/clients", headers={
             "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        },cert=(f"{Environment.pathSSL('crt')}", f"{Environment.pathSSL('key')}")).json()["result"]
+        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}")).json()["result"]
         jsonFile["pageDashboard"].update({
             "otpQR":generateQR,
             "port":port,

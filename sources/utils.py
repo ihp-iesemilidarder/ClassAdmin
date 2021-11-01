@@ -2,23 +2,16 @@ import os,socket,logging,json
 
 #This class storages all the paths for uses it in all the project
 class Environment:
-    def __init__(self):
-        self.directory = os.environ["CLASSADMIN_HOME"]
+    log = f"{os.environ['CLASSADMIN_LOG']}"
+    data = f"{os.environ['CLASSADMIN_HOME']}/sources/data.json"
 
     @staticmethod
-    def pathDB(self) -> str:
-        return DB_PATH
-
-    @staticmethod
-    def pathLog() -> str:
-        return f"{os.environ['CLASSADMIN_LOG']}"
-
-    def pathData(self) -> str:
-        return f"{self.directory}/sources/data.json"
-
-    @staticmethod
-    def pathSSL(type:str):
+    def SSL(type:str):
             return f"{os.environ['CLASSADMIN_SSL']}/ClassAdmin.{type}"
+
+    @staticmethod
+    def media(type):
+        return f"{os.environ['CLASSADMIN_HOME']}/sources/media/{type}"
 
 def getIpAddress():
     address=""
@@ -37,7 +30,7 @@ class logFile:
             Django = ''
         log_format = f"%(asctime)s - %(levelname)s {Django}: %(message)s"
         date_format = "%m/%d/%Y %I:%M:%S %p"
-        logging.basicConfig(filename=Environment.pathLog(), level=logging.DEBUG, format=log_format,
+        logging.basicConfig(filename=Environment.log, level=logging.DEBUG, format=log_format,
                             datefmt=date_format)
         self.logger = logging.getLogger()
     def message(self,mess:str,output:bool=False,level:str=None) -> str:

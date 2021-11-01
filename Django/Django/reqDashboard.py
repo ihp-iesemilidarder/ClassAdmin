@@ -16,7 +16,7 @@ class ReqDashboard:
         try:
             code = binascii.b2a_hex(os.urandom(15))
             key = base64.b32encode(base64.b16decode(code.upper()))
-            Json(Environment().pathData()).update(["OTP", "key"], key)
+            Json(Environment.data).update(["OTP", "key"], key)
             return generateQR()
         except Exception as err:
             logFile(True).message(f"Error during the OTP reload: {err}", False)
@@ -60,20 +60,20 @@ class RecoveryCodes:
 
     def __checkCodes(self):
         try:
-            arrayCodes = Json(Environment().pathData()).print(["OTP", "recoveryCodes"])
+            arrayCodes = Json(Environment.data).print(["OTP", "recoveryCodes"])
             if len(arrayCodes)==0:
                 codes = []
                 for code in range(0, 20):
                     codes.append(self.__generateCode(6, "-"))
-                Json(Environment().pathData()).update(["OTP", "recoveryCodes"], codes)
-            arrayCodesUpdated = Json(Environment().pathData()).print(["OTP", "recoveryCodes"])
+                Json(Environment.data).update(["OTP", "recoveryCodes"], codes)
+            arrayCodesUpdated = Json(Environment.data).print(["OTP", "recoveryCodes"])
             return arrayCodesUpdated
         except Exception as err:
             logFile(True).message(f"Error during the download recoveryCodes OTP: {err}", False)
             return False
 
     def authRecoveryCodes(self,key:str) -> bool:
-        codes = Json(Environment().pathData()).print(["OTP", "recoveryCodes"])
+        codes = Json(Environment.data).print(["OTP", "recoveryCodes"])
         if key in codes:
             self.__removeRecoveryCode(key,codes)
             return True
@@ -81,4 +81,4 @@ class RecoveryCodes:
 
     def __removeRecoveryCode(self,key:str,array:list):
         array.remove(key)
-        Json(Environment().pathData()).update(["OTP", "recoveryCodes"], array)
+        Json(Environment.data).update(["OTP", "recoveryCodes"], array)

@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+import os,sys,socket,signal,platform,requests,urllib3,signal,time
+if platform.system().upper()=="LINUX":
+    sys.path.append("/etc/ClassAdmin")
+elif platform.system().upper()=="WINDOWS":
+    sys.path.append("C:\\Program Files\\ClassAdmin")
+from sources.handlerSignals import HandlerSignals
+from sources.utils import Environment, getIpAddress, logFile
+from sources.notification import Notify
+try:
+    urllib3.disable_warnings()
+    try:
+        PORT = requests.get("https://localhost/api/server/port", headers={
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
+        PORT = PORT.json()["result"][0]["port"]
+
+        ADDRESS = requests.get("https://localhost/api/server/address", headers={
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
+        ADDRESS = ADDRESS.json()["result"][0]["address"]
+    except:
+        raise ConnectionError
+    print(os.getpid())
+    HandlerSignals()
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((ADDRESS,PORT))
+    Notify("showinfo",logFile().message(f"running ClassAdmin client...",True,"INFO"))
+
+#When the service shutdown successfully
+except (KeyboardInterrupt,SystemExit) as err:
+        Notify("showwarning",logFile().message("shutdown ClassAdmin client...", True, "INFO"))
+        requests.put("https://localhost/api/server?id=1", headers={
+            "Content-Type": "application/x-www-form-urlencoded",
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        }, data=f"status=DISCONNECTED")
+
+#When the service has a error unexpected
+except BaseException as err:
+        if type(err)==ConnectionError:
+            Notify("showerror", logFile().message(f"Connection at database failed", True, "ERROR"))
+        else:
+            Notify("showerror",logFile().message(f"{err}",True,"ERROR"))
+        requests.put("https://localhost/api/server?id=1",headers={
+            "Content-Type": "application/x-www-form-urlencoded",
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        },data=f"status=ERROR")
+
+finally:
+    try:
+        sock.close()
+    except:
+        None

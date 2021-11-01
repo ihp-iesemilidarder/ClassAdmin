@@ -1,8 +1,10 @@
-import tkinter as tk
+import os, time
+from Django.Django.settings import STATIC_ROOT
+from sources.utils import Environment
 from tkinter import messagebox
-
+from tkinter import *
 def Notify(type:str,text:str,output=True):
-    root = tk.Tk()
+    root = Tk()
     root.overrideredirect(1)
     root.withdraw()
     exec(f'messagebox.{type}("NotiClass", "{text}")')

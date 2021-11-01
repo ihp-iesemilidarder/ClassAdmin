@@ -1,5 +1,5 @@
 import os,time,signal
-class Handler:
+class HandlerSignals:
     def __init__(self):
         signal.signal(signal.SIGTERM,self.shutdown)
     def shutdown(self,code,msg):

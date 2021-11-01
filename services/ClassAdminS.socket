@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-import os,sys,socket,signal,platform,requests,urllib3,signal
+import os,sys,socket,signal,platform,requests,urllib3,signal,time
 if platform.system().upper()=="LINUX":
     sys.path.append("/etc/ClassAdmin")
 elif platform.system().upper()=="WINDOWS":
     sys.path.append("C:\\Program Files\\ClassAdmin")
-from sources.handlerSignals import Handler
+from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, getIpAddress, logFile
 from sources.notification import Notify
 try:
@@ -13,23 +13,32 @@ try:
         PORT = requests.get("https://localhost/api/server/port", headers={
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, cert=(f"{Environment.pathSSL('crt')}", f"{Environment.pathSSL('key')}"))
-        PORT=PORT.json()["result"][0]["port"]
+        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
+        PORT = PORT.json()["result"][0]["port"]
+
+        CLIENTS = requests.get("https://localhost/api/server/clients", headers={
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
+        CLIENTS = CLIENTS.json()["result"][0]["clients"]
     except:
         raise ConnectionError
     print(os.getpid())
-    Handler()
+    HandlerSignals()
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(("",PORT))
-    sock.listen()
+    sock.listen(CLIENTS)
     requests.put("https://localhost/api/server?id=1", headers={
         "Content-Type": "application/x-www-form-urlencoded",
         "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
         "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-    }, data=f"address={getIpAddress()}&status=CONNECTED",cert=(f"{Environment.pathSSL('crt')}", f"{Environment.pathSSL('key')}"))
-    Notify("showinfo",logFile().message("running ClassAdmin server...",True,"INFO"))
+    }, data=f"address={getIpAddress()}&status=CONNECTED", cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
+    Notify("showinfo",logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients...",True,"INFO"))
     connection,address = sock.accept()
+    with connection:
+        print("client connected")
+
 
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
