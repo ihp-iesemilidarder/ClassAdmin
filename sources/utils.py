@@ -1,4 +1,4 @@
-import os,socket,logging,json
+import os,socket,logging,json,psutil
 
 #This class storages all the paths for uses it in all the project
 class Environment:
@@ -83,3 +83,17 @@ class Json:
             command+=f"='{value.decode()}'"
         exec(command)
         self.__save()
+
+# system process' list
+def systemProcess(key=None,value=None):
+    if key and value:
+        return list(
+            filter(
+                lambda proc:proc.info[key]==value,
+                psutil.process_iter(["pid","status","username","name"])
+            )
+        )
+    processList = []
+    for process in psutil.process_iter(["pid","status","username","name"]):
+        processList.append(process)
+    return processList

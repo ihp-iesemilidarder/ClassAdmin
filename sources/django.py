@@ -1,5 +1,5 @@
 import os
-import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mysql.connector,requests
+import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mysql.connector,requests,psutil
 from io import BytesIO
 # this import is inside a try because the sockets files need it, and since his path is different the import path also is diffent
 try:
@@ -12,18 +12,15 @@ from sources.utils import Environment, Json,logFile
 #This function gets service status color
 def styleStatusColor():
     try:
-        color = requests.get("https://localhost/api/server/status", headers={
-            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}")).json()["result"][0]["status"]
-        if color.upper() == "CONNECTED":
+        # return ClassAdmin process
+        proccess = list(filter(lambda proc: proc.name() == "ClassAdminS.soc", list(psutil.process_iter())))
+        if len(proccess)==1:
             return "border:15px solid #008037"
-        elif color.upper()=="DISCONNECTED":
-            return "border:15px solid #747373"
         else:
-            return "border:15px solid #800000"
+            return "border:15px solid #747373"
     except:
         return "border:15px solid transparent"
+
 # Function specify for get the ClassAdmin DB password
 def getPasswordDB(sql:str,output:bool=False):
     try:

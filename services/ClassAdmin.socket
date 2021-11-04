@@ -21,15 +21,14 @@ try:
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
         }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
         ADDRESS = ADDRESS.json()["result"][0]["address"]
+
     except:
         raise ConnectionError
     print(os.getpid())
     HandlerSignals()
-
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((ADDRESS,PORT))
     Notify("showinfo",logFile().message(f"running ClassAdmin client...",True,"INFO"))
-
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
         Notify("showwarning",logFile().message("shutdown ClassAdmin client...", True, "INFO"))

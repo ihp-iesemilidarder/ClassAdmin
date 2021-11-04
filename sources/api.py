@@ -178,7 +178,7 @@ class API:
                 conn.commit()
                 conn.close()
                 return JsonResponse({"result": True})
-        except Exception as err:
+        except BaseException as err:
             ## the err.msg and err.errno aren't exist if the exception is throw by a raise
             try:
                 message = err.msg
@@ -188,7 +188,10 @@ class API:
                 code = -5001
         finally:
             try:
-               return JsonResponse({"code":code,"message":f"{logFile(True).message(message,True)}"})
+                try:
+                    return JsonResponse({"code":code,"message":f"{logFile(True).message(message,True)}"})
+                except BaseException as err:
+                    return JsonResponse({"code": code, "message": f"{err}"})
             except:
                 None
 urlpatterns=[
