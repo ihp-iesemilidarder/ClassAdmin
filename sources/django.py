@@ -7,14 +7,12 @@ try:
 except:
     from Django.Django import reqDashboard
 from Django.settings import CLASSADMIN_HOME,DB_PATH
-from sources.utils import Environment, Json,logFile
+from sources.utils import Environment, Json,logFile, existProcess
 
 #This function gets service status color
 def styleStatusColor():
     try:
-        # return ClassAdmin process
-        proccess = list(filter(lambda proc: proc.name() == "ClassAdminS.soc", list(psutil.process_iter())))
-        if len(proccess)==1:
+        if existProcess("ClassAdminS.soc"):
             return "border:15px solid #008037"
         else:
             return "border:15px solid #747373"

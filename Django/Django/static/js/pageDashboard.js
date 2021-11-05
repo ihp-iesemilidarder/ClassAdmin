@@ -109,6 +109,15 @@ async function cookie(){
     },1000);
 }
 
+const keepAliveServer=()=>{
+    let thread = new Worker('/static/js/keepAliveServer.js');
+    thread.postMessage([getCookie("csrftoken")])
+    thread.onmessage=(e)=>{
+        console.log(e.data.result);
+        document.querySelector("#pageDashboard").style=`border:15px solid #${(e.data.result)?"008037":"747373"}`;
+    }
+}
+
 export async function pageDashboard(){
     buttonConf.addEventListener("click",()=>config.style.right="0");
     closeConf.addEventListener("click",()=>config.removeAttribute("style"));
@@ -117,4 +126,5 @@ export async function pageDashboard(){
     saveConf.addEventListener("click",await saveConfig);
     newOTP.addEventListener("click",await reloadOTP);
     buttonLogout.addEventListener("click", sessionLogout);
+    keepAliveServer()
 }

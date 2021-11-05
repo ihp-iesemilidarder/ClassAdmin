@@ -1,7 +1,8 @@
 import base64,binascii,os,math
 import random
+from django.http import HttpResponse,JsonResponse
 from sources.django import generateQR
-from sources.utils import Environment, logFile, Json
+from sources.utils import Environment, logFile, Json, existProcess
 
 class ReqDashboard:
     def __init__(self,request):
@@ -10,6 +11,8 @@ class ReqDashboard:
     def run(self):
         if self.req.POST["action"] == "newOTP":
             return self.__reloadOTP()
+        elif self.req.POST["action"] == "keepAlive":
+            return HttpResponse(httpexistProcess("ClassAdminS.soc"))
 
     #Reloads the OTP QR code
     def __reloadOTP(self):

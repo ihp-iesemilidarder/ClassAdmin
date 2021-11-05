@@ -97,3 +97,10 @@ def systemProcess(key=None,value=None):
     for process in psutil.process_iter(["pid","status","username","name"]):
         processList.append(process)
     return processList
+
+def existProcess(procName:str):
+    process = list(filter(lambda proc: proc.name()==procName,list(psutil.process_iter())))
+    if len(process)==1:
+        return True
+    else:
+        return False
