@@ -1,9 +1,5 @@
 #!/usr/bin/python3
 import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl
-if platform.system().upper()=="LINUX":
-    sys.path.append("/etc/ClassAdmin")
-elif platform.system().upper()=="WINDOWS":
-    sys.path.append("C:\\Program Files\\ClassAdmin")
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, getIpAddress, logFile
 from sources.notification import Notify
@@ -43,16 +39,19 @@ except BaseException as err:
     line = traceback.tb_lineno
     if type(err)==ConnectionError:
         Notify("showerror", logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+    elif err.errno==113:
+        Notify("showerror", logFile().message(f"The server is not running", True, "ERROR"))
     else:
         Notify("showerror",logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
         requests.put("https://localhost/api/server?id=1",headers={
             "Content-Type": "application/x-www-form-urlencoded",
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        },data=f"status=ERROR")
+        },data=f"status=DISCONNECTED")
 
 finally:
     try:
-        sock.close()
+        sockSSL.send(b"SystemExit")
+        sockSSL.close()
     except:
         None

@@ -1,17 +1,10 @@
 #!/usr/bin/python3
-import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,threading
-
-if platform.system().upper()=="LINUX":
-    sys.path.append("/etc/ClassAdmin")
-elif platform.system().upper()=="WINDOWS":
-    sys.path.append("C:\\Program Files\\ClassAdmin")
+import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,multiprocessing
+from sources.Client import Client
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, getIpAddress, logFile,systemProcess
 from sources.notification import Notify
 try:
-    def client(conn,addr):
-        print(f"connected: {addr}")
-        conn.sendall(b"Hi client!")
     urllib3.disable_warnings()
     try:
         PORT = requests.get("https://localhost/api/server/port", headers={
@@ -42,7 +35,7 @@ try:
     while sockSSL:
         connection, address = sockSSL.accept()
         print(address)
-        threading.Thread(target=client,name="EJEM",args=(connection,address)).start()
+        multiprocessing.Process(target=Client,name="client",args=(connection,address)).start()
         time.sleep(1)
 
 #When the service shutdown successfully
