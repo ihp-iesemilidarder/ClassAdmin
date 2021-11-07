@@ -113,7 +113,6 @@ const keepAliveServer=()=>{
     let thread = new Worker('/static/js/keepAliveServer.js');
     thread.postMessage([getCookie("csrftoken")])
     thread.onmessage=(e)=>{
-        console.log(e.data.result);
         document.querySelector("#pageDashboard").style=`border:15px solid #${(e.data.result)?"008037":"747373"}`;
     }
 }

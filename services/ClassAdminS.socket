@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil
+import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,threading
+
 if platform.system().upper()=="LINUX":
     sys.path.append("/etc/ClassAdmin")
 elif platform.system().upper()=="WINDOWS":
@@ -8,6 +9,9 @@ from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, getIpAddress, logFile,systemProcess
 from sources.notification import Notify
 try:
+    def client(conn,addr):
+        print(f"connected: {addr}")
+        conn.sendall(b"Hi client!")
     urllib3.disable_warnings()
     try:
         PORT = requests.get("https://localhost/api/server/port", headers={
@@ -26,14 +30,20 @@ try:
     print(os.getpid())
     HandlerSignals()
 
+    # This creates a ssl tunnel with the ClassAdmin's certificate and private key
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(Environment.SSL("crt"),Environment.SSL("key"))
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(("",PORT))
     sock.listen(CLIENTS)
-    Notify("showinfo",logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients...",True,"INFO"))
-    connection,address = sock.accept()
-    with connection:
-        print("client connected")
-
+    Notify("showinfo",logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients by port {PORT}...",True,"INFO"))
+    sockSSL = context.wrap_socket(sock,server_side=True)
+    while sockSSL:
+        connection, address = sockSSL.accept()
+        print(address)
+        threading.Thread(target=client,name="EJEM",args=(connection,address)).start()
+        time.sleep(1)
 
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
@@ -41,10 +51,13 @@ except (KeyboardInterrupt,SystemExit) as err:
 
 #When the service has a error unexpected
 except BaseException as err:
-        if type(err)==ConnectionError:
-            Notify("showerror", logFile().message(f"Connection at database failed", True, "ERROR"))
-        else:
-            Notify("showerror",logFile().message(f"{err}",True,"ERROR"))
+    type, object, traceback = sys.exc_info()
+    file = traceback.tb_frame.f_code.co_filename
+    line = traceback.tb_lineno
+    if type(err)==ConnectionError:
+        Notify("showerror", logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+    else:
+        Notify("showerror",logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
 
 finally:
     try:

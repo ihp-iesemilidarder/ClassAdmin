@@ -20,11 +20,20 @@ CREATE TABLE clients (
 	nick		VARCHAR(50)	NOT NULL,
 	address		VARCHAR(15)	NOT NULL,
 	port		INT(5)		NOT NULL,
+	status		VARCHAR(50)	NOT NULL,
 	cli_ser_id	INT		NOT NULL,
 	CONSTRAINT	clients_PK	PRIMARY KEY (id),
 	CONSTRAINT port_CK CHECK (port BETWEEN 0 AND 65535),
 	CONSTRAINT address_REGEXP CHECK (address REGEXP "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
 );
+
+CREATE TABLE status (
+	name	VARCHAR(50)	NOT NULL,
+	CONSTRAINT status_PK PRIMARY KEY (name)
+);
+INSERT INTO status (name) VALUES ("CONNECTED"),("DISCONNECTED"),("ERROR");
+
+ALTER TABLE clients ADD CONSTRAINT cli_status_FK FOREIGN KEY (status) REFERENCES status (name);
 
 ALTER TABLE clients ADD CONSTRAINT cli_ser_FK FOREIGN KEY (cli_ser_id) REFERENCES server (id);
 

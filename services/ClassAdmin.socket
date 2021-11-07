@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import os,sys,socket,signal,platform,requests,urllib3,signal,time
+import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl
 if platform.system().upper()=="LINUX":
     sys.path.append("/etc/ClassAdmin")
 elif platform.system().upper()=="WINDOWS":
@@ -9,41 +9,42 @@ from sources.utils import Environment, getIpAddress, logFile
 from sources.notification import Notify
 try:
     urllib3.disable_warnings()
-    try:
-        PORT = requests.get("https://localhost/api/server/port", headers={
-            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
-        PORT = PORT.json()["result"][0]["port"]
 
-        ADDRESS = requests.get("https://localhost/api/server/address", headers={
-            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
-        ADDRESS = ADDRESS.json()["result"][0]["address"]
+    # ENVIRONMENT VARIABLES
+    NICK = f"{sys.argv[1]}"
+    ADDRESS = f"{sys.argv[2]}"
+    PORT = int(sys.argv[3])
 
-    except:
-        raise ConnectionError
-    print(os.getpid())
     HandlerSignals()
+    # This creates a ssl tunnel with the ClassAdmin's certificate and private key
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    context.load_verify_locations('/etc/ssl/certs/ca-certificates.crt')
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((ADDRESS,PORT))
+    sockSSL = context.wrap_socket(sock, server_hostname="localhost")
+    sockSSL.connect((ADDRESS,PORT))
     Notify("showinfo",logFile().message(f"running ClassAdmin client...",True,"INFO"))
+    while True:
+        data = sockSSL.recv(1024)
+        if data:
+            print(data)
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
-        Notify("showwarning",logFile().message("shutdown ClassAdmin client...", True, "INFO"))
-        requests.put("https://localhost/api/server?id=1", headers={
-            "Content-Type": "application/x-www-form-urlencoded",
-            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, data=f"status=DISCONNECTED")
+    Notify("showwarning",logFile().message("shutdown ClassAdmin client...", True, "INFO"))
+    requests.put("https://localhost/api/server?id=1", headers={
+        "Content-Type": "application/x-www-form-urlencoded",
+        "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+        "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+    }, data=f"status=DISCONNECTED")
 
 #When the service has a error unexpected
 except BaseException as err:
-        if type(err)==ConnectionError:
-            Notify("showerror", logFile().message(f"Connection at database failed", True, "ERROR"))
-        else:
-            Notify("showerror",logFile().message(f"{err}",True,"ERROR"))
+    type, object, traceback = sys.exc_info()
+    file = traceback.tb_frame.f_code.co_filename
+    line = traceback.tb_lineno
+    if type(err)==ConnectionError:
+        Notify("showerror", logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+    else:
+        Notify("showerror",logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
         requests.put("https://localhost/api/server?id=1",headers={
             "Content-Type": "application/x-www-form-urlencoded",
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",

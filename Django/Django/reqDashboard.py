@@ -1,4 +1,4 @@
-import base64,binascii,os,math
+import base64,binascii,os,math,sys
 import random
 from django.http import HttpResponse,JsonResponse
 from sources.django import generateQR
@@ -12,7 +12,7 @@ class ReqDashboard:
         if self.req.POST["action"] == "newOTP":
             return self.__reloadOTP()
         elif self.req.POST["action"] == "keepAlive":
-            return HttpResponse(httpexistProcess("ClassAdminS.soc"))
+            return existProcess("ClassAdminS.soc")
 
     #Reloads the OTP QR code
     def __reloadOTP(self):
@@ -22,7 +22,10 @@ class ReqDashboard:
             Json(Environment.data).update(["OTP", "key"], key)
             return generateQR()
         except Exception as err:
-            logFile(True).message(f"Error during the OTP reload: {err}", False)
+            type, object, traceback = sys.exc_info()
+            file = traceback.tb_frame.f_code.co_filename
+            line = traceback.tb_lineno
+            logFile(True).message(f"Error during the OTP reload: {err} in {file}:{line}", False)
             return False
 
 # This class generates the OTP recovery Codes
@@ -58,7 +61,10 @@ class RecoveryCodes:
             b64 = base64.b64encode(text.encode()).decode('utf-8')
             return f"data:text/plain;utf8;base64,{b64}"
         except Exception as err:
-            logFile(True).message(f"Error at generate URI recoveryCodes OTP: {err}", False)
+            type, object, traceback = sys.exc_info()
+            file = traceback.tb_frame.f_code.co_filename
+            line = traceback.tb_lineno
+            logFile(True).message(f"Error at generate URI recoveryCodes OTP: {err} in {file}:{line}", False)
             return False
 
     def __checkCodes(self):
@@ -72,7 +78,10 @@ class RecoveryCodes:
             arrayCodesUpdated = Json(Environment.data).print(["OTP", "recoveryCodes"])
             return arrayCodesUpdated
         except Exception as err:
-            logFile(True).message(f"Error during the download recoveryCodes OTP: {err}", False)
+            type, object, traceback = sys.exc_info()
+            file = traceback.tb_frame.f_code.co_filename
+            line = traceback.tb_lineno
+            logFile(True).message(f"Error during the download recoveryCodes OTP: {err} in {file}:{line}", False)
             return False
 
     def authRecoveryCodes(self,key:str) -> bool:
