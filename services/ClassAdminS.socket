@@ -30,7 +30,7 @@ try:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(("",PORT))
     sock.listen(CLIENTS)
-    Notify("showinfo",logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients by port {PORT}...",True,"INFO"))
+    print(logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients by port {PORT}...",True,"INFO"))
     sockSSL = context.wrap_socket(sock,server_side=True)
     while sockSSL:
         connection, address = sockSSL.accept()
@@ -40,7 +40,7 @@ try:
 
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
-        Notify("showinfo",logFile().message("shutdown ClassAdmin server...", True, "INFO"))
+        print(logFile().message("shutdown ClassAdmin server...", True, "INFO"))
 
 #When the service has a error unexpected
 except BaseException as err:
@@ -48,12 +48,13 @@ except BaseException as err:
     file = traceback.tb_frame.f_code.co_filename
     line = traceback.tb_lineno
     if type(err)==ConnectionError:
-        Notify("showerror", logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+        print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
     else:
-        Notify("showerror",logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
+        print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
 
 finally:
     try:
         sock.close()
+        closeClients()
     except:
         None

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl
+import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl,re
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, getIpAddress, logFile
 from sources.notification import Notify
@@ -11,47 +11,65 @@ try:
     ADDRESS = f"{sys.argv[2]}"
     PORT = int(sys.argv[3])
 
+    regexp_ADDRESS="([0-9]{1,3}\.){3}[0-9]"
+    if not re.search(regexp_ADDRESS,ADDRESS):
+        raise BaseException(-5000,f"{ADDRESS} is not a address valid",True)
+    if PORT<0 or PORT>65535:
+        raise BaseException(-5000,f"The port should is beetwen 0 and 65535",True)
+
     HandlerSignals()
     # This creates a ssl tunnel with the ClassAdmin's certificate and private key
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.load_verify_locations('/etc/ssl/certs/ca-certificates.crt')
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sockSSL = context.wrap_socket(sock, server_hostname="localhost")
-    sockSSL.connect((ADDRESS,PORT))
-    Notify("showinfo",logFile().message(f"running ClassAdmin client...",True,"INFO"))
+    print(logFile().message(f"connecting", True, "INFO"))
+    while True:
+        try:
+            sockSSL.connect((ADDRESS,PORT))
+            break
+        except:
+            pass
+        time.sleep(.5)
+    Notify("showinfo",logFile().message(f"ClassAdmin connected",True,"INFO"),True)
     while True:
         data = sockSSL.recv(1024)
         if data:
             print(data)
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
-    Notify("showwarning",logFile().message("shutdown ClassAdmin client...", True, "INFO"))
-    requests.put("https://localhost/api/server?id=1", headers={
-        "Content-Type": "application/x-www-form-urlencoded",
-        "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-        "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-    }, data=f"status=DISCONNECTED")
-
-#When the service has a error unexpected
-except BaseException as err:
-    type, object, traceback = sys.exc_info()
-    file = traceback.tb_frame.f_code.co_filename
-    line = traceback.tb_lineno
-    if type(err)==ConnectionError:
-        Notify("showerror", logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
-    elif err.errno==113:
-        Notify("showerror", logFile().message(f"The server is not running", True, "ERROR"))
-    else:
-        Notify("showerror",logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
-        requests.put("https://localhost/api/server?id=1",headers={
+    Notify("showinfo",logFile().message("shutdown ClassAdmin...", True,"INFO"),True)
+    try:
+        requests.put("https://localhost/api/server?id=1", headers={
             "Content-Type": "application/x-www-form-urlencoded",
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        },data=f"status=DISCONNECTED")
+        }, data=f"status=DISCONNECTED")
+    except:
+        None
+
+#When the service has a error unexpected
+except BaseException as err:
+    if err.args[0]==-5000:
+        print(logFile().message(err.args[1],err.args[2],"ERROR"))
+    else:
+        type, object, traceback = sys.exc_info()
+        file = traceback.tb_frame.f_code.co_filename
+        line = traceback.tb_lineno
+
+        if type(err)==ConnectionError:
+            print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+        else:
+            print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
+            requests.put("https://localhost/api/server?id=1",headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+            },data=f"status=DISCONNECTED")
 
 finally:
     try:
-        sockSSL.send(b"SystemExit")
+        sockSSL.send("SystemExit")
         sockSSL.close()
     except:
         None
