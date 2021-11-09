@@ -20,7 +20,7 @@ try:
         CLIENTS = CLIENTS.json()["result"][0]["clients"]
     except:
         raise ConnectionError
-    print(os.getpid())
+    print(f"PID: {os.getpid()}")
     HandlerSignals()
 
     # This creates a ssl tunnel with the ClassAdmin's certificate and private key
@@ -34,8 +34,8 @@ try:
     sockSSL = context.wrap_socket(sock,server_side=True)
     while sockSSL:
         connection, address = sockSSL.accept()
-        print(address)
-        multiprocessing.Process(target=Client,name="client",args=(connection,address)).start()
+        subproccess = multiprocessing.Process(target=Client,name="client",args=(connection,address))
+        subproccess.start()
         time.sleep(1)
 
 #When the service shutdown successfully
@@ -55,6 +55,5 @@ except BaseException as err:
 finally:
     try:
         sock.close()
-        closeClients()
     except:
         None

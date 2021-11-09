@@ -11,3 +11,4 @@ def Notify(type:str,text:str,output=True):
     root.destroy()
     if output:
         print(text)
+        return text

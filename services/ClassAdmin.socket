@@ -17,6 +17,7 @@ try:
     if PORT<0 or PORT>65535:
         raise BaseException(-5000,f"The port should is beetwen 0 and 65535",True)
 
+    print(f"PID: {os.getpid()}")
     HandlerSignals()
     # This creates a ssl tunnel with the ClassAdmin's certificate and private key
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -69,7 +70,7 @@ except BaseException as err:
 
 finally:
     try:
-        sockSSL.send("SystemExit")
+        sockSSL.send(b"sig.SystemExit")
         sockSSL.close()
     except:
         None
