@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,multiprocessing
-from sources.Client import Client
+import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,multiprocessing, threading
+from sources.ClientListener import ClientListener
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, getIpAddress, logFile,systemProcess
 from sources.notification import Notify
@@ -32,10 +32,14 @@ try:
     sock.listen(CLIENTS)
     print(logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients by port {PORT}...",True,"INFO"))
     sockSSL = context.wrap_socket(sock,server_side=True)
+    childProcess = [] # This storages the childs processes
+    event = multiprocessing.Event() # listening events of childs processes
+    threading.Thread(target=ClientListener.handlerEvent, name="exitChildProcess", args=(event, childProcess,)).start()
     while sockSSL:
         connection, address = sockSSL.accept()
-        subproccess = multiprocessing.Process(target=Client,name="client",args=(connection,address))
+        subproccess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address, event))
         subproccess.start()
+        childProcess.append(subproccess)
         time.sleep(1)
 
 #When the service shutdown successfully

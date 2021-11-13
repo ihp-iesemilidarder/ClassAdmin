@@ -2,9 +2,13 @@
 import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl,re
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, getIpAddress, logFile
+from sources.Client import clientRegistre
 from sources.notification import Notify
 try:
     urllib3.disable_warnings()
+
+    if len(sys.argv)==1 or  (len(sys.argv)>1 and len(sys.argv) < 4):
+        raise BaseException(-5000,f"The script needs 3 arguments\n\tClassAdmin.socket <nick> <IP address> <port>",True)
 
     # ENVIRONMENT VARIABLES
     NICK = f"{sys.argv[1]}"
@@ -33,6 +37,7 @@ try:
             pass
         time.sleep(.5)
     Notify("showinfo",logFile().message(f"ClassAdmin connected",True,"INFO"),True)
+    clientRegistre(NICK,ADDRESS, PORT,"CONNECTED")
     while True:
         data = sockSSL.recv(1024)
         if data:
@@ -71,6 +76,7 @@ except BaseException as err:
 finally:
     try:
         sockSSL.send(b"sig.SystemExit")
+        clientRegistre(NICK,ADDRESS, PORT,"DISCONNECTED")
         sockSSL.close()
     except:
         None
