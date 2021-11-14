@@ -2,18 +2,23 @@
 import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,multiprocessing, threading
 from sources.ClientListener import ClientListener
 from sources.handlerSignals import HandlerSignals
-from sources.utils import Environment, getIpAddress, logFile,systemProcess
+from sources.utils import Environment, getIpAddress, logFile, dnsUpdate
 from sources.notification import Notify
 try:
+    # globals variables
+    clientsProcesses = []  # This storages the childs processes
+
+    #dns = threading.Thread(target=dnsUpdate, name="dnsUpdate", args=())
+
     urllib3.disable_warnings()
     try:
-        PORT = requests.get("https://localhost/api/server/port", headers={
+        PORT = requests.get("https://classadmin.server/api/server/port", headers={
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
         }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
         PORT = PORT.json()["result"][0]["port"]
 
-        CLIENTS = requests.get("https://localhost/api/server/clients", headers={
+        CLIENTS = requests.get("https://classadmin.server/api/server/clients", headers={
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
         }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
@@ -32,14 +37,13 @@ try:
     sock.listen(CLIENTS)
     print(logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients by port {PORT}...",True,"INFO"))
     sockSSL = context.wrap_socket(sock,server_side=True)
-    childProcess = [] # This storages the childs processes
     event = multiprocessing.Event() # listening events of childs processes
-    threading.Thread(target=ClientListener.handlerEvent, name="exitChildProcess", args=(event, childProcess,)).start()
+    #threading.Thread(target=ClientListener.handlerEvent, name="exitChildProcess", args=(event, childProcess,os.getpid())).start()
     while sockSSL:
         connection, address = sockSSL.accept()
         subproccess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address, event))
         subproccess.start()
-        childProcess.append(subproccess)
+        clientsProcesses.append(subproccess)
         time.sleep(1)
 
 #When the service shutdown successfully

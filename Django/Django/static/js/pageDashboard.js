@@ -52,6 +52,7 @@ async function sendConfig(data){
         let json = await res.json();
         if(json["result"]){
              messg("Configuration updated sucessfully",true);
+             await cookie()
         }else{
             throw json;
         }

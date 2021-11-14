@@ -1,6 +1,6 @@
 this.onmessage=async(e)=>{
     setInterval(async()=>{
-            let res = await fetch("https://localhost/dashboard/",{
+            let res = await fetch("https://classadmin.server/dashboard/",{
                 method:"POST",
                 body:"action=keepAlive",
                 headers:{

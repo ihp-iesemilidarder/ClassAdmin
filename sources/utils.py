@@ -1,4 +1,4 @@
-import os,socket,logging,json,psutil
+import os,socket,logging,json,psutil, time
 
 #This class storages all the paths for uses it in all the project
 class Environment:
@@ -100,7 +100,11 @@ def systemProcess(key=None,value=None):
 
 def existProcess(procName:str):
     process = list(filter(lambda proc: proc.name()==procName,list(psutil.process_iter())))
-    if len(process)==1:
+    if len(process)>1:
         return True
     else:
         return False
+
+def dnsUpdate():
+    while True:
+        time.sleep(.5)
