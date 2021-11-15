@@ -1,5 +1,4 @@
 import os, time
-from Django.Django.settings import STATIC_ROOT
 from sources.utils import Environment
 from tkinter import messagebox
 from tkinter import *

@@ -105,6 +105,6 @@ def existProcess(procName:str):
     else:
         return False
 
-def dnsUpdate():
-    while True:
+def dnsUpdate(event):
+    while not event.wait(1):
         time.sleep(.5)

@@ -1,6 +1,6 @@
 import multiprocessing, signal, os, threading, time, requests
 from sources.notification import Notify
-from sources.Client import clientRegistre
+from sources.Client import Client
 from sources.utils import logFile
 import threading
 
@@ -24,7 +24,7 @@ class ClientListener:
             except:
                 None
             finally:
-                clientRegistre(self.nick, self.addr[0], self.addr[1], "DISCONNECTED")
+                Client(self.conn,self.addr).registre(self.nick,"DISCONNECTED",False)
                 event.set()
 
     def __listenData(self):
@@ -36,7 +36,7 @@ class ClientListener:
             elif data:
                 if text.startswith("HelloServer: "):
                     self.nick = text.replace("HelloServer: ","")
-                    clientRegistre(self.nick,self.addr[0],self.addr[1],"CONNECTED")
+                    Client(self.conn,self.addr).registre(self.nick, "CONNECTED", False)
                 else:
                     print(data)
 

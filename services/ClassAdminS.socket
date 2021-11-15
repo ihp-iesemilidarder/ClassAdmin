@@ -7,8 +7,8 @@ from sources.notification import Notify
 try:
     # globals variables
     clientsProcesses = []  # This storages the childs processes
-
-    #dns = threading.Thread(target=dnsUpdate, name="dnsUpdate", args=())
+    eventThread = threading.Event()
+    threading.Thread(target=dnsUpdate, name="dnsUpdate", args=(eventThread,)).start()
 
     urllib3.disable_warnings()
     try:
@@ -55,13 +55,14 @@ except BaseException as err:
     type, object, traceback = sys.exc_info()
     file = traceback.tb_frame.f_code.co_filename
     line = traceback.tb_lineno
-    if type(err)==ConnectionError:
+    if type==ConnectionError:
         print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
     else:
         print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
 
 finally:
     try:
+        eventThread.set()
         sock.close()
     except:
         None

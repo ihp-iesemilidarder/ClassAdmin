@@ -2,21 +2,20 @@
 import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl,re,threading
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, getIpAddress, logFile
-from sources.Client import clientRegistre
 from sources.notification import Notify
 try:
     urllib3.disable_warnings()
     #threading.Thread(target=dnsUpdate,name="dnsUpdate",args=()).start()
 
-    if len(sys.argv)==1 or  (len(sys.argv)>1 and len(sys.argv) < 3) or len(sys.argv) > 3:
-        raise BaseException(-5000,f"The script needs 2 arguments\n\tClassAdmin.socket <nick> <port>",True)
+    if len(sys.argv)==1 or  len(sys.argv)>2:
+        raise BaseException(-5000,f"The script needs 1 argument\n\tClassAdmin.socket <nick>",True)
 
     # ENVIRONMENT VARIABLES
     NICK = f"{sys.argv[1]}"
-    PORT = int(sys.argv[2])
-
-    if PORT<0 or PORT>65535:
-        raise BaseException(-5000,f"The port should is beetwen 0 and 65535",True)
+    PORT = int(requests.get("https://classadmin.server/api/server/port",headers={
+            "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        },verify="/etc/ssl/certs/ca-certificates.crt").json()["result"][0]["port"])
 
     print(f"PID: {os.getpid()}")
     HandlerSignals()
@@ -37,19 +36,14 @@ try:
     sockSSL.send(f"HelloServer: {NICK}".encode("utf-8"))
     while True:
         data = sockSSL.recv(1024)
-        if data:
+        text = data.decode("utf-8")
+        if text.startswith("sig."):
+            exec(f"raise {text.split('.')[1]}")
+        elif data:
             print(data)
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
     Notify("showinfo",logFile().message("shutdown ClassAdmin...", True,"INFO"),True)
-    try:
-        requests.put("https://classadmin.server/api/server?id=1", headers={
-            "Content-Type": "application/x-www-form-urlencoded",
-            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, data=f"status=DISCONNECTED")
-    except:
-        None
 
 #When the service has a error unexpected
 except BaseException as err:
@@ -64,11 +58,6 @@ except BaseException as err:
             print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
         else:
             print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
-            requests.put("https://classadmin.server/api/server?id=1",headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-            },data=f"status=DISCONNECTED")
 
 finally:
     try:
