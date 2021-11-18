@@ -2,26 +2,32 @@
 import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,multiprocessing, threading
 from sources.ClientListener import ClientListener
 from sources.handlerSignals import HandlerSignals
-from sources.utils import Environment, getIpAddress, logFile, dnsUpdate
+from sources.utils import Environment, logFile, dnsUpdate
+from sources.Server import Server
 from sources.notification import Notify
 try:
     # globals variables
     clientsProcesses = []  # This storages the childs processes
     eventThread = threading.Event()
     threading.Thread(target=dnsUpdate, name="dnsUpdate", args=(eventThread,)).start()
+    if len(sys.argv)==1 or  len(sys.argv)>2:
+        raise BaseException(-5000,f"The script need 1 argument\n\tClassAdminS.socket <port>",True)
+    elif int(sys.argv[1])<1 or int(sys.argv[1])>65535:
+        raise BaseException(-5000, f"The port must be beetwen 1 and 65535", True)
+    Server.settingsChange(sys.argv)
 
     urllib3.disable_warnings()
     try:
         PORT = requests.get("https://classadmin.server/api/server/port", headers={
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
+        }, verify=Environment.CA)
         PORT = PORT.json()["result"][0]["port"]
 
         CLIENTS = requests.get("https://classadmin.server/api/server/clients", headers={
             "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}"))
+        }, verify=Environment.CA)
         CLIENTS = CLIENTS.json()["result"][0]["clients"]
     except:
         raise ConnectionError
@@ -52,13 +58,16 @@ except (KeyboardInterrupt,SystemExit) as err:
 
 #When the service has a error unexpected
 except BaseException as err:
-    type, object, traceback = sys.exc_info()
-    file = traceback.tb_frame.f_code.co_filename
-    line = traceback.tb_lineno
-    if type==ConnectionError:
-        print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+    if err.args[0]==-5000:
+        print(logFile().message(err.args[1],err.args[2],"ERROR"))
     else:
-        print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
+        type, object, traceback = sys.exc_info()
+        file = traceback.tb_frame.f_code.co_filename
+        line = traceback.tb_lineno
+        if type==ConnectionError:
+            print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+        else:
+            print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
 
 finally:
     try:

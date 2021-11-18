@@ -1,4 +1,4 @@
-import multiprocessing, signal, os, threading, time, requests
+import multiprocessing, signal, os, threading, time
 from sources.notification import Notify
 from sources.Client import Client
 from sources.utils import logFile

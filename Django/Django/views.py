@@ -26,12 +26,12 @@ def pageDashboard(req):
         port = requests.get("https://classadmin.server/api/server/port", headers={
             "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}")).json()["result"][0]["port"]
+        }, verify=Environment.CA).json()["result"][0]["port"]
 
         clients = requests.get("https://classadmin.server/api/clients", headers={
             "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, cert=(f"{Environment.SSL('crt')}", f"{Environment.SSL('key')}")).json()["result"]
+        }, verify=Environment.CA).json()["result"]
         jsonFile["pageDashboard"].update({
             "otpQR":generateQR,
             "port":port,

@@ -1,5 +1,5 @@
 import os
-import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mysql.connector,requests,psutil
+import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mysql.connector,psutil
 from io import BytesIO
 # this import is inside a try because the sockets files need it, and since his path is different the import path also is diffent
 try:

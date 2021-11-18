@@ -1,25 +1,19 @@
-import os,socket,logging,json,psutil, time
+import os,socket,logging,json,psutil, time, platform, certifi
+
 
 #This class storages all the paths for uses it in all the project
 class Environment:
-    log = f"{os.environ['CLASSADMIN_LOG']}"
-    data = f"{os.environ['CLASSADMIN_HOME']}/sources/data.json"
-
     @staticmethod
     def SSL(type:str):
             return f"{os.environ['CLASSADMIN_SSL']}/ClassAdmin.{type}"
-
     @staticmethod
     def media(type):
         return f"{os.environ['CLASSADMIN_HOME']}/sources/media/{type}"
 
-def getIpAddress():
-    address=""
-    sock=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    sock.connect(("8.8.8.8",80))
-    address=sock.getsockname()[0]
-    sock.close()
-    return address
+    log = f"{os.environ['CLASSADMIN_LOG']}"
+    data = f"{os.environ['CLASSADMIN_HOME']}/sources/data.json"
+    # <true> if <condition> else <true2> if <condition2> else None
+    CA = f"{os.environ['CLASSADMIN_SSL']}/ClassAdmin.crt" if platform.system().upper()=="WINDOWS" else certifi.where() if platform.system().upper()=="LINUX" else None
 
 #This class write lines in the log file /var/log/ClassAdmin.log
 class logFile:
@@ -100,7 +94,7 @@ def systemProcess(key=None,value=None):
 
 def existProcess(procName:str):
     process = list(filter(lambda proc: proc.name()==procName,list(psutil.process_iter())))
-    if len(process)>1:
+    if len(process)>=1:
         return True
     else:
         return False
@@ -108,3 +102,11 @@ def existProcess(procName:str):
 def dnsUpdate(event):
     while not event.wait(1):
         time.sleep(.5)
+
+def getIpAddress():
+    address=""
+    sock=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    sock.connect(("8.8.8.8",80))
+    address=sock.getsockname()[0]
+    sock.close()
+    return address

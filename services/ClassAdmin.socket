@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl,re,threading
 from sources.handlerSignals import HandlerSignals
-from sources.utils import Environment, getIpAddress, logFile
+from sources.utils import Environment, logFile, dnsUpdate
 from sources.notification import Notify
 try:
     urllib3.disable_warnings()
-    #threading.Thread(target=dnsUpdate,name="dnsUpdate",args=()).start()
+    eventThread = threading.Event()
+    threading.Thread(target=dnsUpdate,name="dnsUpdate",args=(eventThread,)).start()
 
     if len(sys.argv)==1 or  len(sys.argv)>2:
         raise BaseException(-5000,f"The script needs 1 argument\n\tClassAdmin.socket <nick>",True)
@@ -15,7 +16,7 @@ try:
     PORT = int(requests.get("https://classadmin.server/api/server/port",headers={
             "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        },verify="/etc/ssl/certs/ca-certificates.crt").json()["result"][0]["port"])
+        },verify=Environment.CA).json()["result"][0]["port"])
 
     print(f"PID: {os.getpid()}")
     HandlerSignals()
@@ -61,6 +62,7 @@ except BaseException as err:
 
 finally:
     try:
+        eventThread.set()
         sockSSL.send(b"sig.SystemExit")
         sockSSL.close()
     except:
