@@ -22,7 +22,7 @@ try:
     HandlerSignals()
     # This creates a ssl tunnel with the ClassAdmin's certificate and private key
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-    context.load_verify_locations('/etc/ssl/certs/ca-certificates.crt')
+    context.load_verify_locations(Environment.CA)
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sockSSL = context.wrap_socket(sock, server_hostname="classadmin.server")
     print(logFile().message(f"connecting", True, "INFO"))

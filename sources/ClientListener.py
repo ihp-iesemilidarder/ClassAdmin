@@ -1,4 +1,4 @@
-import multiprocessing, signal, os, threading, time
+import signal, os, threading, time, sys
 from sources.notification import Notify
 from sources.Client import Client
 from sources.utils import logFile
@@ -34,6 +34,7 @@ class ClientListener:
             if text.startswith("sig."):
                 exec(f"raise {text.split('.')[1]}")
             elif data:
+
                 if text.startswith("HelloServer: "):
                     self.nick = text.replace("HelloServer: ","")
                     Client(self.conn,self.addr).registre(self.nick, "CONNECTED", False)

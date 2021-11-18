@@ -7,7 +7,7 @@ class Server:
             "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
         }, verify=Environment.CA).json()["result"][0]["address"]
-        print(getIpAddress())
+        print("your IP: "+getIpAddress())
         print(IP)
         if len(args)==2:
             Server.changePort(args[1])

@@ -16,7 +16,7 @@ class Client:
             connection.send("Conscent: Do you want to change the nick or nick's ip address?".encode("utf-8"))
             if conscent == None:
                 raise SystemExit"""
-        if client==None:
+        if client["result"]==None:
             requests.post(f"https://classadmin.server/api/clients",
                 headers={
                     "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",

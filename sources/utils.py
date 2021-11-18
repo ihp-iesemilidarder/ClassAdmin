@@ -3,9 +3,12 @@ import os,socket,logging,json,psutil, time, platform, certifi
 
 #This class storages all the paths for uses it in all the project
 class Environment:
+    hostsFile = "C:\\Windows\\System32\\drivers\\etc" if platform.system().upper()=="WINDOWS" else "/etc/hosts" if platform.system().upper()=="LINUX" else None
+
     @staticmethod
     def SSL(type:str):
             return f"{os.environ['CLASSADMIN_SSL']}/ClassAdmin.{type}"
+
     @staticmethod
     def media(type):
         return f"{os.environ['CLASSADMIN_HOME']}/sources/media/{type}"
@@ -99,8 +102,19 @@ def existProcess(procName:str):
     else:
         return False
 
+# class that works with system hosts file
+class Hosts:
+    @staticmethod
+    def showIP(dns):
+        IP = open(Environment.hostsFile,"r").read().split("\n")
 def dnsUpdate(event):
+    hostsIP = Hosts().showIP("classadmin.server")
     while not event.wait(1):
+        IP_SERVER = requests.get("https://classadmin.server/api/server/address",headers={
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        },verify=Environment.CA).json()["result"][0]["address"]
+
         time.sleep(.5)
 
 def getIpAddress():

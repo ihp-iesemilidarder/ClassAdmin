@@ -48,7 +48,7 @@ try:
     while sockSSL:
         connection, address = sockSSL.accept()
         subproccess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address, event))
-        subproccess.start()
+        subproccess.run()
         clientsProcesses.append(subproccess)
         time.sleep(1)
 
