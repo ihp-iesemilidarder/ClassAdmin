@@ -1,4 +1,4 @@
-import os,socket,logging,json,psutil, time, platform, certifi
+import os,socket,logging,json,psutil, time, platform, certifi, requests
 
 
 #This class storages all the paths for uses it in all the project
@@ -105,17 +105,28 @@ def existProcess(procName:str):
 # class that works with system hosts file
 class Hosts:
     @staticmethod
-    def showIP(dns):
-        IP = open(Environment.hostsFile,"r").read().split("\n")
-def dnsUpdate(event):
-    hostsIP = Hosts().showIP("classadmin.server")
-    while not event.wait(1):
-        IP_SERVER = requests.get("https://classadmin.server/api/server/address",headers={
-            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        },verify=Environment.CA).json()["result"][0]["address"]
+    def showIP(dns:str):
+        file = open(Environment.hostsFile,"r")
+        IP = file.read().split("\n")
+        return list(filter(lambda x: "classadmin.server" in x, IP))[0].split("\t")[0]
 
-        time.sleep(.5)
+    @staticmethod
+    def new(hostname:str,ipNew:str,ipOld:str):
+
+        # this does the changes
+        file = open(Environment.hostsFile,"r")
+        hostnames = file.read().split("\n")
+        for line in hostnames:
+            if hostname in line or ipOld in line:
+                hostnames[hostnames.index(line)]=f"{ipNew}\t{hostname}"
+            else:
+                None
+        file.close()
+
+        # this writes the changes at hosts
+        file = open(Environment.hostsFile,"w")
+        file.write("\n".join(hostnames))
+        file.close()
 
 def getIpAddress():
     address=""

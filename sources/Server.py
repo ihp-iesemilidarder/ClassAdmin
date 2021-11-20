@@ -1,14 +1,14 @@
 import requests
-from sources.utils import Environment, getIpAddress
+from sources.utils import Environment, getIpAddress, logFile
 class Server:
+
+    # If at run the script, the server changes the port or ip address, update it at ClassAdmin DB
     @staticmethod
     def settingsChange(args):
         IP = requests.get("https://classadmin.server/api/server/address",headers={
             "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
             "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
         }, verify=Environment.CA).json()["result"][0]["address"]
-        print("your IP: "+getIpAddress())
-        print(IP)
         if len(args)==2:
             Server.changePort(args[1])
 
@@ -19,7 +19,7 @@ class Server:
             },
             data=f"address={getIpAddress()}",
             verify=Environment.CA)
-            print("changing IP...")
+            print(logFile().message(f"changing IP address to {getIpAddress()}...",True,"INFO"))
 
     @staticmethod
     def changePort(port:int):

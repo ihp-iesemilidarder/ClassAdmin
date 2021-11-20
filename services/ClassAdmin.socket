@@ -1,12 +1,11 @@
 #!/usr/bin/python3
 import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl,re,threading
 from sources.handlerSignals import HandlerSignals
-from sources.utils import Environment, logFile, dnsUpdate
+from sources.utils import Environment, logFile, Hosts, getIpAddress
 from sources.notification import Notify
 try:
     urllib3.disable_warnings()
     eventThread = threading.Event()
-    threading.Thread(target=dnsUpdate,name="dnsUpdate",args=(eventThread,)).start()
 
     if len(sys.argv)==1 or  len(sys.argv)>2:
         raise BaseException(-5000,f"The script needs 1 argument\n\tClassAdmin.socket <nick>",True)
@@ -28,6 +27,8 @@ try:
     print(logFile().message(f"connecting", True, "INFO"))
     while True:
         try:
+            # connection at server (without specified ip address), so if the server changes the ip address,
+            # the client will can connect.
             sockSSL.connect(("classadmin.server",PORT))
             break
         except:
