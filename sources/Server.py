@@ -36,8 +36,3 @@ class Server:
             },
             data=f"port={port}",
             verify=Environment.CA)
-
-    @staticmethod
-    def closeClients():
-        for client in ListClients.show():
-            client.send(b"SystemExit")

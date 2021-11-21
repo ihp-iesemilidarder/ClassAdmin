@@ -13,7 +13,6 @@ class ClientListener:
             self.__listenData()
         except (KeyboardInterrupt,SystemExit) as err:
             print(logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) left", True, "INFO"))
-            ListClients().remove(self.conn)
         except BaseException as err:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
@@ -21,6 +20,7 @@ class ClientListener:
             print(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
         finally:
             try:
+                ListClients().remove(self.conn)
                 self.conn.close()
             except:
                 None
@@ -39,7 +39,7 @@ class ClientListener:
                     self.nick = text.replace("HelloServer: ","")
                     client = Client(self.conn,self.addr).registre(self.nick, "CONNECTED", False)
                     if client==False:
-                        self.conn.sendto(b"sig.SystemExit", self.addr)
+                        self.conn.send(b"sig.SystemExit(-5000,'The nick exists and is connected',True)")
                     else:
                         print(logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) is connected", True, "INFO"))
                         ListClients().add(self.conn)

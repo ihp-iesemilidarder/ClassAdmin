@@ -57,6 +57,10 @@ try:
 
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
+    try:
+        if err.args[0] == -5000:
+            print(logFile().message(err.args[1],err.args[2],"INFO"))
+    except:
         print(logFile().message("shutdown ClassAdmin server...", True, "INFO"))
 
 #When the service has a error unexpected
@@ -75,8 +79,6 @@ except BaseException as err:
 finally:
     try:
         eventThread.set()
-        Server.closeClients()
-        Json(Environment.data).update(["listClients"],[])
         sock.close()
     except:
         None

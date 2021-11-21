@@ -26,8 +26,8 @@ class Client:
                 data=f"nick={nick}&address={self.address[0]}&port={self.address[1]}&status={status}&cli_ser_id=1",
                 verify=Environment.CA
             )
-        #elif client["result"][0]["address"]!=self.address[0] and client["result"][0]["nick"]==nick:
-        #    return False
+        elif client["result"][0]["address"]!=self.address[0] and client["result"][0]["nick"]==nick and client["result"][0]["status"]=="CONNECTED":
+            return False
         else:
             requests.put(f"https://classadmin.server/api/clients?address={self.address[0]}",
                 headers={

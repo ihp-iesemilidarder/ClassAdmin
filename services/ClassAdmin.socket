@@ -43,9 +43,16 @@ try:
             exec(f"raise {text.split('.')[1]}")
         elif data:
             Notify("showinfo",logFile().message(text,True,"INFO"),True)
+        elif len(data)==0:
+            raise SystemExit(-5000,"Sorry, the connection with the server, failed. This seems that the server close the connection.",True)
+
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
-    Notify("showinfo",logFile().message("shutdown ClassAdmin...", True,"INFO"),True)
+    try:
+        if err.args[0]==-5000:
+            Notify("showinfo", logFile().message(err.args[1], err.args[2], "INFO"), True)
+    except:
+        Notify("showinfo",logFile().message("shutdown ClassAdmin...", True,"INFO"),True)
 
 #When the service has a error unexpected
 except BaseException as err:

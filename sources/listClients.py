@@ -24,4 +24,4 @@ class ListClients:
         Json(Environment.data).update(["listClients"], self.clients)
 
     def show(self):
-        print(self.clients)
+        return self.clients
