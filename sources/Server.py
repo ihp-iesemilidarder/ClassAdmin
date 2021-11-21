@@ -1,5 +1,6 @@
 import requests
 from sources.utils import Environment, getIpAddress, logFile
+from sources.listClients import ListClients
 class Server:
 
     # If at run the script, the server changes the port or ip address, update it at ClassAdmin DB
@@ -35,3 +36,8 @@ class Server:
             },
             data=f"port={port}",
             verify=Environment.CA)
+
+    @staticmethod
+    def closeClients():
+        for client in ListClients.show():
+            client.send(b"SystemExit")

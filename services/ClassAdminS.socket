@@ -2,12 +2,12 @@
 import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,multiprocessing, threading
 from sources.ClientListener import ClientListener
 from sources.handlerSignals import HandlerSignals
-from sources.utils import Environment, logFile, Hosts, getIpAddress
+from sources.utils import Environment, logFile, Hosts, getIpAddress, Json
 from sources.Server import Server
 from sources.notification import Notify
 try:
     # globals variables
-    clientsProcesses = []  # This storages the childs processes
+    listClients = []  # This storages the childs processes
     eventThread = threading.Event()
     Hosts.new("classadmin.server", getIpAddress(), Hosts.showIP("classadmin.server"))
 
@@ -53,7 +53,6 @@ try:
         connection, address = sockSSL.accept()
         subproccess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address, event))
         subproccess.start()
-        clientsProcesses.append(subproccess)
         time.sleep(1)
 
 #When the service shutdown successfully
@@ -76,6 +75,8 @@ except BaseException as err:
 finally:
     try:
         eventThread.set()
+        Server.closeClients()
+        Json(Environment.data).update(["listClients"],[])
         sock.close()
     except:
         None

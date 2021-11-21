@@ -31,5 +31,6 @@
     "pageDashboard": {
         "title": "Dashboard | ClassAdmin",
         "id": "pageDashboard"
-    }
+    },
+    "listClients": []
 }

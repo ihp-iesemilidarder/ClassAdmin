@@ -42,7 +42,7 @@ try:
         if text.startswith("sig."):
             exec(f"raise {text.split('.')[1]}")
         elif data:
-            print(data)
+            Notify("showinfo",logFile().message(text,True,"INFO"),True)
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
     Notify("showinfo",logFile().message("shutdown ClassAdmin...", True,"INFO"),True)
@@ -50,16 +50,16 @@ except (KeyboardInterrupt,SystemExit) as err:
 #When the service has a error unexpected
 except BaseException as err:
     if err.args[0]==-5000:
-        print(logFile().message(err.args[1],err.args[2],"ERROR"))
+        Notify("showerror",logFile().message(err.args[1],err.args[2],"ERROR"),True)
     else:
         type, object, traceback = sys.exc_info()
         file = traceback.tb_frame.f_code.co_filename
         line = traceback.tb_lineno
 
         if type(err)==ConnectionError:
-            print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+            Notify("showerror",logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"),True)
         else:
-            print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
+            Notify("showerror",logFile().message(f"{err} in {file}:{line}",True,"ERROR"),True)
 
 finally:
     try:
