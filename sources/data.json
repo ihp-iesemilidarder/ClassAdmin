@@ -32,8 +32,5 @@
         "title": "Dashboard | ClassAdmin",
         "id": "pageDashboard"
     },
-    "listClients": [
-        "<ssl.SSLSocket fd=7, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('192.168.0.3', 7788), raddr=('192.168.0.16', 49903)>",
-        "<ssl.SSLSocket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('192.168.0.3', 7788), raddr=('192.168.0.12', 37082)>"
-    ]
+    "listClients": []
 }

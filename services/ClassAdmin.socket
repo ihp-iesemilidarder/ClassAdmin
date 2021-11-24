@@ -44,7 +44,7 @@ try:
         elif data:
             Notify("showinfo",logFile().message(text,True,"INFO"),True)
         elif len(data)==0:
-            raise SystemExit(-5000,"Sorry, the connection with the server, failed. This seems that the server close the connection.",True)
+            raise SystemExit(-5000,"Sorry, the connection to server failed. This seems that the server closed the connection.",True)
 
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:

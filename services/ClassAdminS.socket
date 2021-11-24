@@ -78,6 +78,7 @@ except BaseException as err:
 
 finally:
     try:
+        Json(Environment.data).update(["listClients"],[])
         eventThread.set()
         sock.close()
     except:
