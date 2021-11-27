@@ -15,12 +15,22 @@ class Client:
         )
         return True if len(list(result))>0 else False
 
-    # if the new client his ip address is in the clients list
+    # if the new client his ip address or nick is in the clients list
     def __differentHostAddress(self,ip,nick,clients):
         if clients==None:
             return True
         result = filter(lambda host: host["address"]==ip or host["nick"]==nick,clients)
         return True if len(list(result))==0 else False
+
+    # this method adds or update clients
+    # - This adds clients when these have ip address and nick new (not is in the list)
+    # - This adds clients when the clients list is empty
+    # - This update the clients when:
+    #      - The client changes the ip address and use the same nick
+    #      - The client changes the nick but the host has the same ip address
+    # Deny connection when:
+    # ---------------------
+    #  - The client change the nick but this nick is active (exist in the clients list and his status is 'CONNECTED')
 
     def registre(self,nick,status,conscent):
         clients = requests.get(f"https://classadmin.server/api/clients",headers={
@@ -49,10 +59,11 @@ class Client:
                 verify=Environment.CA
             )
 
-        # if the new client's hostname is the same, not add it
+        # if the new client's hostname is the same and is active (status CONNECTED), not add it
         elif self.__sameHostNameConnected(nick,self.address[0],"CONNECTED",clients):
             return False
-        # update client
+
+        # update the client
         else:
             requests.put(f"https://classadmin.server/api/clients?address={self.address[0]}&|nick={nick}",
                 headers={
