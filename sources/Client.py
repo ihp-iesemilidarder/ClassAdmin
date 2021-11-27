@@ -7,12 +7,20 @@ class Client:
         self.connection = connection
         self.address = address
 
-    def __sameHost(self,nick,address,status,clients):
+    # if the hostname of new client is in the list
+    def __sameHostNameConnected(self,nick,address,status,clients):
         result = filter(
             lambda host: host["nick"]==nick and host["address"]!=address and host["status"]==status,
             clients
         )
         return True if len(list(result))>0 else False
+
+    # if the new client his ip address is in the clients list
+    def __differentHostAddress(self,ip,clients):
+        if clients==None:
+            return True
+        result = filter(lambda host: host["address"]==ip,clients)
+        return True if len(list(result))==0 else False
 
     def registre(self,nick,status,conscent):
         clients = requests.get(f"https://classadmin.server/api/clients",headers={
@@ -28,7 +36,9 @@ class Client:
             connection.send("Conscent: Do you want to change the nick or nick's ip address?".encode("utf-8"))
             if conscent == None:
                 raise SystemExit"""
-        if client==None and status=="CONNECTED":
+
+        # if the clients list is empty and the host is different, this adds the new client in the list
+        if (client==None and status=="CONNECTED") or self.__differentHostAddress(self.address[0],clients):
             requests.post(f"https://classadmin.server/api/clients",
                 headers={
                     "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
@@ -38,9 +48,11 @@ class Client:
                 data=f"nick={nick}&address={self.address[0]}&port={self.address[1]}&status={status}&cli_ser_id=1",
                 verify=Environment.CA
             )
-        #elif clients[0]["address"]!=self.address[0] and clients[0]["nick"]==nick and clients[0]["status"]=="CONNECTED":
-        elif self.__sameHost(nick,self.address[0],"CONNECTED",clients):
+
+        # if the new client's hostname is the same, not add it
+        elif self.__sameHostNameConnected(nick,self.address[0],"CONNECTED",clients):
             return False
+        # update client
         else:
             requests.put(f"https://classadmin.server/api/clients?address={self.address[0]}",
                 headers={
