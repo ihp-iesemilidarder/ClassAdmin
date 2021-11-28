@@ -12,10 +12,6 @@ try:
 
     # ENVIRONMENT VARIABLES
     NICK = f"{sys.argv[1]}"
-    PORT = int(requests.get("https://classadmin.server/api/server/port",headers={
-            "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        },verify=Environment.CA).json()["result"][0]["port"])
 
     print(f"PID: {os.getpid()}")
     HandlerSignals()
@@ -27,6 +23,10 @@ try:
     print(logFile().message(f"connecting", True, "INFO"))
     while True:
         try:
+            PORT = int(requests.get("https://classadmin.server/api/server/port", headers={
+                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+            }, verify=Environment.CA).json()["result"][0]["port"])
             # connection at server (without specified ip address), so if the server changes the ip address,
             # the client will can connect.
             sockSSL.connect(("classadmin.server",PORT))
