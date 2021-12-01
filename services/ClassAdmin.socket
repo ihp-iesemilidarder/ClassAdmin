@@ -8,7 +8,7 @@ try:
     eventThread = threading.Event()
 
     if len(sys.argv)==1 or  len(sys.argv)>2:
-        raise BaseException(-5000,f"The script needs 1 argument\n\tClassAdmin.socket <nick>",True)
+        raise BaseException(-5000,f"The script needs 1 argument\\nClassAdmin.socket <nick>",True)
 
     # ENVIRONMENT VARIABLES
     NICK = f"{sys.argv[1]}"

@@ -9,6 +9,7 @@ const newOTP = document.querySelector('#pageDashboard #config .fa-plus');
 const imgQR = document.querySelector('#pageDashboard #config img');
 const buttonLogout = document.querySelector('#pageDashboard .fa-sign-out-alt');
 const buttonDownloadRecoveryCodes = document.querySelector("#pageDashboard #config form #action a");
+const containerClients = document.querySelector(".clients");
 
 const sessionLogout=()=>{
     localStorage.removeItem("sessionToken");
@@ -110,12 +111,49 @@ async function cookie(){
     },1000);
 }
 
-const keepAliveServer=()=>{
-    let thread = new Worker('/static/js/keepAliveServer.js');
-    thread.postMessage([getCookie("csrftoken")])
+const drawListClients=(list)=>{
+    containerClients.innerHTML="";
+    if(list==null) return false;
+    list.forEach(list=>{
+        containerClients.innerHTML+=`
+            <div data-id="${list.id}" class="client">
+                <div class="info">
+                    <img src="/static/images/logoUser.png" alt="logo">
+                    <span>${list.nick}</span>
+                    <span title="ip address">${list.address}</span>
+                    <span title="port">${list.port}</span>
+                </div>
+                <div class="actions">
+                    <i class="fa fa-trash" title="delete" aria-hidden="true"></i><span class="sr-only">delete</span>
+                    <i class="fa fa-user-edit" title="edit data" aria-hidden="true"></i><span class="sr-only">edit data</span>
+                    <i class="fa fa-redo" title="reboot computer" aria-hidden="true"></i><span class="sr-only">reboot computer</span>
+                    <i class="fa fa-power-off" title="shutdown computer" aria-hidden="true"></i><span class="sr-only">shutdown computer</span>
+                    <i class="fa fa-pause-circle" title="suspend computer" aria-hidden="true"></i><span class="sr-only">suspend computer</span>
+                    <i class="fa fa-video" title="start streamming" aria-hidden="true"></i><span class="sr-only">start streamming</span>
+                    <i class="fa fa-camera" title="screenshot" aria-hidden="true"></i><span class="sr-only">screenshot</span>
+                    <i class="fa fa-paper-plane" title="send message" aria-hidden="true"></i><span class="sr-only">send message</span>
+                    <i class="fa fa-wifi ${list.status}" title="status" aria-hidden="true"></i><span class="sr-only">status</span>
+                </div>
+            </div>
+        `;
+    })
+
+}
+
+const showAliveServer=()=>{
+    let thread = new Worker('/static/js/showAliveServer.js');
+    thread.postMessage([getCookie("csrftoken")]);
     thread.onmessage=(e)=>{
         document.querySelector("#pageDashboard").style=`border:15px solid #${(e.data.result)?"008037":"747373"}`;
     }
+}
+
+const updateListClients=()=>{
+    let thread = new Worker("/static/js/updateListClients.js");
+       thread.postMessage([getCookie("csrftoken")]);
+       thread.onmessage=(e)=>{
+        drawListClients(e.data.result);
+       }
 }
 
 export async function pageDashboard(){
@@ -126,5 +164,6 @@ export async function pageDashboard(){
     saveConf.addEventListener("click",await saveConfig);
     newOTP.addEventListener("click",await reloadOTP);
     buttonLogout.addEventListener("click", sessionLogout);
-    keepAliveServer()
+    showAliveServer();
+    updateListClients();
 }

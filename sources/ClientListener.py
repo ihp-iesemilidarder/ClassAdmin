@@ -47,9 +47,10 @@ class ClientListener:
                     print(data)
 
     @staticmethod
-    def handlerEvent(event,childProcesses):
+    def handlerEvent(event,pid):
         while True:
             if event.is_set():
-                print(childProcesses)
+                print(pid)
+                os.kill(pid,signal.SIGTERM)
                 break
             time.sleep(.5)

@@ -7,7 +7,6 @@ from sources.Server import Server
 from sources.notification import Notify
 try:
     # globals variables
-    listClients = []  # This storages the childs processes
     eventThread = threading.Event()
     Hosts.new("classadmin.server", getIpAddress(), Hosts.showIP("classadmin.server"))
 
@@ -15,9 +14,10 @@ try:
         if len(sys.argv)==1 or  len(sys.argv)>2:
             raise BaseException(-5000,f"The script need 1 argument\n\tClassAdminS.socket <port>",True)
         elif int(sys.argv[1])<1 or int(sys.argv[1])>65535:
-            raise BaseException(-5000, f"The port must be a number beetwen 1 and 65535", True)
+            raise BaseException(-5000, f"The port must be a range beetwen 1 and 65535", True)
     except:
-        raise BaseException(-5000, f"The port must be a number beetwen 1 and 65535", True)
+        raise BaseException(-5000, f"The argument must be a number.", True)
+
     Server.settingsChange(sys.argv)
 
     urllib3.disable_warnings()
@@ -48,11 +48,12 @@ try:
     print(logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients by port {PORT}...",True,"INFO"))
     sockSSL = context.wrap_socket(sock,server_side=True)
     event = multiprocessing.Event() # listening events of childs processes
-    #threading.Thread(target=ClientListener.handlerEvent, name="exitChildProcess", args=(event, childProcess,os.getpid())).start()
+    #eventSubprocess = multiprocessing.Event()
+    #threading.Thread(target=ClientListener.handlerEvent, name="exitChildProcess",args=(eventSubprocess, os.getpid())).start()
     while sockSSL:
         connection, address = sockSSL.accept()
-        subproccess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address, event))
-        subproccess.start()
+        subprocess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address, event))
+        subprocess.start()
         time.sleep(1)
 
 #When the service shutdown successfully
