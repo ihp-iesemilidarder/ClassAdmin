@@ -1,4 +1,4 @@
-import signal, os, threading, time, sys
+import signal, os, time, sys, multiprocessing, signal
 from sources.notification import Notify
 from sources.listClients import ListClients
 from sources.Client import Client
@@ -27,7 +27,8 @@ class ClientListener:
             finally:
                 Client(self.conn,self.addr).registre(self.nick,"DISCONNECTED",False)
                 event.set()
-
+                # This will delay 1 second to close the proccess, for this gives time at exitSubprocess method to join the client's child process with the parent process
+                time.sleep(1)
     def __listenData(self):
         while True:
             data = self.conn.recv(1024)
@@ -46,11 +47,11 @@ class ClientListener:
                 else:
                     print(data)
 
+    # This method get as argument the process child. For join it at parent process
     @staticmethod
-    def handlerEvent(event,pid):
+    def exitSubprocess(event,process):
         while True:
             if event.is_set():
-                print(pid)
-                os.kill(pid,signal.SIGTERM)
+                process.join()
                 break
             time.sleep(.5)

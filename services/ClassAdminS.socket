@@ -37,7 +37,6 @@ try:
         raise ConnectionError
     print(f"PID: {os.getpid()}")
     HandlerSignals()
-
     # This creates a ssl tunnel with the ClassAdmin's certificate and private key
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(Environment.SSL("crt"),Environment.SSL("key"))
@@ -47,12 +46,13 @@ try:
     sock.listen(CLIENTS)
     print(logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients by port {PORT}...",True,"INFO"))
     sockSSL = context.wrap_socket(sock,server_side=True)
-    event = multiprocessing.Event() # listening events of childs processes
-    #eventSubprocess = multiprocessing.Event()
-    #threading.Thread(target=ClientListener.handlerEvent, name="exitChildProcess",args=(eventSubprocess, os.getpid())).start()
     while sockSSL:
         connection, address = sockSSL.accept()
-        subprocess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address, event))
+        eventChildStop = multiprocessing.Event()
+        subprocess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address,eventChildStop))
+
+        # This thread is responsible of close the client's child process
+        threading.Thread(target=ClientListener.exitSubprocess,name="closeChildProcess",args=(eventChildStop,subprocess,)).start()
         subprocess.start()
         time.sleep(1)
 
