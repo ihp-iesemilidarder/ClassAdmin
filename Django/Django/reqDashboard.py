@@ -12,7 +12,7 @@ class ReqDashboard:
         if self.req.POST["action"] == "newOTP":
             return self.__reloadOTP()
         elif self.req.POST["action"] == "keepAlive":
-            return existProcess("ClassAdminS.soc")
+            return existProcess("ClassAdminS")
 
     #Reloads the OTP QR code
     def __reloadOTP(self):

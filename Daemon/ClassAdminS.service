@@ -1,0 +1,15 @@
+[Unit]
+Description=Run the ClassAdmin Server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1000
+WorkingDirectory=/etc/ClassAdmin/
+User=root
+ExecStart=/etc/ClassAdmin/services/ClassAdminS.socket 7788
+
+[Install]
+WantedBy=multi-user.target

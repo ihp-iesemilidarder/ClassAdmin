@@ -14,16 +14,6 @@ body > div.DISCONNECTED{
 body > div.CONNECTED{
     border:15px solid #008037!important;
 }
-#pageDashboard .icon{
-    position:fixed;
-    right: 0;
-    font-size:3em;
-    margin:2%;
-    padding:1%;
-    border-radius: 100px;
-    cursor: pointer;
-    transition:.3s;
-}
 #pageDashboard .fa-cog{
     bottom: 0;
     color: #636363;
@@ -41,6 +31,22 @@ body > div.CONNECTED{
 #pageDashboard .fa-sign-out-alt:hover{
     background: transparent;
     color:rgb(255 130 130);
+}
+#divIcons{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+}
+#divIcons i{
+    font-size: 3em;
+    margin: .3em;
+    padding: .5em;
+    border-radius: 100px;
+    cursor: pointer;
+    transition:.3s;
 }
 /*clients*/
     #pageDashboard .clients{
@@ -197,9 +203,13 @@ body > div.CONNECTED{
         grid-gap: 4em;
         margin: 2%;
     }
-    #pageDashboard .icon{
-        margin: 4%;
-        padding: 3%;
+    #divIcons i{
+        font-size: 3em;
+        margin: .2em;
+        padding: .3em;
+        border-radius: 100px;
+        cursor: pointer;
+        transition:.3s;
     }
 }
 @media (max-width:600px){
@@ -208,11 +218,6 @@ body > div.CONNECTED{
     }
     #pageDashboard #config{
         width: 100%;
-    }
-    #pageDashboard .icon{
-        margin: 6%;
-        padding: 5%;
-        font-size:2em;
     }
     #pageDashboard .client div span,#pageDashboard .client div i{
         font-size: 1em;

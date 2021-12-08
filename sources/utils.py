@@ -96,7 +96,8 @@ def systemProcess(key=None,value=None):
     return processList
 
 def existProcess(procName:str):
-    process = list(filter(lambda proc: proc.name()==procName,list(psutil.process_iter())))
+    process = list(filter(lambda proc:str("|".join(proc.cmdline())).find(procName)!=-1 or procName==proc.name(),list(psutil.process_iter())))
+    logFile().message(process)
     if len(process)>=1:
         return True
     else:
