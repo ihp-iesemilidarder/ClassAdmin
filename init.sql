@@ -10,9 +10,9 @@ CREATE TABLE server (
 	port		INT(3)		NOT NULL,
 	clients		INT(5)		NOT NULL,
 	CONSTRAINT 	server_PK 	PRIMARY KEY (id),
-	CONSTRAINT port_CK CHECK (port BETWEEN 0 AND 65535),
-	CONSTRAINT max_clients CHECK (clients BETWEEN 0 AND 999),
-	CONSTRAINT address_REGEXP CHECK (address REGEXP "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
+	CONSTRAINT ser_port_CK CHECK (port BETWEEN 0 AND 65535),
+	CONSTRAINT ser_max_clients CHECK (clients BETWEEN 0 AND 999),
+	CONSTRAINT ser_address_REGEXP CHECK (address REGEXP "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
 );
 
 CREATE TABLE clients (
@@ -23,8 +23,8 @@ CREATE TABLE clients (
 	status		VARCHAR(50)	NOT NULL,
 	cli_ser_id	INT		NOT NULL,
 	CONSTRAINT	clients_PK	PRIMARY KEY (id),
-	CONSTRAINT port_CK CHECK (port BETWEEN 0 AND 65535),
-	CONSTRAINT address_REGEXP CHECK (address REGEXP "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
+	CONSTRAINT cli_port_CK CHECK (port BETWEEN 0 AND 65535),
+	CONSTRAINT cli_address_REGEXP CHECK (address REGEXP "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
 );
 
 CREATE TABLE status (

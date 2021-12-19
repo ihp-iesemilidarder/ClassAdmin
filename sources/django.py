@@ -1,5 +1,5 @@
 import os
-import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mysql.connector,psutil
+import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mariadb,psutil
 from io import BytesIO
 # this import is inside a try because the sockets files need it, and since his path is different the import path also is diffent
 try:
@@ -23,7 +23,7 @@ def styleStatusColor():
 def getPasswordDB(sql:str,output:bool=False):
     try:
         dataDB = Json(Environment.data).print(["DB"])
-        conn = mysql.connector.connect(
+        conn = mariadb.connect(
             host=dataDB["host"],
             user=dataDB["user"],
             password=dataDB["password"],

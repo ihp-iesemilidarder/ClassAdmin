@@ -42,6 +42,9 @@ try:
     context.load_cert_chain(Environment.SSL("crt"),Environment.SSL("key"))
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #this allows address/port to be reused immediately instead before of the TIME_WAIT state
+    # https://stackoverflow.com/questions/12362542/python-server-only-one-usage-of-each-socket-address-is-normally-permitted
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(("",PORT))
     sock.listen(CLIENTS)
     print(logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients by port {PORT}...",True,"INFO"))
@@ -50,7 +53,6 @@ try:
         connection, address = sockSSL.accept()
         eventChildStop = multiprocessing.Event()
         subprocess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address,eventChildStop))
-
         # This thread is responsible of close the client's child process
         threading.Thread(target=ClientListener.exitSubprocess,name="closeChildProcess",args=(eventChildStop,subprocess,)).start()
         subprocess.start()
@@ -62,7 +64,7 @@ except (KeyboardInterrupt,SystemExit) as err:
         if err.args[0] == -5000:
             print(logFile().message(err.args[1],err.args[2],"INFO"))
     except:
-        print(logFile().message("shutdown ClassAdmin server...", True, "INFO"))
+        print(logFile().message("turning off ClassAdmin server...", True, "INFO"))
 
 #When the service has a error unexpected
 except BaseException as err:

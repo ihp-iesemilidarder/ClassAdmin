@@ -37,22 +37,24 @@ try:
     Notify("showinfo",logFile().message(f"ClassAdmin connected",True,"INFO"),True)
     sockSSL.send(f"HelloServer: {NICK}".encode("utf-8"))
     while True:
-        data = sockSSL.recv(1024)
-        text = data.decode("utf-8")
-        if text.startswith("sig."):
-            exec(f"raise {text.split('.')[1]}")
-        elif data:
-            Notify("showinfo",logFile().message(text,True,"INFO"),True)
-        elif len(data)==0:
-            raise SystemExit(-5000,"Sorry, the connection to server failed. This seems that the server closed the connection.",True)
-
+        try:
+            data = sockSSL.recv(1024)
+            text = data.decode("utf-8")
+            if text.startswith("sig."):
+                exec(f"raise {text.split('.')[1]}")
+            elif data:
+                Notify("showinfo",logFile().message(text,True,"INFO"),True)
+            elif len(data)==0:
+                raise SystemExit
+        except:
+            raise SystemExit
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
     try:
         if err.args[0]==-5000:
             Notify("showinfo", logFile().message(err.args[1], err.args[2], "INFO"), True)
     except:
-        Notify("showinfo",logFile().message("shutdown ClassAdmin...", True,"INFO"),True)
+        Notify("showinfo",logFile().message("Connection closed. turning off ClassAdmin...", True,"INFO"),True)
 
 #When the service has a error unexpected
 except BaseException as err:

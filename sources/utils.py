@@ -3,7 +3,7 @@ import os,socket,logging,json,psutil, time, platform, certifi, requests
 
 #This class storages all the paths for uses it in all the project
 class Environment:
-    hostsFile = "C:\\Windows\\System32\\drivers\\etc" if platform.system().upper()=="WINDOWS" else "/etc/hosts" if platform.system().upper()=="LINUX" else None
+    hostsFile = "C:\\Windows\\System32\\drivers\\etc\\hosts" if platform.system().upper()=="WINDOWS" else "/etc/hosts" if platform.system().upper()=="LINUX" else None
 
     @staticmethod
     def SSL(type:str):
