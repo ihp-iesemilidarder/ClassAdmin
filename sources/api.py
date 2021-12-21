@@ -1,5 +1,5 @@
 from sources.django import loginAdmin, logFile
-import sqlite3,re,mariadb
+import sqlite3,re,mysql.connector
 from django.urls import  path
 from django.http import JsonResponse, HttpResponse, QueryDict
 from django.views.decorators.csrf import csrf_exempt
@@ -131,7 +131,7 @@ class API:
                 raise Exception("You need authentication with password and otp")
             elif not loginAdmin(req.headers['password'], req.headers["otp"]):
                 raise Exception("Access denied")
-            conn = mariadb.connect(
+            conn = mysql.connector.connect(
                 host="127.0.0.1",
                 user="ClassAdmin",
                 password="12345678",
