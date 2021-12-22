@@ -37,16 +37,13 @@ try:
     Notify("showinfo",logFile().message(f"ClassAdmin connected",True,"INFO"),True)
     sockSSL.send(f"HelloServer: {NICK}".encode("utf-8"))
     while True:
-        try:
-            data = sockSSL.recv(1024)
-            text = data.decode("utf-8")
-            if text.startswith("sig."):
-                exec(f"raise {text.split('.')[1]}")
-            elif data:
-                Notify("showinfo",logFile().message(text,True,"INFO"),True)
-            elif len(data)==0:
-                raise SystemExit
-        except:
+        data = sockSSL.recv(1024)
+        text = data.decode("utf-8")
+        if text.startswith("sig."):
+            exec(f"raise {text.split('.')[1]}")
+        elif data:
+            Notify("showinfo",logFile().message(text,True,"INFO"),True)
+        elif len(data)==0:
             raise SystemExit
 #When the service shutdown successfully
 except (KeyboardInterrupt,SystemExit) as err:
