@@ -3,74 +3,96 @@ import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl,re,threadi
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, logFile, Hosts, getIpAddress
 from sources.notification import Notify
-try:
-    urllib3.disable_warnings()
-    eventThread = threading.Event()
 
-    if len(sys.argv)==1 or  len(sys.argv)>2:
-        raise BaseException(-5000,f"The script needs 1 argument\\nClassAdmin.socket <nick>",True)
-
-    # ENVIRONMENT VARIABLES
-    NICK = f"{sys.argv[1]}"
-
-    print(f"PID: {os.getpid()}")
-    HandlerSignals()
-    # This creates a ssl tunnel with the ClassAdmin's certificate and private key
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-    context.load_verify_locations(Environment.CA)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sockSSL = context.wrap_socket(sock, server_hostname="classadmin.server")
-    print(logFile().message(f"connecting", True, "INFO"))
-    while True:
+class SocketClient:
+    def __init__(self,**kwargs):
         try:
-            PORT = int(requests.get("https://classadmin.server/api/server/port", headers={
-                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-            }, verify=Environment.CA).json()["result"][0]["port"])
-            # connection at server (without specified ip address), so if the server changes the ip address,
-            # the client will can connect.
-            sockSSL.connect(("classadmin.server",PORT))
-            break
-        except:
-            pass
-        time.sleep(.5)
-    Notify("showinfo",logFile().message(f"ClassAdmin connected",True,"INFO"),True)
-    sockSSL.send(f"HelloServer: {NICK}".encode("utf-8"))
-    while True:
-        data = sockSSL.recv(1024)
-        text = data.decode("utf-8")
-        if text.startswith("sig."):
-            exec(f"raise {text.split('.')[1]}")
-        elif data:
-            Notify("showinfo",logFile().message(text,True,"INFO"),True)
-        elif len(data)==0:
-            raise SystemExit
-#When the service shutdown successfully
-except (KeyboardInterrupt,SystemExit) as err:
-    try:
-        if err.args[0]==-5000:
-            Notify("showinfo", logFile().message(err.args[1], err.args[2], "INFO"), True)
-    except:
-        Notify("showinfo",logFile().message("Connection closed. turning off ClassAdmin...", True,"INFO"),True)
+            self.args = kwargs["args"]
+            urllib3.disable_warnings()
+            eventThread = threading.Event()
+            self.__checkParams()
+            self.__globalsVars()
+            self.__SSLTunel()
+            self.__createSocket()
+            self.__handlerServer()
+            self.__body()
 
-#When the service has a error unexpected
-except BaseException as err:
-    if err.args[0]==-5000:
-        Notify("showerror",logFile().message(err.args[1],err.args[2],"ERROR"),True)
-    else:
-        type, object, traceback = sys.exc_info()
-        file = traceback.tb_frame.f_code.co_filename
-        line = traceback.tb_lineno
+        # When the service shutdown successfully
+        except (KeyboardInterrupt, SystemExit) as err:
+            try:
+                if err.args[0] == -5000:
+                    Notify("showinfo", logFile().message(err.args[1], err.args[2], "INFO"), True)
+            except:
+                Notify("showinfo", logFile().message("Connection closed. turning off ClassAdmin...", True, "INFO"), True)
 
-        if type(err)==ConnectionError:
-            Notify("showerror",logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"),True)
-        else:
-            Notify("showerror",logFile().message(f"{err} in {file}:{line}",True,"ERROR"),True)
+        # When the service has a error unexpected
+        except BaseException as err:
+            if err.args[0] == -5000:
+                Notify("showerror", logFile().message(err.args[1], err.args[2], "ERROR"), True)
+            else:
+                type, object, traceback = sys.exc_info()
+                file = traceback.tb_frame.f_code.co_filename
+                line = traceback.tb_lineno
 
-finally:
-    try:
-        eventThread.set()
-        sockSSL.send(b"sig.SystemExit")
-        sockSSL.close()
-    except:
-        None
+                if type(err) == ConnectionError:
+                    Notify("showerror", logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"),
+                           True)
+                else:
+                    Notify("showerror", logFile().message(f"{err} in {file}:{line}", True, "ERROR"), True)
+
+        finally:
+            try:
+                eventThread.set()
+                self.sockSSL.send(b"sig.SystemExit")
+                self.sockSSL.close()
+            except:
+                None
+
+
+    def __body(self):
+        Notify("showinfo", logFile().message(f"ClassAdmin connected", True, "INFO"), True)
+        self.sockSSL.send(f"HelloServer: {self.NICK}".encode("utf-8"))
+        while True:
+            data = self.sockSSL.recv(1024)
+            text = data.decode("utf-8")
+            if text.startswith("sig."):
+                exec(f"raise {text.split('.')[1]}")
+            elif data:
+                Notify("showinfo", logFile().message(text, True, "INFO"), True)
+            elif len(data) == 0:
+                raise SystemExit
+
+    def __handlerServer(self):
+        print(logFile().message(f"connecting", True, "INFO"))
+        while True:
+            try:
+                PORT = int(requests.get("https://classadmin.server/api/server/port", headers={
+                    "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                    "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+                }, verify=Environment.CA).json()["result"][0]["port"])
+                # connection at server (without specified ip address), so if the server changes the ip address,
+                # the client will can connect.
+                self.sockSSL.connect(("classadmin.server", PORT))
+                break
+            except:
+                pass
+            time.sleep(.5)
+
+    def __createSocket(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sockSSL = self.context.wrap_socket(sock, server_hostname="classadmin.server")
+
+    # This creates a ssl tunnel with the ClassAdmin's certificate and private key
+    def __SSLTunel(self):
+        self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        self.context.load_verify_locations(Environment.CA)
+
+    def __globalsVars(self):
+        self.NICK = f"{self.args[1]}"
+
+    def __checkParams(self):
+        if len(self.args) == 1 or len(self.args) > 2:
+            raise BaseException(-5000, f"The script needs 1 argument\\nClassAdmin.socket <nick>", True)
+
+if __name__=="__main__":
+    SocketClient(args=sys.argv)

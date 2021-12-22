@@ -5,84 +5,100 @@ from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, logFile, Hosts, getIpAddress, Json
 from sources.Server import Server
 from sources.notification import Notify
-try:
-    # globals variables
-    eventThread = threading.Event()
-    Hosts.new("classadmin.server", getIpAddress(), Hosts.showIP("classadmin.server"))
 
-    try:
-        if len(sys.argv)==1 or  len(sys.argv)>2:
-            raise BaseException(-5000,f"The script need 1 argument\n\tClassAdminS.socket <port>",True)
-        elif int(sys.argv[1])<1 or int(sys.argv[1])>65535:
-            raise BaseException(-5000, f"The port must be a range beetwen 1 and 65535", True)
-    except:
-        raise BaseException(-5000, f"The argument must be a number.", True)
+class SocketServer:
+    def __init__(self,**kwargs):
+        try:
+            self.args = kwargs["args"]
+            self.__checkParams()
+            Server.settingsChange(self.args)
+            urllib3.disable_warnings()
+            self.__globalsVars()
+            Hosts.new("classadmin.server", getIpAddress(), Hosts.showIP("classadmin.server"))
+            HandlerSignals()
+            self.__SSLTunnel()
+            self.__createSocket()
+        #When the service shutdown successfully
+        except (KeyboardInterrupt,SystemExit) as err:
+            try:
+                if err.args[0] == -5000:
+                    print(logFile().message(err.args[1],err.args[2],"INFO"))
+            except:
+                print(logFile().message("turning off ClassAdmin server...", True, "INFO"))
 
-    Server.settingsChange(sys.argv)
+        #When the service has a error unexpected
+        except BaseException as err:
+            if err.args[0]==-5000:
+                print(logFile().message(err.args[1],err.args[2],"ERROR"))
+            else:
+                type, object, traceback = sys.exc_info()
+                file = traceback.tb_frame.f_code.co_filename
+                line = traceback.tb_lineno
+                if type==ConnectionError:
+                    print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+                else:
+                    print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
 
-    urllib3.disable_warnings()
-    try:
-        PORT = requests.get("https://classadmin.server/api/server/port", headers={
-            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, verify=Environment.CA)
-        PORT = PORT.json()["result"][0]["port"]
+        finally:
+            try:
+                Json(Environment.data).update(["listClients"],[])
+                eventThread.set()
+                sock.close()
+            except:
+                None
 
-        CLIENTS = requests.get("https://classadmin.server/api/server/clients", headers={
-            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, verify=Environment.CA)
-        CLIENTS = CLIENTS.json()["result"][0]["clients"]
-    except:
-        raise ConnectionError
-    print(f"PID: {os.getpid()}")
-    HandlerSignals()
+    def __handlerClients(self):
+        while self.sockSSL:
+            connection, address = self.sockSSL.accept()
+            eventChildStop = multiprocessing.Event()
+            subprocess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address,eventChildStop))
+            # This thread is responsible of close the client's child process
+            threading.Thread(target=ClientListener.exitSubprocess,name="closeChildProcess",args=(eventChildStop,subprocess,)).start()
+            subprocess.start()
+            time.sleep(1)
+
+    def __createSocket(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #this allows address/port to be reused immediately instead before of the TIME_WAIT state
+        # https://stackoverflow.com/questions/12362542/python-server-only-one-usage-of-each-socket-address-is-normally-permitted
+        # #sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.bind(("",self.PORT))
+        sock.listen(self.CLIENTS)
+        print(logFile().message(f"running ClassAdmin server, listen {self.CLIENTS} clients by port {self.PORT}...",True,"INFO"))
+        self.sockSSL = self.context.wrap_socket(sock,server_side=True)
+        self.__handlerClients()
+
     # This creates a ssl tunnel with the ClassAdmin's certificate and private key
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_cert_chain(Environment.SSL("crt"),Environment.SSL("key"))
+    def __SSLTunnel(self):
+        self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        self.context.load_cert_chain(Environment.SSL("crt"),Environment.SSL("key"))
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #this allows address/port to be reused immediately instead before of the TIME_WAIT state
-    # https://stackoverflow.com/questions/12362542/python-server-only-one-usage-of-each-socket-address-is-normally-permitted
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind(("",PORT))
-    sock.listen(CLIENTS)
-    print(logFile().message(f"running ClassAdmin server, listen {CLIENTS} clients by port {PORT}...",True,"INFO"))
-    sockSSL = context.wrap_socket(sock,server_side=True)
-    while sockSSL:
-        connection, address = sockSSL.accept()
-        eventChildStop = multiprocessing.Event()
-        subprocess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address,eventChildStop))
-        # This thread is responsible of close the client's child process
-        threading.Thread(target=ClientListener.exitSubprocess,name="closeChildProcess",args=(eventChildStop,subprocess,)).start()
-        subprocess.start()
-        time.sleep(1)
+    def __checkParams(self):
+        try:
+            if len(self.args)==1 or len(self.args)>2:
+                raise BaseException(-5000,f"The script need 1 argument\n\tClassAdminS.socket <port>",True)
+            elif int(self.args[1])<1 or int(self.args[1])>65535:
+                raise BaseException(-5000, f"The port must be a range beetwen 1 and 65535", True)
+        except:
+            raise BaseException(-5000, f"The argument must be a number.", True)
 
-#When the service shutdown successfully
-except (KeyboardInterrupt,SystemExit) as err:
-    try:
-        if err.args[0] == -5000:
-            print(logFile().message(err.args[1],err.args[2],"INFO"))
-    except:
-        print(logFile().message("turning off ClassAdmin server...", True, "INFO"))
+    def __globalsVars(self):
+        self.eventThread = threading.Event()
+        self.bufferClient = []
+        try:
+            self.PORT = requests.get("https://classadmin.server/api/server/port", headers={
+                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+            }, verify=Environment.CA)
+            self.PORT = self.PORT.json()["result"][0]["port"]
 
-#When the service has a error unexpected
-except BaseException as err:
-    if err.args[0]==-5000:
-        print(logFile().message(err.args[1],err.args[2],"ERROR"))
-    else:
-        type, object, traceback = sys.exc_info()
-        file = traceback.tb_frame.f_code.co_filename
-        line = traceback.tb_lineno
-        if type==ConnectionError:
-            print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
-        else:
-            print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
+            self.CLIENTS = requests.get("https://classadmin.server/api/server/clients", headers={
+                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+            }, verify=Environment.CA)
+            self.CLIENTS = self.CLIENTS.json()["result"][0]["clients"]
+        except:
+            raise ConnectionError
 
-finally:
-    try:
-        Json(Environment.data).update(["listClients"],[])
-        eventThread.set()
-        sock.close()
-    except:
-        None
+if __name__=="__main__":
+    SocketServer(args=sys.argv)
