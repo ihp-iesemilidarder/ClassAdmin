@@ -41,7 +41,7 @@ class ClientListener:
                     self.nick = text.replace("HelloServer: ","")
                     client = Client(self.conn,self.addr).registre(self.nick, "CONNECTED", False)
                     if client==False:
-                        self.conn.send("sig.SystemExit(-5000,'The nick exists and is connected',True)".encode("utf-8"))
+                        self.conn.send(b"sig.SystemExit(-5000,'The nick exists and is connected',True)")
                     else:
                         print(logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) is connected", True, "INFO"))
                         ListClients().add(self.conn)
