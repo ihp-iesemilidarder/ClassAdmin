@@ -61,7 +61,7 @@ class SocketServer:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #this allows address/port to be reused immediately instead before of the TIME_WAIT state
         # https://stackoverflow.com/questions/12362542/python-server-only-one-usage-of-each-socket-address-is-normally-permitted
-        # #sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(("",self.PORT))
         sock.listen(self.CLIENTS)
         print(logFile().message(f"running ClassAdmin server, listen {self.CLIENTS} clients by port {self.PORT}...",True,"INFO"))
