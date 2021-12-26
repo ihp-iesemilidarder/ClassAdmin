@@ -23,7 +23,7 @@ class SocketClient:
                 if err.args[0] == -5000:
                     Notify("showinfo", logFile().message(err.args[1], err.args[2], "INFO"), True)
             except:
-                Notify("showinfo", logFile().message("Connection closed. turning off ClassAdmin...", True, "INFO"), True)
+                Notify("showinfo", logFile().message("Connection closed :(. What you have a good day", True, "INFO"), True)
 
         # When the service has a error unexpected
         except BaseException as err:

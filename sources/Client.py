@@ -33,6 +33,11 @@ class Client:
     #  - The client change the nick but this nick is active (exist in the clients list and his status is 'CONNECTED')
 
     def registre(self,nick,status,conscent):
+        maxClientsConnected = requests.get(f"https://classadmin.server/api/server/clients",headers={
+                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        },verify=Environment.CA).json()["result"][0]["clients"]
+
         clients = requests.get(f"https://classadmin.server/api/clients",headers={
                 "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
                 "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
@@ -42,10 +47,10 @@ class Client:
                 "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
                 "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
         },verify=Environment.CA).json()["result"]
-        """if client!=None and status=="CONNECTED" and conscent==True:
-            connection.send("Conscent: Do you want to change the nick or nick's ip address?".encode("utf-8"))
-            if conscent == None:
-                raise SystemExit"""
+
+        # if there are the clients maximum connected this throw a wrong
+        if clients!=None and len(list(filter(lambda cli: cli["status"]=="CONNECTED",clients))) >= maxClientsConnected:
+            return "TooManyClients"
 
         # if the clients list is empty and the host is different, this adds the new client in the list
         if (client==None and status=="CONNECTED") or self.__differentHostAddress(self.address[0],nick,clients):
@@ -61,7 +66,7 @@ class Client:
 
         # if the new client's hostname is the same and is active (status CONNECTED), not add it
         elif self.__sameHostNameConnected(nick,self.address[0],"CONNECTED",clients):
-            return False
+            return "sameUser"
 
         # update the client
         else:

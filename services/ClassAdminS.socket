@@ -16,15 +16,15 @@ class SocketServer:
             self.__globalsVars()
             Hosts.new("classadmin.server", getIpAddress(), Hosts.showIP("classadmin.server"))
             HandlerSignals()
-            self.__SSLTunnel()
             self.__createSocket()
+
         #When the service shutdown successfully
         except (KeyboardInterrupt,SystemExit) as err:
             try:
                 if err.args[0] == -5000:
                     print(logFile().message(err.args[1],err.args[2],"INFO"))
             except:
-                print(logFile().message("turning off ClassAdmin server...", True, "INFO"))
+                print(logFile().message("Good Bye. What you have a good day :)", True, "INFO"))
 
         #When the service has a error unexpected
         except BaseException as err:
@@ -35,7 +35,7 @@ class SocketServer:
                 file = traceback.tb_frame.f_code.co_filename
                 line = traceback.tb_lineno
                 if type==ConnectionError:
-                    print(logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+                    print(logFile().message(f"Connection at database failed in {file}:{line}. I am sorry", True, "ERROR"))
                 else:
                     print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
 
@@ -43,35 +43,32 @@ class SocketServer:
             try:
                 Json(Environment.data).update(["listClients"],[])
                 eventThread.set()
-                sock.close()
+                self.sock.close()
             except:
                 None
 
     def __handlerClients(self):
-        while self.sockSSL:
-            connection, address = self.sockSSL.accept()
-            eventChildStop = multiprocessing.Event()
-            subprocess = multiprocessing.Process(target=ClientListener, name="client", args=(connection, address,eventChildStop))
-            # This thread is responsible of close the client's child process
-            threading.Thread(target=ClientListener.exitSubprocess,name="closeChildProcess",args=(eventChildStop,subprocess,)).start()
-            subprocess.start()
-            time.sleep(1)
+        try:
+            while self.sock:
+                # The sock.accept() allows create a subprocess when there is a connection established
+                # IMPORTANT: I don't add SSL at socket object because else the SSLSocket object can't pickle when pass it by argument in processing.Process()
+                conn,addr = self.sock.accept()
+                eventChildStop = multiprocessing.Event()
+                subprocess = multiprocessing.Process(target=ClientListener, name="client", args=(conn,addr,eventChildStop))
+                # This thread is responsible of close the client's child process
+                threading.Thread(target=ClientListener.exitSubprocess,name="closeChildProcess",args=(eventChildStop,subprocess,)).start()
+                subprocess.start()
+                time.sleep(1)
+        except:
+            None
 
     def __createSocket(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #this allows address/port to be reused immediately instead before of the TIME_WAIT state
-        # https://stackoverflow.com/questions/12362542/python-server-only-one-usage-of-each-socket-address-is-normally-permitted
-        # sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind(("",self.PORT))
-        sock.listen(self.CLIENTS)
-        print(logFile().message(f"running ClassAdmin server, listen {self.CLIENTS} clients by port {self.PORT}...",True,"INFO"))
-        self.sockSSL = self.context.wrap_socket(sock,server_side=True)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.bind(("",self.PORT))
+        self.sock.listen(self.CLIENTS)
+        print(logFile().message(f"Good days :D. I am running ClassAdmin server, listenning {self.CLIENTS} clients by port {self.PORT}...",True,"INFO"))
+        #self.sockSSL = self.context.wrap_socket(sock,server_side=True)
         self.__handlerClients()
-
-    # This creates a ssl tunnel with the ClassAdmin's certificate and private key
-    def __SSLTunnel(self):
-        self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        self.context.load_cert_chain(Environment.SSL("crt"),Environment.SSL("key"))
 
     def __checkParams(self):
         try:
