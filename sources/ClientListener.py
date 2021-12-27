@@ -49,7 +49,7 @@ class ClientListener:
             data = self.conn.recv(1024)
             text = data.decode('utf-8')
             if text.startswith("sig."):
-                exec(f"raise {text.split('.')[1]}")
+                exec(f"raise {text.split('.',1)[1]}")
             elif data:
                 if text.startswith("HelloServer: "):
                     self.nick = text.replace("HelloServer: ","")
