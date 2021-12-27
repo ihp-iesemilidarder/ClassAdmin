@@ -6,16 +6,16 @@ from sources.notification import Notify
 
 class SocketClient:
     def __init__(self,**kwargs):
-        #try:
-        self.args = kwargs["args"]
-        urllib3.disable_warnings()
-        eventThread = threading.Event()
-        self.__checkParams()
-        self.__globalsVars()
-        self.__SSLTunel()
-        self.__createSocket()
-        self.__handlerServer()
-        self.__body()
+        try:
+            self.args = kwargs["args"]
+            urllib3.disable_warnings()
+            eventThread = threading.Event()
+            self.__checkParams()
+            self.__globalsVars()
+            self.__SSLTunel()
+            self.__createSocket()
+            self.__handlerServer()
+            self.__body()
 
         # When the service shutdown successfully
         except (KeyboardInterrupt, SystemExit) as err:
