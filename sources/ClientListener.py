@@ -31,7 +31,7 @@ class ClientListener:
                 None
             finally:
                 try:
-                    Client(self.conn,self.addr).registre(self.nick,"DISCONNECTED",False)
+                    Client(self.conn,self.addr).registre(self.nick,"DISCONNECTED")
                 except:
                     None
                 event.set()
@@ -53,7 +53,7 @@ class ClientListener:
             elif data:
                 if text.startswith("HelloServer: "):
                     self.nick = text.replace("HelloServer: ","")
-                    client = Client(self.conn,self.addr).registre(self.nick, "CONNECTED", False)
+                    client = Client(self.conn,self.addr).registre(self.nick, "CONNECTED")
                     if client=="sameUser":
                         self.conn.send("sig.SystemExit(-5000,'The nick exists and is connected :(',True)".encode("utf-8"))
                     elif client=="TooManyClients":

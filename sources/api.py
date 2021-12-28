@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 """
 ==========================API REST==========================
  SYNTAX:
-    127.0.0.1/api[/table,table1,table3,...][/column]?<key>=[>|<|>=|<=]<value>&[|]<key>=[>|<|>=|<=]<value>&LIMIT=<min>[,max]
+    127.0.0.1/api[/table,table1,table3,...][/column]?<key>[>|<|>=|<=|=]<value>[&[|]<key>[>|<|>=|<=|=]<value>&LIMIT=[<max>|<min>,<max>]]
 ============================================================
  IMPORTANT:
     For do a request you need authentication with password and OTP

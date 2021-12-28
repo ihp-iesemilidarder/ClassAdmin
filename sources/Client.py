@@ -32,16 +32,16 @@ class Client:
     # ---------------------
     #  - The client change the nick but this nick is active (exist in the clients list and his status is 'CONNECTED')
 
-    def registre(self,nick,status,conscent):
+    def registre(self,nick,status):
         maxClientsConnected = requests.get(f"https://classadmin.server/api/server/clients",headers={
                 "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
                 "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
         },verify=Environment.CA).json()["result"][0]["clients"]
 
-        clients = requests.get(f"https://classadmin.server/api/clients",headers={
-                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        },verify=Environment.CA).json()["result"]
+        clients = requests.get(f"https://classadmin.server/api/clients", headers={
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+        }, verify=Environment.CA).json()["result"]
 
         client = requests.get(f"https://classadmin.server/api/clients?address={self.address[0]}&|nick={nick}",headers={
                 "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
@@ -53,7 +53,7 @@ class Client:
             return "TooManyClients"
 
         # if the clients list is empty and the host is different, this adds the new client in the list
-        if (client==None and status=="CONNECTED") or self.__differentHostAddress(self.address[0],nick,clients):
+        if (client==None and status=="CONNECTED") or (self.__differentHostAddress(self.address[0],nick,clients) and status=="CONNECTED"):
             requests.post(f"https://classadmin.server/api/clients",
                 headers={
                     "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
@@ -70,10 +70,22 @@ class Client:
 
         # update the client
         else:
+            cLientsUpdate = requests.get(f"https://classadmin.server/api/clients?address={self.address[0]}&|nick={nick}", headers={
+            "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+            "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+            }, verify=Environment.CA).json()["result"]
+
+            # if there are more than one client, this deletes all minus one client for after update
+            if len(cLientsUpdate)>1:
+                for cli in cLientsUpdate[0:len(cLientsUpdate)-1]:
+                    requests.delete(f"https://classadmin.server/api/clients?id={cli['id']}", headers={
+                        "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                        "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
+                    }, verify=Environment.CA).json()["result"]
             requests.put(f"https://classadmin.server/api/clients?address={self.address[0]}&|nick={nick}",
                 headers={
-                    "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-                    "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                    "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
+                    "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
                     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
                 },
                 data=f"nick={nick}&address={self.address[0]}&port={self.address[1]}&status={status}&cli_ser_id=1",
