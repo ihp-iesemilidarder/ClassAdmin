@@ -17,8 +17,8 @@ class SocketClient:
             self.__handlerServer()
             self.__body()
 
-        # When the service shutdown successfully
-        except (KeyboardInterrupt, SystemExit) as err:
+        # When the service shutdown successfully or one socket error
+        except (KeyboardInterrupt, SystemExit,socket.error) as err:
                 None
 
         # When the service has a error unexpected
