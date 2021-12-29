@@ -18,6 +18,10 @@ class SocketServer:
             HandlerSignals()
             self.__createSocket()
 
+        # When the service shutdown successfully
+        except (KeyboardInterrupt, SystemExit) as err:
+                None
+
         #When the service has a error unexpected
         except BaseException as err:
             if err.args[0]==-5000:

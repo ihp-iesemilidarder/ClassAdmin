@@ -12,9 +12,14 @@ class SocketClient:
             self.__checkParams()
             self.__globalsVars()
             self.__SSLTunel()
+            HandlerSignals()
             self.__createSocket()
             self.__handlerServer()
             self.__body()
+
+        # When the service shutdown successfully
+        except (KeyboardInterrupt, SystemExit) as err:
+                None
 
         # When the service has a error unexpected
         except BaseException as err:
