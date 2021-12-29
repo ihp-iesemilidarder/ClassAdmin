@@ -9,21 +9,12 @@ class SocketClient:
         try:
             self.args = kwargs["args"]
             urllib3.disable_warnings()
-            eventThread = threading.Event()
             self.__checkParams()
             self.__globalsVars()
             self.__SSLTunel()
             self.__createSocket()
             self.__handlerServer()
             self.__body()
-
-        # When the service shutdown successfully
-        except (KeyboardInterrupt, SystemExit) as err:
-            try:
-                if err.args[0] == -5000:
-                    Notify("showinfo", logFile().message(err.args[1], err.args[2], "INFO"), True)
-            except:
-                Notify("showinfo", logFile().message("Connection closed :(. What you have a good day", True, "INFO"), True)
 
         # When the service has a error unexpected
         except BaseException as err:
@@ -41,8 +32,8 @@ class SocketClient:
                     Notify("showerror", logFile().message(f"{err} in {file}:{line}", True, "ERROR"), True)
 
         finally:
+            Notify("showinfo", logFile().message("Connection closed :(. What you have a good day", True, "INFO"), True)
             try:
-                eventThread.set()
                 self.sockSSL.send(b"sig.SystemExit")
                 self.sockSSL.close()
             except:

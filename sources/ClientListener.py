@@ -1,6 +1,5 @@
 import signal, os, time, sys, multiprocessing, signal, ssl
 from sources.notification import Notify
-from sources.listClients import ListClients
 from sources.Client import Client
 from sources.utils import logFile, Environment
 import threading
@@ -25,7 +24,6 @@ class ClientListener:
             print(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
         finally:
             try:
-                #ListClients().remove(self.conn)
                 self.conn.close()
             except:
                 None
@@ -60,7 +58,6 @@ class ClientListener:
                         self.conn.send("sig.SystemExit(-5000,'Too many clients connected. You try it more later',True)".encode("utf-8"))
                     else:
                         print(logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) is connected :)", True, "INFO"))
-                        #ListClients().add(self.conn)
                 else:
                     print(data)
 

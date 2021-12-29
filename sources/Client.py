@@ -75,7 +75,7 @@ class Client:
             "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
             }, verify=Environment.CA).json()["result"]
 
-            # if there are more than one client, this deletes all minus one client for after update
+            # if there are more than one client, this deletes all minus one client for after update it
             if len(cLientsUpdate)>1:
                 for cli in cLientsUpdate[0:len(cLientsUpdate)-1]:
                     requests.delete(f"https://classadmin.server/api/clients?id={cli['id']}", headers={
