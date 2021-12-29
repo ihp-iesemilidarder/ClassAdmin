@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl,re,threading
+import os,sys,socket,signal,platform,requests,urllib3,signal,time,ssl,re
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, logFile, Hosts, getIpAddress
 from sources.notification import Notify

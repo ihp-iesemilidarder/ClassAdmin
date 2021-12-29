@@ -2,7 +2,7 @@
 import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,multiprocessing, threading
 from sources.ClientListener import ClientListener
 from sources.handlerSignals import HandlerSignals
-from sources.utils import Environment, logFile, Hosts, getIpAddress, Json
+from sources.utils import Environment, logFile, Hosts, getIpAddress
 from sources.Server import Server
 from sources.notification import Notify
 
