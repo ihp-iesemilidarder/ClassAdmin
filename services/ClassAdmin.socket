@@ -19,6 +19,11 @@ class SocketClient:
 
         # When the service shutdown successfully or one socket error
         except (KeyboardInterrupt, SystemExit,socket.error) as err:
+            # This I use it for the TooManyClients and sameUser messages.
+            try:
+                if err.args[0] == -5000:
+                    Notify("showerror", logFile().message(err.args[1], err.args[2], "ERROR"), True)
+            except:
                 None
 
         # When the service has a error unexpected
