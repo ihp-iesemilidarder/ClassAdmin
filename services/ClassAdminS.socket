@@ -36,11 +36,11 @@ class SocketServer:
                     print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
 
         finally:
-            print(logFile().message("Good Bye. What you have a good day :)", True, "INFO"))
             try:
                 self.sock.close()
             except:
                 None
+            print(logFile().message("Good Bye. What you have a good day :)", True, "INFO"))
 
     def __handlerClients(self):
         try:
