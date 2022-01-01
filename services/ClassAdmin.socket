@@ -22,23 +22,23 @@ class SocketClient:
             # This I use it for the TooManyClients and sameUser messages.
             try:
                 if err.args[0] == -5000:
-                    Notify("showerror", logFile().message(err.args[1], err.args[2], "ERROR"), True)
+                    Notify("showerror", logFile().message(err.args[1], err.args[2], "ERROR"))
             except:
                 None
 
         # When the service has a error unexpected
         except BaseException as err:
             if err.args[0] == -5000:
-                Notify("showerror", logFile().message(err.args[1], err.args[2], "ERROR"), True)
+                Notify("showerror", logFile().message(err.args[1], err.args[2], "ERROR"))
             else:
                 type, object, traceback = sys.exc_info()
                 file = traceback.tb_frame.f_code.co_filename
                 line = traceback.tb_lineno
 
                 if type(err) == ConnectionError:
-                    Notify("showerror", logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"),True)
+                    Notify("showerror", logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
                 else:
-                    Notify("showerror", logFile().message(f"{err} in {file}:{line}", True, "ERROR"), True)
+                    Notify("showerror", logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
 
         finally:
             try:
@@ -46,10 +46,10 @@ class SocketClient:
                 self.sockSSL.close()
             except:
                 None
-            Notify("showinfo", logFile().message("Connection closed :(. What you have a good day", True, "INFO"), True)
+            Notify("showinfo", logFile().message("Connection closed :(. What you have a good day", True, "INFO"))
 
     def __body(self):
-        Notify("showinfo", logFile().message(f"ClassAdmin connected", True, "INFO"), True)
+        Notify("showinfo", logFile().message(f"ClassAdmin connected", True, "INFO"))
         self.sockSSL.send(f"HelloServer: {self.NICK}".encode("utf-8"))
         while True:
             data = self.sockSSL.recv(1024)
@@ -57,7 +57,7 @@ class SocketClient:
             if text.startswith("sig."):
                 exec(f"raise {text.split('.',1)[1]}")
             elif data:
-                Notify("showinfo", logFile().message(text, True, "INFO"), True)
+                Notify("showinfo", logFile().message(text, True, "INFO"))
             elif len(data) == 0:
                 raise SystemExit
 

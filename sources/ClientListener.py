@@ -60,6 +60,8 @@ class ClientListener:
                         print(logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) is connected :)", True, "INFO"))
                 else:
                     print(data)
+            elif len(data)==0:
+                raise SystemExit
 
     # This method get as argument the process child. For join it at parent process
     @staticmethod
