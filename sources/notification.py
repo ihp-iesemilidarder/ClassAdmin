@@ -1,13 +1,16 @@
 import os, time
-from sources.utils import Environment
-from tkinter import messagebox
+from sources.utils import Environment, Json
+from plyer import notification
 from tkinter import *
-def Notify(type:str,text:str,output=True):
-    root = Tk()
-    root.overrideredirect(1)
-    root.withdraw()
-    exec(f'messagebox.{type}("NotiClass", "{text}")')
-    root.destroy()
+def Notify(title:str,message:str,output=True):
+    if(Json(Environment.configuration).print(["notifications"])):
+        notification.notify(
+            app_name="ClassAdmin",
+            app_icon=f"{Environment.media}/images/ClassAdminLogo.ico",
+            title=title,
+            message=message
+        )
     if output:
+        text = f"{title}: {message}"
         print(text)
         return text

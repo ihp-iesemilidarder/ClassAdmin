@@ -17,6 +17,8 @@ class Environment:
     data = f"{os.environ['CLASSADMIN_HOME']}/sources/data.json"
     # <true> if <condition> else <true2> if <condition2> else None
     CA = f"{os.environ['CLASSADMIN_SSL']}/ClassAdmin.crt" if platform.system().upper()=="WINDOWS" else certifi.where() if platform.system().upper()=="LINUX" else None
+    media = f"{os.environ['CLASSADMIN_HOME']}/sources/media"
+    configuration = f"{os.environ['CLASSADMIN_HOME']}/services/ClassAdmin.conf"
 
 #This class write lines in the log file /var/log/ClassAdmin.log
 class logFile:

@@ -4,6 +4,8 @@ After=network.target
 StartLimitIntervalSec=0
 
 [Service]
+Environment="DISPLAY=:0" "XAUTHORITY=/run/user/1000/.mutter-Xwaylandauth.K4WKF1"
+EnvironmentFile=/etc/environment
 Type=simple
 Restart=always
 RestartSec=1000

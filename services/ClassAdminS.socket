@@ -25,22 +25,22 @@ class SocketServer:
         #When the service has a error unexpected
         except BaseException as err:
             if err.args[0]==-5000:
-                print(logFile().message(err.args[1],err.args[2],"ERROR"))
+                Notify("Error unexpected",logFile().message(err.args[1],err.args[2],"ERROR"))
             else:
                 type, object, traceback = sys.exc_info()
                 file = traceback.tb_frame.f_code.co_filename
                 line = traceback.tb_lineno
                 if type==ConnectionError:
-                    print(logFile().message(f"Connection at database failed in {file}:{line}. I am sorry", True, "ERROR"))
+                    Notify("Connection failed",logFile().message(f"Connection at database failed in {file}:{line}. I am sorry", True, "ERROR"))
                 else:
-                    print(logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
+                    Notify("Error unexpected",logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
 
         finally:
             try:
                 self.sock.close()
             except:
                 None
-            print(logFile().message("Good Bye. What you have a good day :)", True, "INFO"))
+            Notify("Connection closed",logFile().message("Good Bye. What you have a good day :)", True, "INFO"))
 
     def __handlerClients(self):
         try:
@@ -61,7 +61,7 @@ class SocketServer:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind(("",self.PORT))
         self.sock.listen(self.CLIENTS)
-        print(logFile().message(f"Good days :D. I am running ClassAdmin server, listenning {self.CLIENTS} clients by port {self.PORT}...",True,"INFO"))
+        Notify("Starting ClassAdmin",logFile().message(f"Good days :D. I am running ClassAdmin server, listenning {self.CLIENTS} clients by port {self.PORT}...",True,"INFO"))
         self.__handlerClients()
 
     def __checkParams(self):
