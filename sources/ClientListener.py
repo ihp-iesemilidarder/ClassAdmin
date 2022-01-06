@@ -1,8 +1,6 @@
-import signal, os, time, sys, multiprocessing, signal, ssl
-from sources.notification import Notify
+import time, sys, ssl
 from sources.Client import Client
 from sources.utils import logFile, Environment
-import threading
 
 class ClientListener:
     def __init__(self,conn,addr,event):

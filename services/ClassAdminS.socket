@@ -1,9 +1,10 @@
 #!/usr/bin/python3
-import os,sys,socket,signal,platform,requests,urllib3,signal,time,psutil,ssl,multiprocessing, threading
+import sys,socket,urllib3,time,multiprocessing, threading
 from sources.ClientListener import ClientListener
 from sources.handlerSignals import HandlerSignals
-from sources.utils import Environment, logFile, Hosts, getIpAddress
+from sources.utils import logFile, Hosts, getIpAddress
 from sources.Server import Server
+from sources.Requests import Requests
 
 class SocketServer:
     def __init__(self,**kwargs):
@@ -72,17 +73,9 @@ class SocketServer:
     def __globalsVars(self):
         self.bufferClient = []
         try:
-            self.PORT = requests.get("https://classadmin.server/api/server/port", headers={
-                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-            }, verify=Environment.CA)
-            self.PORT = self.PORT.json()["result"][0]["port"]
+            self.PORT = Requests("services", "GET", "https://classadmin.server/api/server/port").run().json()["result"][0]["port"]
 
-            self.CLIENTS = requests.get("https://classadmin.server/api/server/clients", headers={
-                "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-                "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-            }, verify=Environment.CA)
-            self.CLIENTS = self.CLIENTS.json()["result"][0]["clients"]
+            self.CLIENTS = Requests("services","GET","https://classadmin.server/api/server/clients").run().json()["result"][0]["clients"]
         except:
             raise ConnectionError
 
