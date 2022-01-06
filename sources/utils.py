@@ -111,7 +111,7 @@ class Hosts:
     def showIP(dns:str):
         file = open(Environment.hostsFile,"r")
         IP = file.read().split("\n")
-        return list(filter(lambda x: "classadmin.server" in x, IP))[0].split("\t")[0]
+        return list(filter(lambda x: dns in x, IP))[0].split("\t")[0]
 
     @staticmethod
     def new(hostname:str,ipNew:str,ipOld:str):

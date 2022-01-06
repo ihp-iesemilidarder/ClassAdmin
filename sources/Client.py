@@ -1,6 +1,6 @@
 import requests, urllib3
 from sources.utils import Environment
-from sources.notification import Notify
+#from sources.notification import Notify
 urllib3.disable_warnings()
 class Client:
     def __init__(self,connection,address):

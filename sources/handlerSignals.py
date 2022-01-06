@@ -1,4 +1,4 @@
-import os,time,signal
+import signal
 class HandlerSignals:
     def __init__(self):
         signal.signal(signal.SIGTERM,self.shutdown)

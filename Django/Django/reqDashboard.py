@@ -1,6 +1,6 @@
 import base64,binascii,os,math,sys
 import random
-from django.http import HttpResponse,JsonResponse
+#from django.http import HttpResponse,JsonResponse
 from sources.django import generateQR
 from sources.utils import Environment, logFile, Json, existProcess
 

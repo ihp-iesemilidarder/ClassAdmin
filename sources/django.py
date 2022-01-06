@@ -1,12 +1,10 @@
-import os
-import json, sqlite3,logging,hashlib,pyotp,base64,qrcode,requests,mysql.connector,psutil
+import hashlib,pyotp,base64,qrcode,mysql.connector
 from io import BytesIO
 # this import is inside a try because the sockets files need it, and since his path is different the import path also is diffent
 try:
     from Django import reqDashboard
 except:
     from Django.Django import reqDashboard
-from Django.settings import CLASSADMIN_HOME,DB_PATH
 from sources.utils import Environment, Json,logFile, existProcess
 
 #This function gets service status color

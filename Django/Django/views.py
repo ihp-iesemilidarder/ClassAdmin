@@ -1,10 +1,10 @@
-import os
-import sys,platform,urllib3,requests
-from django.shortcuts import render, redirect
+import urllib3
+from django.shortcuts import render
 from Django.reqDashboard import ReqDashboard,RecoveryCodes
-from django.http import HttpResponse,JsonResponse
+from django.http import JsonResponse
 from sources.django import generateQR, styleStatusColor, loginAdmin
 from sources.utils import Environment, Json
+from sources.Requests import Requests
 urllib3.disable_warnings()
 jsonFile = Json(Environment.data).print()
 
@@ -23,15 +23,9 @@ def pageDashboard(req):
     if req.method == "POST":
         return JsonResponse({"result":ReqDashboard(req).run()})
     else:
-        port = requests.get("https://classadmin.server/api/server/port", headers={
-            "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, verify=Environment.CA).json()["result"][0]["port"]
+        port = Requests("apache","GET","https://classadmin.server/api/server/port").run().json()["result"][0]["port"]
 
-        clients = requests.get("https://classadmin.server/api/clients", headers={
-            "password":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-            "otp":",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-        }, verify=Environment.CA).json()["result"]
+        clients = Requests("apache","GET","https://classadmin.server/api/clients").run().json()["result"]
         jsonFile["pageDashboard"].update({
             "otpQR":generateQR,
             "port":port,

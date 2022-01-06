@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-import sys,socket,requests,urllib3,time,ssl
+import sys,socket,urllib3,time,ssl
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, logFile
+from sources.Requests import Requests
 
 class SocketClient:
     def __init__(self,**kwargs):
@@ -64,10 +65,7 @@ class SocketClient:
         print(logFile().message(f"connecting", True, "INFO"))
         while True:
             try:
-                PORT = int(requests.get("https://classadmin.server/api/server/port", headers={
-                    "password": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS(",
-                    "otp": ",UPsz)ZfF~ZOh^:YH)o[4P<sF7$jS("
-                }, verify=Environment.CA).json())
+                PORT = int(Requests("services","GET","https://classadmin.server/api/server/port").run().json()["result"][0]["port"])
                 # connection at server (without specified ip address), so if the server changes the ip address,
                 # the client will can connect.
                 self.sockSSL.connect(("classadmin.server", PORT))

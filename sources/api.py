@@ -1,7 +1,7 @@
 from sources.django import loginAdmin, logFile
-import sqlite3,re,mysql.connector
+import re,mysql.connector
 from django.urls import  path
-from django.http import JsonResponse, HttpResponse, QueryDict
+from django.http import JsonResponse, QueryDict
 from django.views.decorators.csrf import csrf_exempt
 
 """

@@ -1,5 +1,4 @@
-import requests
-from sources.utils import Environment, getIpAddress, logFile
+from sources.utils import getIpAddress, logFile
 from sources.Requests import Requests
 class Server:
 
