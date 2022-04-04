@@ -112,7 +112,7 @@ class ReqDashboard:
     def uploadFiles(self,id,name,file):
         try:
             currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(currentNick["address"]).send(f"function:downloadFile('{name}','{file}')")
+            PipeClient(currentNick["address"]).send(f"function:downloadFile('{currentNick['nick']}','{name}','{file}')")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()

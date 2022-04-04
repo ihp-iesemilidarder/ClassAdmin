@@ -75,7 +75,12 @@ class EventsClient:
         return True
 
     @staticmethod
-    def downloadFile(name:str,data:str) -> bool:
-        with open(f"{Environment.transfers}/{name}","w") as file:
+    def downloadFile(nick:str,name:str,data:str) -> bool:
+        path = f"{Environment.transfers}/{nick}"
+        try:
+            os.makedirs(path)
+        except:
+            None
+        with open(f"{path}/{name}","w") as file:
             file.write(data)
         return True
