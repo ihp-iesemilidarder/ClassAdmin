@@ -1,0 +1,40 @@
+{
+    "DB": {
+        "host": "127.0.0.1",
+        "user": "ClassAdmin",
+        "password": "12345678",
+        "database": "ClassAdmin"
+    },
+    "OTP": {
+        "key": "KYU7I3OU3QBPBFDHYFXIEZUF",
+        "recoveryCodes": [
+            "546-879",
+            "057-352",
+            "034-439",
+            "529-604",
+            "293-183",
+            "205-751",
+            "120-745",
+            "609-578",
+            "650-047",
+            "963-278",
+            "583-291",
+            "781-473",
+            "015-405",
+            "456-027",
+            "198-215",
+            "157-013"
+        ]
+    },
+    "pageLogin": {
+        "title": "ClassAdmin",
+        "id": "pageLogin",
+        "nameApp": "ClassAdmin"
+    },
+    "pageDashboard": {
+        "title": "Dashboard | ClassAdmin",
+        "id": "pageDashboard",
+        "nameFileRecoveryCodes": "recoveryCodes_ClassAdmin.txt"
+    },
+    "sockClients": {}
+}

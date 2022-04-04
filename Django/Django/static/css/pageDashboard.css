@@ -1,0 +1,503 @@
+div#pageDashboard{
+    position: absolute;
+    top: 0;
+    background: transparent;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border:15px solid transparent; /*disconnect:#747373;connect: #008037;*/
+    overflow: auto;
+}
+body > div.DISCONNECTED{
+    border:15px solid #800000!important;
+}
+body > div.CONNECTED{
+    border:15px solid #008037!important;
+}
+/*buttons webapp*/
+    #pageDashboard .fa-cog{
+        bottom: 0;
+        color: #636363;
+        background: rgb(202 202 202);
+    }
+    #pageDashboard .fa-cog:hover{
+        background: transparent;
+        color:rgb(202 202 202);
+    }
+    #pageDashboard .fa-sign-out-alt{
+        bottom: 10%;
+        color: #ff0707;
+        background: rgb(255 130 130);
+    }
+    #pageDashboard .fa-sign-out-alt:hover{
+        background: transparent;
+        color:rgb(255 130 130);
+    }
+#divIcons{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+}
+#divIcons i{
+    font-size: 3em;
+    margin: .3em;
+    padding: .5em;
+    border-radius: 100px;
+    cursor: pointer;
+    transition:.3s;
+}
+/*clients*/
+    #pageDashboard .clients{
+        display: grid;
+        grid-template-columns: auto;
+        grid-gap: 2em;
+        margin: 2%;
+    }
+    #pageDashboard .client{
+        display:grid;
+        grid-template-columns: 50% auto;
+    }
+    #pageDashboard .client img{
+        width:4em;
+    }
+    #pageDashboard .client div{
+        display: flex;
+        justify-content: space-around;
+    }
+    #pageDashboard .client div span,#pageDashboard .client div i{
+        display: flex;
+        justify-items: center;
+        margin: auto;
+        font-size: 1.5em;
+    }
+    #pageDashboard .client div i:hover{
+        transform:scale(1.5);
+    }
+    #pageDashboard .client div i{
+        cursor:pointer;
+        transition:.3s;
+    }
+    .fa-trash,.fa-ban{
+        color:red;
+    }
+    .fa-user-pen{
+        color:blue;
+    }
+    .fa-redo{
+        color:orange;
+    }
+    .fa-power-off{
+        color:darkred;
+    }
+    .fa-moon{
+        color:#ffb61b;
+    }
+    .fa-camera{
+        color:gray;
+    }
+    .fa-upload{
+        color:skyblue;
+        cursor:normal;
+    }
+    .fa-bell{
+        color:#b5b500;
+        cursor:normal;
+    }
+    .fa-wifi{
+        transform:scale(1.5);
+        cursor: default!important;
+        padding: .5%;
+    }
+    #pageDashboard .client div i.DISCONNECTED{
+        color:red;
+        border: 2px solid red;
+        background: #ffa0a0;
+    }
+    #pageDashboard .client div i.CONNECTED{
+        color:green;
+        border: 2px solid green;
+        background: #bcffa0;
+    }
+/*config*/
+    #pageDashboard #config{
+        position: fixed;
+        background: #f8f8ee;
+        width: 20%;
+        right: -100%;
+        transition:.5s;
+        height: 100vh;
+        top: 0;
+        box-shadow: 1px 1px 20px rgba(0,0,0,.2);
+    }
+    #pageDashboard #config form{
+        display:flex;
+        flex-direction:column;
+        margin:5%;
+    }
+    #pageDashboard #config form .input{
+        margin:5% 0;
+        background:transparent;
+        border:none;
+        padding:0 2%;
+        border-bottom:1px solid rgba(0,0,0);
+        font-size:1.2em;
+        outline:none;
+    }
+    #pageDashboard #config .fa-close{
+        position: absolute;
+        font-size: 2em;
+        margin: 2% 4%;
+        right: 0;
+        color: rgba(0,0,0,.2);
+        cursor: pointer;
+    }
+    #pageDashboard #config #actions{
+        display: flex;
+        align-content: space-around;
+    }
+    #pageDashboard #config i,#pageDashboard #config a{
+        font-size:1.5em;
+        margin:5%;
+        cursor:pointer;
+        color:black;
+    }
+    #pageDashboard #config div#send {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        text-align: center;
+        bottom: 2%;
+    }
+    #pageDashboard #config input[type="submit"],#pageDashboard #config input[type="button"]{
+        background:gray;
+        color:white;
+        border-radius:10px;
+        font-size:1.5em;
+        padding:1%;
+        cursor:pointer;
+        border: none;
+        width: 90%;
+    }
+    #pageDashboard #config #saveUserNotification{
+        width:100%;
+        font-size:1em;
+    }
+    #pageDashboard #config .fa-plus{
+        color: green;
+        background: lime;
+        padding: 3%;
+        border-radius: 100px;
+    }
+    #pageDashboard #config .fa-download{
+        color: darkorange;
+        padding: 3%;
+    }
+    #pageDashboard #notificationDiv{
+        display: grid;
+        grid-template-columns: auto auto;
+        margin: 5% 0;
+        cursor:pointer;
+    }
+    #pageDashboard #notificationDiv *{
+        cursor:pointer;
+    }
+    #pageDashboard #notificationDiv input{
+        display: none;
+    }
+    #pageDashboard #notificationDiv label:after{
+        transition:.3s;
+        content:"";
+        background: transparent;
+        padding: 1px 11px;
+        height: 2%;
+        border: 2px solid #858583;
+        border-radius: 100px;
+        right: 13%;
+        position: absolute;
+    }
+
+    @keyframes animation-checkbox-start{
+        0%{
+            background:transparent;
+            transform:scale(1);
+        }
+        50%{
+            background:transparent;
+            transform:scale(0);
+        }
+        100%{
+            transform:scale(1);
+        }
+    }
+
+    @keyframes animation-checkbox-finish{
+        0%{
+            background:#858583;
+        }
+        50%{
+            background:#858583;
+            transform:rotateY(90deg);
+        }
+        100%{
+            background:transparent;
+            transform:ratateY(90deg);
+        }
+    }
+
+    #pageDashboard #notificationDiv input:checked + label:after{
+        animation:animation-checkbox-start;
+        animation-duration:.5s;
+        background: #858583;
+    }
+    #pageDashboard #notificationDiv input:not(:checked) + label:after{
+        animation:animation-checkbox-finish;
+        animation-duration:.2s;
+        background: transparent;
+    }
+    #pageDashboard #notificationUser{
+        display:grid;
+    }
+
+/* send alert popup */
+    #pageDashboard div#formNotification{ display:none; }
+    #pageDashboard div#formEditUser{ display:none; }
+    #pageDashboard div#formNotification, #pageDashboard div#formEditUser{
+        background: #f8f8ee;
+        border-radius: 10px;
+        position: fixed;
+        box-shadow: 1px 1px 10px rgba(0,0,0,.3);
+        left: 0;
+        right: 0;
+        margin: 0 30%;
+    }
+    #pageDashboard div#formNotification i.fa-circle-xmark, #pageDashboard div#formEditUser i.fa-circle-xmark{
+        font-size: 1.5em;
+        color:red;
+        position:absolute;
+        right: -13px;
+        top: -13px;
+        background: white;
+        border-radius: 100%;
+        box-shadow: 1px 1px 10px rgb(0 0 0 / 50%);
+        cursor: pointer;
+    }
+    #pageDashboard div#formNotification form, #pageDashboard div#formEditUser form{
+        margin:5%;
+        display: flex;
+        flex-direction: column;
+    }
+    #pageDashboard div#formNotification form > input,#pageDashboard div#formNotification form > select,#pageDashboard div#formNotification form > textarea,
+    #pageDashboard div#formEditUser form > input{
+        margin:1% 0;
+        padding:1%;
+        font-size:1em;
+        border:none;
+        border-bottom:1px solid black;
+        background:rgba(0,0,0,.1);
+        border-radius:5px 5px 0 0;
+        outline:none;
+        transition:.3s;
+    }
+    #pageDashboard div#formNotification form > input:focus,#pageDashboard div#formNotification form > select:focus,#pageDashboard div#formNotification form > textarea:focus,
+    #pageDashboard div#formEditUsr form > input:focus{
+        border-bottom:1px solid red;
+    }
+    #pageDashboard div#formNotification form div,#pageDashboard div#formEditUser form div{
+        display:flex;
+        justify-content: space-around;
+    }
+    #pageDashboard div#formNotification form div *,#pageDashboard div#formEditUser form div *{
+        padding:1% 10%;
+        cursor:pointer;
+        border:1px solid transparent;
+        background:rgba(0,0,0,.1);
+        border-radius:5px;
+        transition:.3s;
+    }
+    #pageDashboard div#formNotification form div *:hover,#pageDashboard div#formEditUser form div *:hover{
+        background:transparent;
+        border:1px solid black;
+    }
+
+    /*upload file*/
+        #pageDashboard div#containerUploadFile{
+            position:fixed;
+            left:0;
+            right:0;
+            bottom:0;
+            top:0;
+            background:rgba(0,0,0,.5);
+            align-items: center;
+            display: none;
+            justify-content: center;
+            font-size: 4em;
+            color: rgba(255,255,255,.5);
+            cursor: pointer;
+            border: 5px dashed;
+            transition:.3s;
+            margin: 5%;
+        }
+        #pageDashboard div#containerUploadFile span#extensions{
+            font-size: 30%;
+            color: rgb(0 53 255 / 80%);
+            font-weight: 100;
+            position: absolute;
+            bottom: -4%;
+            background: #f8f8ee;
+            padding: 1%;
+            border-radius: 50%;
+        }
+        #pageDashboard div#containerUploadFile i.fa-circle-xmark{
+            color:#ea7f7f;
+            border-radius:100%;
+            background:red;
+            position:fixed;
+            right:0;
+            top:0;
+            margin:3%;
+            z-index: 100;
+        }
+        #pageDashboard div#containerUploadFile > div > div{
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #pageDashboard div#containerUploadFile #preview{
+            position: absolute;
+            display: flex;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: 0;
+        }
+        #pageDashboard div#containerUploadFile > div > .file-container{
+            font-size: .3em;
+            display: inline;
+            width: 5%;
+            position:relative;
+        }
+        #pageDashboard div#containerUploadFile > div > .file-container img{
+            width: 100%;
+        }
+        #pageDashboard div#containerUploadFile > div > .file-container .delete-file{
+            position: absolute;
+            z-index: 100;
+            right: 0;
+            top: 0;
+            transform:scale(1.5);
+        }
+        #pageDashboard div#containerUploadFile > div > .file-container img+ div{
+            text-align:center;
+            color:black;
+            background: white;
+            border-radius: 10px;
+            padding: 5%;
+            word-break: break-all;
+        }
+        #pageDashboard div#containerUploadFile h2{
+            font-size:.5em;
+            margin: 2% 0;
+        }
+        #pageDashboard div#containerUploadFile.active{
+            background:rgba(89, 166, 245,.5);
+            border: 5px dashed rgba(255,255,255,.8);
+            color: rgba(255,255,255,.8);
+        }
+        .file-container{
+            padding: 10px;
+        }
+        #preview{
+            margin-top:10px;
+        }
+        .status-text{
+            padding:0 10px;
+        }
+        .success{
+            color:#52ad5a;
+        }
+        .failure{
+            color:#ff0000;
+        }
+        #pageDashboard div#containerUploadFile span#extensions:hover:before{
+            content: "images: .ico, .jpe, .jpg, .jpeg, .png, .gif, .bmp, .ico, .tif, .tiff\Avideo: .mp2, .mpeg, .mpe .avi, .wmv, .mov, .moov, .mp4, .mkv, .flv, .mpg, .m2v, .m1v\A audio: .ogg, .wav, .mp3, .mp2\A documents: .pdf, Microsoft Office, .odt, .odp, .ods, .ppt, .pptx, .vds, .txt";
+            position:absolute;
+            transform: translateY(-8em) translateX(-40%);
+            background:#f8f8ee;
+            border-radius:10px;
+            box-shadow:1px 1px 5px rgba(0,0,0,.5);
+            padding: 10%;
+            font-size:80%;
+            color:black;
+            white-space: pre;
+        }
+
+@media (max-width:768px){
+    #pageDashboard div#formNotification,#pageDashboard div#formEditUser{
+        margin: 5%;
+    }
+    #pageDashboard .fa-sign-out-alt{
+        bottom: 12%;
+    }
+    #pageDashboard #config{
+        width: 50%;
+    }
+    #pageDashboard .client{
+        grid-template-columns: auto;
+    }
+    #pageDashboard .clients{
+        display: grid;
+        grid-template-columns: auto;
+        grid-gap: 4em;
+        margin: 2%;
+    }
+    #divIcons i{
+        font-size: 3em;
+        margin: .2em;
+        padding: .3em;
+        border-radius: 100px;
+        cursor: pointer;
+        transition:.3s;
+    }
+    #pageDashboard #notificationDiv label:after{
+        padding: 0 10px;
+    }
+    #pageDashboard div#containerUploadFile > div > .file-container{
+        width: 20%!important;
+    }
+    #pageDashboard div#containerUploadFile span#extensions{
+        font-size: 30%;
+        color: rgb(0 53 255 / 80%);
+        font-weight: 100;
+        position: absolute;
+        bottom: -2%;
+        background: #f8f8ee;
+        padding: 1%;
+        border-radius: 50%;
+    }
+}
+@media (max-width:600px){
+    #pageDashboard .fa-sign-out-alt{
+        bottom: 10%;
+    }
+    #pageDashboard #config{
+        width: 100%;
+    }
+    #pageDashboard .client div span,#pageDashboard .client div i{
+        font-size: 1em;
+    }
+    #pageDashboard .client img{
+        width:2em;
+    }
+    #pageDashboard #config img{
+        width:50%;
+        margin:auto;
+    }
+    #pageDashboard #notificationDiv label:after{
+        padding: 3px 13px;
+    }
+}

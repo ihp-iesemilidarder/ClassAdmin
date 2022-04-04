@@ -1,0 +1,17 @@
+[Unit]
+Description=Run the ClassAdmin Client
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Environment="DISPLAY=:0" "XAUTHORITY=/run/user/1000/ICEauthority"
+EnvironmentFile=/etc/environment
+Type=simple
+Restart=always
+RestartSec=5
+WorkingDirectory=/etc/ClassAdmin/
+User=root
+ExecStart=/etc/ClassAdmin/services/ClassAdmin.socket PC1
+
+[Install]
+WantedBy=multi-user.target

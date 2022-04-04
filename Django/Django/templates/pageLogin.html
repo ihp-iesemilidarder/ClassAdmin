@@ -1,0 +1,13 @@
+{% extends "src/base.html" %}
+{% block content %}
+    <h1>{{nameApp}}</h1>
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <input type="password" name="password" placeholder="password">
+        <input type="password" id="twoFA" name="otp" placeholder="code OTP">
+        <div id="checkbox">
+            <input type="checkbox" id="checkRecoveryCodes">
+            <label for="checkRecoveryCodes">Access with recovery codes</label>
+        </div>
+        <input type="button" value="Entrar">{% csrf_token %}
+    </form>
+{% endblock %}

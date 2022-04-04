@@ -1,0 +1,105 @@
+{% extends "src/base.html" %}
+{% load static %}
+{% block content %}
+    <script>
+        let checkNotification = {{checkNotification}};
+    </script>
+    <div class="clients">
+        {% for client in clients %}
+            <div data-id="{{client.id}}" data-ip="{{client.address}}" data-port="{{client.port}}" class="client">
+                <div class="info">
+                    <img src="{% static 'images/logoUser.png' %}" alt="logo">
+                    <span class="nick">{{client.nick}}</span>
+                    <span title="ip address">{{client.address}}</span>
+                    <span title="port">{{client.port}}</span>
+                </div>
+                <div class="actions">
+                    <i class="fa fa-trash" title="delete"></i>
+                    <i class="fa fa-user-pen" title="edit nick"></i>
+                    <i class="fa fa-redo" title="reboot computer"></i>
+                    <i class="fa fa-power-off" title="shutdown computer"></i>
+                    <i class="fa fa-moon" title="suspend computer"></i>
+                    <i class="fa fa-ban" title="deny applications"></i>
+                    <i class="fa fa-camera" title="screenshot"></i>
+                    <i class="fa fa-bell" title="send alert" class="send-alert"></i>
+                    <i class="fa fa-upload" title="upload file" class="send-message"></i>
+                    <i class="fa fa-wifi {{client.status}}" title="status"></i>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div id="divIcons">
+        <i class="fa fa-sign-out-alt"></i>
+        <i class="fa fa-cog"></i>
+    </div>
+    <div id="config">
+        <i class="fa fa-close"></i>
+        <form action="" method="POST">
+            <input type="password" name="currentPassword" placeholder="current password" class="input">
+            <input type="password" name="newPassword" placeholder="new password" class="input">
+            <input type="password" name="againNewPassword" placeholder="repeat new password" class="input">
+            <input type="number" name="port" min="1024" max="65535" placeholder="new port" class="input">
+            <small id="currentPort">Current port <span>{{port}}</span></small>
+            <div id="notificationDiv">
+                <input type="checkbox" id="notification" name="notification">
+                <label for="notification">Notificaciones</label>
+            </div>
+            <div id="notificationUser">
+                <input type="text" name="userNotification" placeholder="run notification as user..." class="input">
+                <input type="button" value="Save notifications user" id="saveUserNotification">
+            </div>
+            <small id="currentUserNotification">The notification run as user <span>{{userNotification}}</span></small>
+            <small><font color="red">* The notifications settings will be applied at restart the service</font></small>
+            <img src="{{otpQR}}" alt="otpQR">
+            <div id="actions">
+                <i class="fa fa-plus" title="reload new OTP"></i>
+                <a class="fa fa-download" href="{{URIRecoveryCodes}}" download="{{nameFileRecoveryCodes}}" title="Download recovery codes"></a>
+            </div>
+            <div id="send"><input type="submit" value="save"></div>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div id="formNotification">
+        <i class="fas fa-circle-xmark"></i>
+        <form method="POST">
+            <span>Client: <span></span></span>
+            <select name="type" id="type">
+                <option value="" selected disabled>-- alert type --</option>
+                <option value="notification">notification</option>
+                <option value="error">error</option>
+                <option value="info">information</option>
+                <option value="warning">warning</option>
+            </select>
+            <input type="text" name="title" id="title" placeholder="type a title">
+            <textarea name="description" id="description" placeholder="type a description" maxlength="120"></textarea>
+            <div>
+                <input type="button" id="buttonSendAlert" value="send alert">
+                <input type="reset" value="empty form">
+            </div>
+        </form>
+    </div>
+    <div id="formEditUser">
+        <i class="fas fa-circle-xmark"></i>
+        <form method="POST">
+            <input type="text" name="nick" id="nick" placeholder="type a nick">
+            <div>
+                <input type="button" id="buttonEditClient" value="edit client">
+                <input type="reset" value="empty form">
+            </div>
+        </form>
+    </div>
+    <div id="containerUploadFile">
+        <i class="fa fa-circle-xmark"></i>
+        <div>
+            <div class="text">
+                <i class="fa fa fa-file-circle-plus"></i>
+                <h2>Drag and drop the files here</h2>
+                <span id="extensions">extensions</span>
+                <input type="file" id="uploadFile" hidden multiple/>
+            </div>
+        </div>
+        <div id="preview">
+
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,75 @@
+import time, sys, ssl
+from sources.Client import Client
+from sources.utils import logFile, Environment, Notify
+
+class ClientListener:
+    def __init__(self,conn,addr,event):
+        try:
+            # Get the connection's socket object and I in this connection add secure traffic encrypted with SSL thanks to object SSLSocket of socket module
+            self.addr = addr
+            self.conn = self.__SSLTunnel(conn)
+            self.nick = ""
+            self.__listenData()
+        except (KeyboardInterrupt,SystemExit):
+            try:
+                Notify(f"{self.nick} left",logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) left :(", True, "INFO"))
+            except:
+                None
+        except BaseException as err:
+            print(err)
+            if err.errno == 104:
+                Notify(f"{self.nick} left unexpected",logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) left unexpected :(", True, "INFO"))
+            else:
+                type, object, traceback = sys.exc_info()
+                file = traceback.tb_frame.f_code.co_filename
+                line = traceback.tb_lineno
+                Notify("Error",logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+        finally:
+            try:
+                self.conn.close()
+            except:
+                None
+            finally:
+                try:
+                    Client(self.conn,self.addr).registre(self.nick,"DISCONNECTED")
+                except:
+                    None
+                event.set()
+                # This will delay 1 second to close the proccess, for this gives time at exitSubprocess method to join the client's child process with the parent process
+                time.sleep(1)
+
+    # This creates a ssl tunnel with the ClassAdmin's certificate and private key
+    def __SSLTunnel(self,sock):
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(Environment.SSL("crt"),Environment.SSL("key"))
+        return context.wrap_socket(sock,server_side=True)
+
+    def __listenData(self):
+        while True:
+            data = self.conn.recv(1024)
+            text = data.decode('utf-8')
+            if text.startswith("sig."):
+                exec(f"raise {text.split('.',1)[1]}")
+            elif data:
+                if text.startswith("HelloServer: "):
+                    self.nick = text.replace("HelloServer: ","")
+                    client = Client(self.conn,self.addr).registre(self.nick, "CONNECTED")
+                    if client=="sameUser":
+                        self.conn.send("sig.SystemExit(-5000,'The nick exists and is connected :(',True)".encode("utf-8"))
+                    elif client=="TooManyClients":
+                        self.conn.send("sig.SystemExit(-5000,'Too many clients connected. You try it more later',True)".encode("utf-8"))
+                    else:
+                        Notify(f"{self.nick} connected",logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) is connected :)", True, "INFO"))
+                else:
+                    print(data)
+            elif len(data)==0:
+                raise SystemExit
+
+    # This method get as argument the process child. For join it at parent process
+    @staticmethod
+    def exitSubprocess(event,process):
+        while True:
+            if event.is_set():
+                process.join()
+                break
+            time.sleep(.5)
