@@ -10,6 +10,7 @@ class Environment:
             return f"{os.environ['CLASSADMIN_SSL']}/ClassAdmin.{type}"
 
     log = f"{os.environ['CLASSADMIN_LOG']}"
+    transfers = f"{os.environ['CLASSADMIN_HOME']}/transfers"
     scripts = f"{os.environ['CLASSADMIN_HOME']}/sources/scripts"
     data = f"{os.environ['CLASSADMIN_HOME']}/sources/data.json"
     # <true> if <condition> else <true2> if <condition2> else None

@@ -73,3 +73,9 @@ class EventsClient:
                 architecture = platform.architecture()[0]
                 os.system(f"toast{architecture.replace('bit', '')} --title \"{title}\" --message \"{description}\" --icon \"{Environment.media}/images/{tipe}.png\"")
         return True
+
+    @staticmethod
+    def downloadFile(name:str,data:str) -> bool:
+        with open(f"{Environment.transfers}/{name}","w") as file:
+            file.write(data)
+        return True

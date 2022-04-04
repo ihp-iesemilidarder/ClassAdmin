@@ -109,9 +109,10 @@ class ReqDashboard:
             logFile().message(f"{err} in {file}:{line}")
             return False
 
-    def uploadFiles(self,id,file):
+    def uploadFiles(self,id,name,file):
         try:
-            logFile().message(f"file id: {id} {file}",False,"INFO")
+            currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            PipeClient(currentNick["address"]).send(f"function:downloadFile('{name}','{file}')")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -159,8 +160,8 @@ class EventsDashboard(ReqDashboard):
             id,tipe,title,description = self.req.POST["id"],self.req.POST["type"],self.req.POST["title"],self.req.POST["description"]
             return super().sendAlert(id,tipe,title,description)
         elif self.req.POST["action"] == "uploadFiles":
-            id,file = self.req.POST["id"],self.req.POST["file"]
-            return super().uploadFiles(id,file)
+            id,name,file = self.req.POST["id"],self.req.POST["name"],self.req.POST["file"]
+            return super().uploadFiles(id,name,file)
 
     def __notifications(self):
         try:

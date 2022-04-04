@@ -310,11 +310,11 @@ const drop=(e)=>{
     containerUploadFiles.querySelector("h2").textContent = "Drag and drop the files here";
 }
 
-const postFile=async(id,file,name)=>{
+const postFile=async(id,file,name,idFile)=>{
     try{
         let request = await fetch(".",{
             method:"POST",
-            body: `action=uploadFiles&id=${id}&idFile=${name}&file=${file}`,
+            body: `action=uploadFiles&id=${id}&name=${name}&idFile=${idFile}&file=${file}`,
             headers:{
                 "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
                 "X-CSRFToken":getCookie("csrftoken")
@@ -323,7 +323,6 @@ const postFile=async(id,file,name)=>{
         let data = await request.text();
         document.querySelector(`#${name} .status`).innerHTML="<span class='success'>success</span>";
     }catch(error){
-        console.log(error)
         document.querySelector(`#${name} .status`).innerHTML="<span class='failure'>failed</span>";
     }
 }
@@ -348,7 +347,6 @@ const processFile=(id,file)=>{
         "application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation",
         "text/plain"
     ];
-    console.log(docType)
     if(validExtensions.includes(docType)){
         const fileReader = new FileReader()
         let fileUrl;
@@ -386,7 +384,7 @@ const processFile=(id,file)=>{
                 </div>
             `;
             containerUploadFiles.querySelector("#preview").innerHTML+=img
-            postFile(id,fileUrl,name);
+            postFile(id,fileUrl,file.name,name);
         });
         fileReader.readAsDataURL(file);
     }else{
