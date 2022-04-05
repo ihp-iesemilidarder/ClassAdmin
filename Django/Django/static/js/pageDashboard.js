@@ -321,9 +321,10 @@ const postFile=async(id,file,name,idFile)=>{
             }
         });
         let data = await request.text();
-        document.querySelector(`#${name} .status`).innerHTML="<span class='success'>success</span>";
+        document.querySelector(`#${idFile} .status`).innerHTML="<span class='success'>success</span>";
     }catch(error){
-        document.querySelector(`#${name} .status`).innerHTML="<span class='failure'>failed</span>";
+        console.log(error)
+        document.querySelector(`#${idFile} .status`).innerHTML="<span class='failure'>failed</span>";
     }
 }
 

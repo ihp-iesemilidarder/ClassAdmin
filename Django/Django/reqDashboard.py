@@ -1,4 +1,6 @@
 import base64,binascii,os,math,sys, json, random, platform
+import time
+
 from sources.django import generateQR
 from sources.pipeClient import PipeClient
 from sources.utils import Environment, logFile, Json, existProcess
@@ -112,7 +114,12 @@ class ReqDashboard:
     def uploadFiles(self,id,name,file):
         try:
             currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(currentNick["address"]).send(f"function:downloadFile('{currentNick['nick']}','{name}','{file}')")
+            PipeClient(str(currentNick["address"])).send(f"function:downloadFile('{currentNick['nick']}','{name}')")
+            n = 100
+            chunks = [bytes(file[i:i + n]) for i in range(0, len(file), n)]
+            for part in chunks:
+                PipeClient(str(currentNick["address"])).send(part)
+                time.sleep(3)
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()

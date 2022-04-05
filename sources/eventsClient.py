@@ -3,14 +3,16 @@ import platform,subprocess,time,os
 
 from sources.utils import logFile, Notify, Environment, Json
 class EventsClient:
+    connection = None
     def __init__(self):
         pass
 
-    def run(self,message):
+    def run(self,message,conn):
         # Very IMPORTANT that you DOESN'T add a space after of the colons (:)
         # A example of message received:
         # text:this is comment.
         # function:functionName(arg1,arg2,...)
+        connection = conn
         key,value = message.split(":",1)
         if key == "function":
             return exec(f"EventsClient.{value}")
@@ -75,12 +77,16 @@ class EventsClient:
         return True
 
     @staticmethod
-    def downloadFile(nick:str,name:str,data:str) -> bool:
+    def downloadFile(nick:str,name:str) -> bool:
         path = f"{Environment.transfers}/{nick}"
+        logFile().message(path)
         try:
             os.makedirs(path)
         except:
             None
-        with open(f"{path}/{name}","w") as file:
-            file.write(data)
+        with open(f"{path}/{name}","wb") as file:
+            while EventsClient.connection:
+                data = EventsClient.connection.recv(1073741824) #1GB
+                file.write(data)
+        Notify(f"file transfers with {nick}",f"the client {nick} shared you a file: {name}",False)
         return True

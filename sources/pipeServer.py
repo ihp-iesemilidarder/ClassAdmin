@@ -37,8 +37,10 @@ class PipeServer:
         while self.conn:
             data = self.conn.recv(1024)
             text = data.decode('utf-8')
+            logFile().message(data)
+            logFile().message(text)
             if len(data)>0:
-                EventsClient().run(text)
+                EventsClient().run(text,self.conn)
                 self.conn.close()
                 break
             elif len(data)==0:
