@@ -256,7 +256,7 @@ function showUploadBox(node){
 
 export async function eventsClientsList(e){
     let node = e.target;
-    if(node.classList.contains("fa-user-edit")){
+    if(node.classList.contains("fa-user-pen")){
         showFormEdit(node);
     }else if(node.classList.contains("fa-power-off")){
         shutdownComputer(node)
@@ -314,7 +314,7 @@ const postFile=async(id,file,name,idFile)=>{
     try{
         let request = await fetch(".",{
             method:"POST",
-            body: `action=uploadFiles&id=${id}&name=${name}&idFile=${idFile}&file=${file}`,
+            body: `action=uploadFiles&id=${id}&name=${name}&idFile=${idFile}&file=${file.path}`,
             headers:{
                 "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
                 "X-CSRFToken":getCookie("csrftoken")
