@@ -11,8 +11,6 @@ class SocketClient:
             self.__comunicationServer()
             self.args = kwargs["args"]
             urllib3.disable_warnings()
-            self.__checkParams()
-            self.__globalsVars()
             self.__SSLTunel()
             self.__createSocket()
             self.__handlerServer()
@@ -60,7 +58,7 @@ class SocketClient:
 
     def __body(self):
         Notify("Connected sucessfully", logFile().message(f"ClassAdmin connected", True, "INFO"))
-        self.sockSSL.send(f"HelloServer: {self.NICK}".encode("utf-8"))
+        self.sockSSL.send(f"HelloServer: {socket.gethostname()}".encode("utf-8"))
         while True:
             data = self.sockSSL.recv(1024)
             text = data.decode("utf-8")
@@ -107,13 +105,6 @@ class SocketClient:
     def __SSLTunel(self):
         self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         self.context.load_verify_locations(Environment.CA)
-
-    def __globalsVars(self):
-        self.NICK = f"{self.args[1]}"
-
-    def __checkParams(self):
-        if len(self.args) == 1 or len(self.args) > 2:
-            raise BaseException(-5000, f"The script needs 1 argument\\nClassAdmin.socket <nick>", True)
 
 
 if __name__ == "__main__":

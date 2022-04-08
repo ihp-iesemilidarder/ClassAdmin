@@ -54,12 +54,12 @@ class EventsClient:
             return True
 
     @staticmethod
-    def editNickName(currentNick:str,newNick:str) -> bool:
+    def editNickName(newNick:str) -> bool:
         if platform.system().upper() == "LINUX":
-            subprocess.run([f"{Environment.scripts}/Linux/editNickName.sh",currentNick,newNick,"&"])
+            subprocess.run([f"{Environment.scripts}/Linux/editHostName.sh",newNick,"&"])
             return True
         elif platform.system().upper() == "WINDOWS":
-            subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/editNickName.ps1' -newNickName {newNick}"])
+            subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/editHostName.ps1' -newHostName {newNick}"])
             return True
 
     @staticmethod

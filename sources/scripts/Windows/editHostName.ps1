@@ -1,5 +1,5 @@
 Param(
-    [String] $newNickName
+    [String] $newHostname
 )
 if(!$newNickName){
     Write-Host '[!]' -ForegroundColor Red -NoNewline
@@ -7,7 +7,7 @@ if(!$newNickName){
     Write-Host '    editNickName.ps1 -newNickName <name>'
     exit
 }
-Write-Host "Replacing the user $currentUser by $newUser " -NoNewline
+Write-Host "Replacing the user $currentHostname by $newNickName " -NoNewline
 nssm set ClassAdmin AppParameters "ClassAdmin.socket $newNickName"
 Write-Host "OK" -ForegroundColor Green
 timeout 3

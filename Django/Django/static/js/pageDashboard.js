@@ -154,7 +154,7 @@ const drawListClients=(list)=>{
                 </div>
                 <div class="actions">
                     <i class="fa fa-trash" title="delete" aria-hidden="true"></i><span class="sr-only">delete</span>
-                    <i class="fa fa-user-pen" title="edit nick" aria-hidden="true"></i>
+                    <i class="fa fa-user-pen" title="edit hostname" aria-hidden="true"></i>
                     <i class="fa fa-redo" title="reboot computer" aria-hidden="true"></i>
                     <i class="fa fa-power-off" title="shutdown computer" aria-hidden="true"></i>
                     <i class="fa fa-moon" title="suspend computer" aria-hidden="true"></i>

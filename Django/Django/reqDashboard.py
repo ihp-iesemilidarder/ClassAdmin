@@ -90,7 +90,7 @@ class ReqDashboard:
     def editUser(self,id,nick):
         try:
             currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick['ipaddress'])).send(f"function:editNickName('{currentNick['nick']}','{nick}')")
+            PipeClient(str(currentNick['ipaddress'])).send(f"function:editNickName('{nick}')")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()

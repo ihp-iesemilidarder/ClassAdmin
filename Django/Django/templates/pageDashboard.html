@@ -9,7 +9,7 @@
             <div data-id="{{client.id}}" data-ip="{{client.ipaddress}}" data-port="{{client.port}}" class="client">
                 <div class="info">
                     <img src="{% static 'images/logoUser.png' %}" alt="logo">
-                    <span class="hostname">{{client.hostname}}</span>
+                    <span class="nick">{{client.nick}}</span>
                     <span title="ip address">{{client.ipaddress}}</span>
                     <span title="port">{{client.port}}</span>
                 </div>
@@ -82,7 +82,7 @@
     <div id="formEditUser">
         <i class="fas fa-circle-xmark"></i>
         <form method="POST">
-            <input type="text" name="hostname" id="hostname" placeholder="edit the hostname">
+            <input type="text" name="nick" id="nick" placeholder="type a hostname">
             <div>
                 <input type="button" id="buttonEditClient" value="edit client">
                 <input type="reset" value="empty form">

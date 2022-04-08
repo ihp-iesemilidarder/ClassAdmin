@@ -1,9 +1,8 @@
 #!/bin/bash
-currentUser=$1
-newUser=$2
+newHostName=$1
 
 if [[ -z $* ]];then
-        echo -e "\033[1;31m[!]\033[0m The scripts needs two params.\n\teditNickName.sh <nickNameCurrent> <newNickNmae>"
+        echo -e "\033[1;31m[!]\033[0m The scripts needs two params.\n\teditHostName.sh <newHostName>"
         exit
 fi
 
@@ -32,8 +31,6 @@ function operation(){
         echo ""
 }
 
-operation "replacing the user $currentUser by $newUser." $(sed -i "s/$currentUser/$newUser/g" /lib/systemd/system/ClassAdmin.service)
+operation "changing the hostname $(hostname) by $newHostName." $(echo "$newHostName" > /etc/hostname)
 sleep 1
-operation "restarting systemctl daemons." "systemctl daemon-reload"
-sleep 1
-operation "restarting ClassAdmin service." "systemctl restart ClassAdmin"
+operation "restarting computer." "reboot"
