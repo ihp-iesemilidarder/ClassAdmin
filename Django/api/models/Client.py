@@ -2,7 +2,7 @@ from django.db import models
 
 class Client(models.Model):
     nick = models.CharField(max_length=50,null=False)
-    address = models.CharField(max_length=15,null=False)
+    ipaddress = models.CharField(max_length=15,null=False)
     port = models.IntegerField(max_length=5,null=False)
     status = models.CharField(max_length=50,null=False)
     server = models.CharField(max_length=50,null=False,db_column="cli_ser_id")
@@ -16,11 +16,11 @@ class Client(models.Model):
                 name="cli_port_CK"
             ),
 
-            # CONSTRAINT `ser_address_REGEXP` CHECK (`address` regexp '^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$')
+            # CONSTRAINT `ser_ipaddress_REGEXP` CHECK (`ipaddress` regexp '^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$')
             models.CheckConstraint(
                 check=models.Q(
-                    address__iregex=r'^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$'
+                    ipaddress__iregex=r'^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$'
                 ),
-                name="cli_address_REGEXP"
+                name="cli_ipaddress_REGEXP"
             ),
         ]

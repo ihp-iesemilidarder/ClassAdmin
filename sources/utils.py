@@ -153,9 +153,9 @@ class Hosts:
 def getIpAddress():
     sock=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     sock.connect(("8.8.8.8",80))
-    address=sock.getsockname()[0]
+    ipaddress=sock.getsockname()[0]
     sock.close()
-    return address
+    return ipaddress
 
 def Notify(title:str,message:str,output=True):
     status = Json(Environment.configuration).print(["notifications"])

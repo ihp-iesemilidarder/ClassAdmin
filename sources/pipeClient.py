@@ -8,9 +8,9 @@ from sources.utils import Environment
 
 
 class PipeClient:
-    def __init__(self,address):
+    def __init__(self,ipaddress):
         urllib3.disable_warnings()
-        self.address = address
+        self.ipaddress = ipaddress
         self.__SSLTunel()
         self.__createSocket()
         self.__handlerPipeServer()
@@ -31,9 +31,9 @@ class PipeClient:
                 PORT = int(
                     Requests("services", "GET", "https://classadmin.server/api/servers").run().json()["result"][0][
                         "port"])
-                # connection at server (without specified ip address), so if the server changes the ip address,
+                # connection at server (without specified ip ipaddress), so if the server changes the ip ipaddress,
                 # the client will can connect.
-                self.sockSSL.connect((self.address, PORT))
+                self.sockSSL.connect((self.ipaddress, PORT))
                 break
             except BaseException as err:
                 try:

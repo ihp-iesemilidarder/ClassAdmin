@@ -6,16 +6,16 @@
     </script>
     <div class="clients">
         {% for client in clients %}
-            <div data-id="{{client.id}}" data-ip="{{client.address}}" data-port="{{client.port}}" class="client">
+            <div data-id="{{client.id}}" data-ip="{{client.ipaddress}}" data-port="{{client.port}}" class="client">
                 <div class="info">
                     <img src="{% static 'images/logoUser.png' %}" alt="logo">
-                    <span class="nick">{{client.nick}}</span>
-                    <span title="ip address">{{client.address}}</span>
+                    <span class="hostname">{{client.hostname}}</span>
+                    <span title="ip address">{{client.ipaddress}}</span>
                     <span title="port">{{client.port}}</span>
                 </div>
                 <div class="actions">
                     <i class="fa fa-trash" title="delete"></i>
-                    <i class="fa fa-user-pen" title="edit nick"></i>
+                    <i class="fa fa-user-pen" title="edit hostname"></i>
                     <i class="fa fa-redo" title="reboot computer"></i>
                     <i class="fa fa-power-off" title="shutdown computer"></i>
                     <i class="fa fa-moon" title="suspend computer"></i>
@@ -76,16 +76,18 @@
                 <input type="button" id="buttonSendAlert" value="send alert">
                 <input type="reset" value="empty form">
             </div>
+            {% csrf_token %}
         </form>
     </div>
     <div id="formEditUser">
         <i class="fas fa-circle-xmark"></i>
         <form method="POST">
-            <input type="text" name="nick" id="nick" placeholder="type a nick">
+            <input type="text" name="hostname" id="hostname" placeholder="edit the hostname">
             <div>
                 <input type="button" id="buttonEditClient" value="edit client">
                 <input type="reset" value="empty form">
             </div>
+            {% csrf_token %}
         </form>
     </div>
     <div id="containerUploadFile">

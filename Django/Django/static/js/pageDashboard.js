@@ -149,7 +149,7 @@ const drawListClients=(list)=>{
                 <div class="info">
                     <img src="/static/images/logoUser.png" alt="logo">
                     <span class="nick">${list.nick}</span>
-                    <span title="ip address">${list.address}</span>
+                    <span title="ip address">${list.ipaddress}</span>
                     <span title="port">${list.port}</span>
                 </div>
                 <div class="actions">

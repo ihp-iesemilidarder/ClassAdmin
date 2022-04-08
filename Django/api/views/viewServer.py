@@ -36,7 +36,7 @@ class viewServer(View):
         data = json.loads(request.body)
         Server.objects.create(
             password=data["password"],
-            address=data["address"],
+            ipaddress=data["ipaddress"],
             port=data["port"],
             clients=data["clients"]
         )
@@ -48,7 +48,7 @@ class viewServer(View):
         if len(server) > 0:
             server_object = Server.objects.get(id=id)
             server_object.password = data["password"]
-            server_object.address = data["address"]
+            server_object.ipaddress = data["ipaddress"]
             server_object.port = data["port"]
             server_object.clients = data["clients"]
             server_object.save()

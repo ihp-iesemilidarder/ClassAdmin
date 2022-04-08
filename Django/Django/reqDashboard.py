@@ -54,7 +54,7 @@ class ReqDashboard:
     def shutdownHost(self,id):
         try:
             currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick["address"])).send("function:shutdownHost()")
+            PipeClient(str(currentNick["ipaddress"])).send("function:shutdownHost()")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -66,7 +66,7 @@ class ReqDashboard:
     def rebootHost(self,id):
         try:
             currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick["address"])).send("function:rebootHost()")
+            PipeClient(str(currentNick["ipaddress"])).send("function:rebootHost()")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -78,7 +78,7 @@ class ReqDashboard:
     def suspendHost(self,id):
         try:
             currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick["address"])).send("function:suspendHost()")
+            PipeClient(str(currentNick["ipaddress"])).send("function:suspendHost()")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -90,7 +90,7 @@ class ReqDashboard:
     def editUser(self,id,nick):
         try:
             currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick['address'])).send(f"function:editNickName('{currentNick['nick']}','{nick}')")
+            PipeClient(str(currentNick['ipaddress'])).send(f"function:editNickName('{currentNick['nick']}','{nick}')")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -102,7 +102,7 @@ class ReqDashboard:
     def sendAlert(self,id,tipe,title,description):
         try:
             currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick["address"])).send(f"function:sendAlert('{tipe}','{title}','{description}')")
+            PipeClient(str(currentNick["ipaddress"])).send(f"function:sendAlert('{tipe}','{title}','{description}')")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -118,10 +118,10 @@ class ReqDashboard:
             chunks = [str(file[i:i + n]) for i in range(0, len(file), n)]
             logFile().message(chunks)
             for sector in chunks:
-                PipeClient(str(currentNick["address"])).send(f"function:downloadFile('{currentNick['nick']}','{name}','{sector}')")
+                PipeClient(str(currentNick["ipaddress"])).send(f"function:downloadFile('{currentNick['nick']}','{name}','{sector}')")
                 time.sleep(.5)
-            #PipeClient(str(currentNick["address"])).send(f"function:downloadFile('{currentNick['nick']}','{name}','{file}')")
-            PipeClient(str(currentNick["address"])).send(f"text:files transfer of {currentNick['nick']}|File {name} shared with you successfully")
+            #PipeClient(str(currentNick["ipaddress"])).send(f"function:downloadFile('{currentNick['nick']}','{name}','{file}')")
+            PipeClient(str(currentNick["ipaddress"])).send(f"text:files transfer of {currentNick['nick']}|File {name} shared with you successfully")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()

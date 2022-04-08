@@ -29,15 +29,15 @@ class viewClient(View):
             return JsonResponse({"error":"Access denied"})
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, id=0,address=None,nick=None):
+    def get(self, request, id=0,ipaddress=None,nick=None):
         if id != 0:
             client = list(Client.objects.filter(id=id).values())
             if len(client) > 0:
                 client = client[0]
             else:
                 client = None
-        elif address != None and nick != None:
-            client = list(Client.objects.filter(Q(address=address) | Q(nick=nick)).values())
+        elif ipaddress != None and nick != None:
+            client = list(Client.objects.filter(Q(ipaddress=ipaddress) | Q(nick=nick)).values())
             if len(client) == 0:
                 client = None
         else:
@@ -50,26 +50,26 @@ class viewClient(View):
         data = json.loads(request.body)
         Client.objects.create(
             nick=data["nick"],
-            address=data["address"],
+            ipaddress=data["ipaddress"],
             port=data["port"],
             status=data["status"],
             server=data["server"]
         )
         return JsonResponse({"result":True},safe=False)
 
-    def put(self,request,id=0,address=None,nick=None):
+    def put(self,request,id=0,ipaddress=None,nick=None):
         data = json.loads(request.body)
-        if address != None and nick != None and id==0:
-            client = list(Client.objects.filter(Q(address=address) | Q(nick=nick)).values())
+        if ipaddress != None and nick != None and id==0:
+            client = list(Client.objects.filter(Q(ipaddress=ipaddress) | Q(nick=nick)).values())
         else:
             client = list(Client.objects.filter(id=id).values())
         if len(client) > 0:
-            if address != None and nick != None and id == 0:
-                client_object = Client.objects.get(Q(nick=nick) | Q(address=address))
+            if ipaddress != None and nick != None and id == 0:
+                client_object = Client.objects.get(Q(nick=nick) | Q(ipaddress=ipaddress))
             else:
                 client_object = Client.objects.get(id=id)
             client_object.nick = data["nick"]
-            client_object.address = data["address"]
+            client_object.ipaddress = data["ipaddress"]
             client_object.port = data["port"]
             client_object.status = data["status"]
             client_object.server = data["server"]

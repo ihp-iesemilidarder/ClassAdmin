@@ -84,7 +84,7 @@ class SocketClient:
                 PORT = int(
                     Requests("services", "GET", "https://classadmin.server/api/servers").run().json()["result"][0][
                         "port"])
-                # connection at server (without specified ip address), so if the server changes the ip address,
+                # connection at server (without specified ip ipaddress), so if the server changes the ip ipaddress,
                 # the client will can connect.
                 self.sockSSL.connect(("classadmin.server", PORT))
                 break

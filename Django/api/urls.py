@@ -11,8 +11,8 @@ urlpatterns=[
     path("clients", viewClient.as_view()),
     path("clients/<int:id>", viewClient.as_view()),
     path("clients/<str:id>",viewClient.as_view()),
-    # Find client by address or nick
-    path("clients/<str:address>/<str:nick>", viewClient.as_view()),
+    # Find client by ipaddress or nick
+    path("clients/<str:ipaddress>/<str:nick>", viewClient.as_view()),
 
     path("servers", viewServer.as_view()),
     path("servers/<int:id>", viewServer.as_view())
