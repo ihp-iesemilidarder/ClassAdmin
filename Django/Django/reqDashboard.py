@@ -53,8 +53,8 @@ class ReqDashboard:
 
     def shutdownHost(self,id):
         try:
-            currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick["ipaddress"])).send("function:shutdownHost()")
+            currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            PipeClient(str(currentHostName["ipaddress"])).send("function:shutdownHost()")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -65,8 +65,8 @@ class ReqDashboard:
 
     def rebootHost(self,id):
         try:
-            currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick["ipaddress"])).send("function:rebootHost()")
+            currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            PipeClient(str(currentHostName["ipaddress"])).send("function:rebootHost()")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -77,8 +77,8 @@ class ReqDashboard:
 
     def suspendHost(self,id):
         try:
-            currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick["ipaddress"])).send("function:suspendHost()")
+            currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            PipeClient(str(currentHostName["ipaddress"])).send("function:suspendHost()")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -87,10 +87,10 @@ class ReqDashboard:
             logFile().message(f"{err} in {file}:{line}")
             return False
 
-    def editUser(self,id,nick):
+    def editHostName(self,id,hostname):
         try:
-            currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick['ipaddress'])).send(f"function:editNickName('{nick}')")
+            currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            PipeClient(str(currentHostName['ipaddress'])).send(f"function:editHostName('{hostname}')")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -101,8 +101,8 @@ class ReqDashboard:
 
     def sendAlert(self,id,tipe,title,description):
         try:
-            currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentNick["ipaddress"])).send(f"function:sendAlert('{tipe}','{title}','{description}')")
+            currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            PipeClient(str(currentHostName["ipaddress"])).send(f"function:sendAlert('{tipe}','{title}','{description}')")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -113,15 +113,15 @@ class ReqDashboard:
 
     def uploadFiles(self,id,name,file):
         try:
-            currentNick = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
             n = 5000
             chunks = [str(file[i:i + n]) for i in range(0, len(file), n)]
             logFile().message(chunks)
             for sector in chunks:
-                PipeClient(str(currentNick["ipaddress"])).send(f"function:downloadFile('{currentNick['nick']}','{name}','{sector}')")
+                PipeClient(str(currentHostName["ipaddress"])).send(f"function:downloadFile('{currentHostName['hostname']}','{name}','{sector}')")
                 time.sleep(.5)
-            #PipeClient(str(currentNick["ipaddress"])).send(f"function:downloadFile('{currentNick['nick']}','{name}','{file}')")
-            PipeClient(str(currentNick["ipaddress"])).send(f"text:files transfer of {currentNick['nick']}|File {name} shared with you successfully")
+            #PipeClient(str(currentHostName["ipaddress"])).send(f"function:downloadFile('{currentHostName['hostname']}','{name}','{file}')")
+            PipeClient(str(currentHostName["ipaddress"])).send(f"text:files transfer of {currentHostName['hostname']}|File {name} shared with you successfully")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
@@ -130,7 +130,7 @@ class ReqDashboard:
             logFile().message(f"{err} in {file}:{line}")
             return False
 
-# events for each client (shutdown,edit nickname,alert,etc)
+# events for each client (shutdown,edit hostnamename,alert,etc)
 class EventsDashboard(ReqDashboard):
     def __init__(self,req):
         super().__init__(req)
@@ -153,9 +153,9 @@ class EventsDashboard(ReqDashboard):
             return super().showData()
         elif self.req.POST["action"] == "saveUserNotification":
             return super().saveUserNotification(self.req.POST["user"])
-        elif self.req.POST["action"] == "editNickname":
-            id, nick = self.req.POST["id"],self.req.POST["nick"]
-            return super().editUser(id,nick)
+        elif self.req.POST["action"] == "editHostName":
+            id, hostname = self.req.POST["id"],self.req.POST["hostname"]
+            return super().editUser(id,hostname)
         elif self.req.POST["action"] == "shutdownHost":
             id = self.req.POST["id"]
             return super().shutdownHost(id)

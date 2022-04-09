@@ -3,11 +3,11 @@ import {messg,getCookie} from './init.js';
 export const editUser=async(e)=>{
     let node = e.target;
     let id = node.parentNode.parentNode.parentNode.dataset.id;
-    let nick = node.parentNode.parentNode.querySelector("form input#nick").value;
+    let hostname = node.parentNode.parentNode.querySelector("form input#hostname").value;
     try{
         let request = await fetch("./",{
             method:"POST",
-            body:`action=editNickname&id=${id}&nick=${nick}`,
+            body:`action=editHostName&id=${id}&hostname=${hostname}`,
             headers:{
                 "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
                 "X-CSRFToken":getCookie("csrftoken")
@@ -15,12 +15,12 @@ export const editUser=async(e)=>{
         });
         let data = await request.json()
         if(data.result){
-            messg(`nickname edited successfully to ${nick}`,true);
+            messg(`hostnamename edited successfully to ${hostname}`,true);
         }else{
-            messg("Error at edit the nickname",false);
+            messg("Error at edit the hostnamename",false);
         }
     }catch(error){
-        messg(`Unexpected error at edit nickname: ${error}`,false);
+        messg(`Unexpected error at edit hostnamename: ${error}`,false);
     }
 }
 

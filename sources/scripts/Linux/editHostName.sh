@@ -31,6 +31,6 @@ function operation(){
         echo ""
 }
 
-operation "changing the hostname $(hostname) by $newHostName." $(echo "$newHostName" > /etc/hostname)
+operation "changing the hostname $(hostname) by $newHostName." $(hostnamectl set-hostname $newHostName)
 sleep 1
-operation "restarting computer." "reboot"
+operation "restarting computer." "systemctl restart ClassAdmin"

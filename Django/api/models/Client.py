@@ -1,7 +1,7 @@
 from django.db import models
 
 class Client(models.Model):
-    nick = models.CharField(max_length=50,null=False)
+    hostname = models.CharField(max_length=50,null=False)
     ipaddress = models.CharField(max_length=15,null=False)
     port = models.IntegerField(max_length=5,null=False)
     status = models.CharField(max_length=50,null=False)

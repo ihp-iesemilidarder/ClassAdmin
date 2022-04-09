@@ -54,12 +54,12 @@ class EventsClient:
             return True
 
     @staticmethod
-    def editNickName(newNick:str) -> bool:
+    def editHostName(newHostname:str) -> bool:
         if platform.system().upper() == "LINUX":
-            subprocess.run([f"{Environment.scripts}/Linux/editHostName.sh",newNick,"&"])
+            subprocess.run([f"{Environment.scripts}/Linux/editHostName.sh",newHostname,"&"])
             return True
         elif platform.system().upper() == "WINDOWS":
-            subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/editHostName.ps1' -newHostName {newNick}"])
+            subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/editHostName.ps1' -newHostName {newHostname}"])
             return True
 
     @staticmethod
@@ -77,8 +77,8 @@ class EventsClient:
         return True
 
     @staticmethod
-    def downloadFile(nick:str,name:str) -> bool:
-        path = f"{Environment.transfers}/{nick}"
+    def downloadFile(hostname:str,name:str) -> bool:
+        path = f"{Environment.transfers}/{hostname}"
         logFile().message(path)
         try:
             os.makedirs(path)
@@ -88,5 +88,5 @@ class EventsClient:
             while EventsClient.connection:
                 data = EventsClient.connection.recv(1073741824) #1GB
                 file.write(data)
-        Notify(f"file transfers with {nick}",f"the client {nick} shared you a file: {name}",False)
+        Notify(f"file transfers with {hostname}",f"the client {hostname} shared you a file: {name}",False)
         return True

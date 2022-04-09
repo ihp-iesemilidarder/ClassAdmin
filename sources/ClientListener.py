@@ -8,17 +8,17 @@ class ClientListener:
             # Get the connection's socket object and I in this connection add secure traffic encrypted with SSL thanks to object SSLSocket of socket module
             self.addr = addr
             self.conn = self.__SSLTunnel(conn)
-            self.nick = ""
+            self.hostname = ""
             self.__listenData()
         except (KeyboardInterrupt,SystemExit):
             try:
-                Notify(f"{self.nick} left",logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) left :(", True, "INFO"))
+                Notify(f"{self.hostname} left",logFile().message(f"The host {self.hostname} ({self.addr[0]}:{self.addr[1]}) left :(", True, "INFO"))
             except:
                 None
         except BaseException as err:
             print(err)
             if err.errno == 104:
-                Notify(f"{self.nick} left unexpected",logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) left unexpected :(", True, "INFO"))
+                Notify(f"{self.hostname} left unexpected",logFile().message(f"The host {self.hostname} ({self.addr[0]}:{self.addr[1]}) left unexpected :(", True, "INFO"))
             else:
                 type, object, traceback = sys.exc_info()
                 file = traceback.tb_frame.f_code.co_filename
@@ -31,7 +31,7 @@ class ClientListener:
                 None
             finally:
                 try:
-                    Client(self.conn,self.addr).registre(self.nick,"DISCONNECTED")
+                    Client(self.conn,self.addr).registre(self.hostname,"DISCONNECTED")
                 except:
                     None
                 event.set()
@@ -52,14 +52,14 @@ class ClientListener:
                 exec(f"raise {text.split('.',1)[1]}")
             elif data:
                 if text.startswith("HelloServer: "):
-                    self.nick = text.replace("HelloServer: ","")
-                    client = Client(self.conn,self.addr).registre(self.nick, "CONNECTED")
+                    self.hostname = text.replace("HelloServer: ","")
+                    client = Client(self.conn,self.addr).registre(self.hostname, "CONNECTED")
                     if client=="sameUser":
-                        self.conn.send("sig.SystemExit(-5000,'The nick exists and is connected :(',True)".encode("utf-8"))
+                        self.conn.send("sig.SystemExit(-5000,'The hostname exists and is connected :(',True)".encode("utf-8"))
                     elif client=="TooManyClients":
                         self.conn.send("sig.SystemExit(-5000,'Too many clients connected. You try it more later',True)".encode("utf-8"))
                     else:
-                        Notify(f"{self.nick} connected",logFile().message(f"The host {self.nick} ({self.addr[0]}:{self.addr[1]}) is connected :)", True, "INFO"))
+                        Notify(f"{self.hostname} connected",logFile().message(f"The host {self.hostname} ({self.addr[0]}:{self.addr[1]}) is connected :)", True, "INFO"))
                 else:
                     print(data)
             elif len(data)==0:

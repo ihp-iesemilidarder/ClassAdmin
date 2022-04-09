@@ -148,7 +148,7 @@ const drawListClients=(list)=>{
             <div data-id="${list.id}" class="client">
                 <div class="info">
                     <img src="/static/images/logoUser.png" alt="logo">
-                    <span class="nick">${list.nick}</span>
+                    <span class="hostname">${list.hostname}</span>
                     <span title="ip address">${list.ipaddress}</span>
                     <span title="port">${list.port}</span>
                 </div>
@@ -237,15 +237,15 @@ const saveUserNotification=async()=>{
 
 function showFormEdit(node){
     containerFormEdit.dataset.id = node.parentNode.parentNode.dataset.id;
-    let nick = node.parentNode.parentNode.querySelector(".info .nick").textContent;
-    containerFormEdit.dataset.nick = nick;
-    containerFormEdit.querySelector("input#nick").value = nick;
+    let hostname = node.parentNode.parentNode.querySelector(".info .hostname").textContent;
+    containerFormEdit.dataset.hostname = hostname;
+    containerFormEdit.querySelector("input#hostname").value = hostname;
     containerFormEdit.style.display="block";
 }
 
 function showFormAlert(node){
     containerFormNotification.dataset.id = node.parentNode.parentNode.dataset.id;
-    containerFormNotification.querySelector("form > span > span").textContent=node.parentNode.parentNode.querySelector(".info .nick").textContent;
+    containerFormNotification.querySelector("form > span > span").textContent=node.parentNode.parentNode.querySelector(".info .hostname").textContent;
     containerFormNotification.style.display="block";
 }
 
@@ -436,10 +436,10 @@ export async function pageDashboard(){
     checkboxNotification.addEventListener("click",await activeDisableNotifications);
     buttonUserNotification.addEventListener("click",await saveUserNotification);
 
-    // list clients' events (notification,edit nick,shutdown,...)
+    // list clients' events (notification,edit hostname,shutdown,...)
     containerClients.addEventListener("click",await eventsClientsList);
 
-    // edit client nickname
+    // edit client hostnamename
     containerFormEdit.querySelector(".fa-circle-xmark").addEventListener("click",()=>containerFormEdit.removeAttribute("style"));
     containerFormEdit.querySelector("#buttonEditClient").addEventListener("click",await editUser);
 

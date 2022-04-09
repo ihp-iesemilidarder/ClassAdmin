@@ -17,7 +17,7 @@ CREATE TABLE server (
 
 CREATE TABLE clients (
 	id		INT		AUTO_INCREMENT,
-	nick		VARCHAR(50)	NOT NULL,
+	hostname	VARCHAR(50)	NOT NULL,
 	ipaddress	VARCHAR(40)	NOT NULL,
 	port		INT(5)		NOT NULL,
 	status		VARCHAR(50)	NOT NULL,
