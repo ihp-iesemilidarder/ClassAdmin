@@ -55,10 +55,14 @@ class EventsClient:
 
     @staticmethod
     def editHostName(newHostname:str) -> bool:
+        Notify("Rename hostname",f"The computer will be change his hostname to {newHostname}.")
+        time.sleep(3)
         if platform.system().upper() == "LINUX":
             subprocess.run([f"{Environment.scripts}/Linux/editHostName.sh",newHostname,"&"])
             return True
         elif platform.system().upper() == "WINDOWS":
+            Notify("Reboot","You computer will be reboot in 10 seconds")
+            time.sleep(10)
             subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/editHostName.ps1' -newHostName {newHostname}"])
             return True
 

@@ -7,10 +7,5 @@ if(!$newHostName){
     Write-Host '    editHostName.ps1 -newHostName <name>'
     exit
 }
-Write-Host "Replacing the user $currentHostname by $newHostName " -NoNewline
-nssm set ClassAdmin AppParameters "ClassAdmin.socket $newHostName"
-Write-Host "OK" -ForegroundColor Green
-timeout 3
-Write-Host "Stopping ClassAdmin service. " -NoNewline
-restart-service ClassAdmin
-Write-Host "OK" -ForegroundColor Green
+Write-Host "Changing the hostname by $newHostname " -NoNewline
+Rename-Computer -ComputerName $env:COMPUTERNAME -NewName $newHostname -Restart
