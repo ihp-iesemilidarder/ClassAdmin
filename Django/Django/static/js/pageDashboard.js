@@ -1,7 +1,7 @@
 import './lib/sha512.js';
 import './lib/FileSaver.js';
 import {enterSession, messg, getCookie} from './init.js';
-import {editUser,shutdownComputer,rebootComputer,suspendComputer,sendAlert} from "./eventsClients.js"
+import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert} from "./eventsClients.js"
 const buttonConf = document.querySelector("#pageDashboard .fa-cog");
 const closeConf = document.querySelector("#pageDashboard #config .fa-close");
 const saveConf = document.querySelector("#pageDashboard #config input[type='submit']");
@@ -441,7 +441,7 @@ export async function pageDashboard(){
 
     // edit client hostnamename
     containerFormEdit.querySelector(".fa-circle-xmark").addEventListener("click",()=>containerFormEdit.removeAttribute("style"));
-    containerFormEdit.querySelector("#buttonEditClient").addEventListener("click",await editUser);
+    containerFormEdit.querySelector("#buttonEditClient").addEventListener("click",await editHostName);
 
     // send alert at client
     containerFormNotification.querySelector(".fa-circle-xmark").addEventListener("click",()=>containerFormNotification.removeAttribute("style"));

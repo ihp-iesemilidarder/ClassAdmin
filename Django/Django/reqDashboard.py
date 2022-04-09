@@ -155,7 +155,7 @@ class EventsDashboard(ReqDashboard):
             return super().saveUserNotification(self.req.POST["user"])
         elif self.req.POST["action"] == "editHostName":
             id, hostname = self.req.POST["id"],self.req.POST["hostname"]
-            return super().editUser(id,hostname)
+            return super().editHostName(id,hostname)
         elif self.req.POST["action"] == "shutdownHost":
             id = self.req.POST["id"]
             return super().shutdownHost(id)

@@ -1,6 +1,6 @@
 import {messg,getCookie} from './init.js';
 
-export const editUser=async(e)=>{
+export const editHostName=async(e)=>{
     let node = e.target;
     let id = node.parentNode.parentNode.parentNode.dataset.id;
     let hostname = node.parentNode.parentNode.querySelector("form input#hostname").value;
@@ -15,12 +15,12 @@ export const editUser=async(e)=>{
         });
         let data = await request.json()
         if(data.result){
-            messg(`hostnamename edited successfully to ${hostname}`,true);
+            messg(`hostname edited successfully to ${hostname}`,true);
         }else{
-            messg("Error at edit the hostnamename",false);
+            messg("Error at edit the hostname",false);
         }
     }catch(error){
-        messg(`Unexpected error at edit hostnamename: ${error}`,false);
+        messg(`Unexpected error at edit hostname: ${error}`,false);
     }
 }
 
