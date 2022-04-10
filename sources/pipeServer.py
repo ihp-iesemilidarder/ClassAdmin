@@ -35,10 +35,8 @@ class PipeServer:
 
     def __handlerMessages(self):
         while self.conn:
-            data = self.conn.recv(1024)
+            data = self.conn.recv(1048576)
             text = data.decode('utf-8')
-            logFile().message(data)
-            logFile().message(text)
             if len(data)>0:
                 EventsClient().run(text,self.conn)
                 self.conn.close()

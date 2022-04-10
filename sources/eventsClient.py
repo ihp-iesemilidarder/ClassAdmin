@@ -1,9 +1,11 @@
 # Here, there are events required by the server
 import platform,subprocess,time,os
+from base64 import b64decode
 
 from sources.utils import logFile, Notify, Environment, Json
 class EventsClient:
     connection = None
+    uri = ""
     def __init__(self):
         pass
 
@@ -81,16 +83,26 @@ class EventsClient:
         return True
 
     @staticmethod
-    def downloadFile(hostname:str,name:str) -> bool:
+    def saveFile(hostname:str,name:str):
+        file = open(f"{Environment.transfers}/{hostname}/{name}.datauri","r")
+        uri = file.read().replace(" ","+")
+        file.close()
+        headers,encoded = uri.split(",",1)
+        data = b64decode(encoded)
+        with open(f"{Environment.transfers}/{hostname}/{name}", "wb") as f:
+            f.write(data)
+        os.remove(f"{Environment.transfers}/{hostname}/{name}.datauri")
+        Notify(f"file transfers with {hostname}",f"the client {hostname} shared you a file: {name}",False)
+        return True
+
+    @staticmethod
+    def downloadFile(hostname:str,name:str,sector:str,last:bool) -> bool:
         path = f"{Environment.transfers}/{hostname}"
-        logFile().message(path)
         try:
             os.makedirs(path)
         except:
             None
-        with open(f"{path}/{name}","wb") as file:
-            while EventsClient.connection:
-                data = EventsClient.connection.recv(1073741824) #1GB
-                file.write(data)
-        Notify(f"file transfers with {hostname}",f"the client {hostname} shared you a file: {name}",False)
-        return True
+        with open(f"{Environment.transfers}/{hostname}/{name}.datauri", "a+") as f:
+            f.write(sector)
+        if last:
+            EventsClient.saveFile(hostname,name)

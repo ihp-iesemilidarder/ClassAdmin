@@ -310,17 +310,23 @@ const drop=(e)=>{
     containerUploadFiles.querySelector("h2").textContent = "Drag and drop the files here";
 }
 
+const convertBlob=async(datauri)=>{
+    let request = await fetch(datauri);
+    let data = await request.blob()
+}
+
 const postFile=async(id,file,name,idFile)=>{
     try{
         let request = await fetch(".",{
             method:"POST",
-            body: `action=uploadFiles&id=${id}&name=${name}&idFile=${idFile}&file=${file.path}`,
+            body: `action=uploadFiles&id=${id}&name=${name}&idFile=${idFile}&file=${file}`,
             headers:{
                 "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
                 "X-CSRFToken":getCookie("csrftoken")
             }
         });
         let data = await request.text();
+        console.log(data)
         document.querySelector(`#${idFile} .status`).innerHTML="<span class='success'>success</span>";
     }catch(error){
         console.log(error)
@@ -385,6 +391,7 @@ const processFile=(id,file)=>{
                 </div>
             `;
             containerUploadFiles.querySelector("#preview").innerHTML+=img
+            console.log(fileUrl)
             postFile(id,fileUrl,file.name,name);
         });
         fileReader.readAsDataURL(file);

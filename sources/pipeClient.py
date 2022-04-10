@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import os,socket,sys,time,urllib3
 import ssl
-
+from base64 import b64encode
 from sources.Requests import Requests
 # This socket clint is used for comunicate with the clients
 from sources.utils import Environment

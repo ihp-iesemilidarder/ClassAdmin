@@ -114,14 +114,12 @@ class ReqDashboard:
     def uploadFiles(self,id,name,file):
         try:
             currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            n = 5000
+            n = 15000
             chunks = [str(file[i:i + n]) for i in range(0, len(file), n)]
             logFile().message(chunks)
             for sector in chunks:
-                PipeClient(str(currentHostName["ipaddress"])).send(f"function:downloadFile('{currentHostName['hostname']}','{name}','{sector}')")
+                PipeClient(str(currentHostName["ipaddress"])).send(f"function:downloadFile('{currentHostName['hostname']}','{name}','{sector}',{'True' if chunks.index(sector)==len(chunks)-1 else 'False'})")
                 time.sleep(.5)
-            #PipeClient(str(currentHostName["ipaddress"])).send(f"function:downloadFile('{currentHostName['hostname']}','{name}','{file}')")
-            PipeClient(str(currentHostName["ipaddress"])).send(f"text:files transfer of {currentHostName['hostname']}|File {name} shared with you successfully")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
