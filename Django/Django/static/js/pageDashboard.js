@@ -251,6 +251,7 @@ function showFormAlert(node){
 
 function showUploadBox(node){
     containerUploadFiles.dataset.id = node.parentNode.parentNode.dataset.id;
+    containerUploadFiles.dataset.hostname = node.parentNode.parentNode.querySelector(".info .hostname").textContent;
     containerUploadFiles.style.display="flex";
 }
 
@@ -325,11 +326,11 @@ const postFile=async(id,file,name,idFile)=>{
                 "X-CSRFToken":getCookie("csrftoken")
             }
         });
-        let data = await request.text();
-        console.log(data)
-        document.querySelector(`#${idFile} .status`).innerHTML="<span class='success'>success</span>";
+        let data = await request.json();
+        if(data.result){
+            document.querySelector(`#${idFile} .status`).innerHTML="<span class='success'>success</span>";
+        }
     }catch(error){
-        console.log(error)
         document.querySelector(`#${idFile} .status`).innerHTML="<span class='failure'>failed</span>";
     }
 }
@@ -391,7 +392,6 @@ const processFile=(id,file)=>{
                 </div>
             `;
             containerUploadFiles.querySelector("#preview").innerHTML+=img
-            console.log(fileUrl)
             postFile(id,fileUrl,file.name,name);
         });
         fileReader.readAsDataURL(file);
@@ -416,6 +416,18 @@ const uploadFile=(e)=>{
     files = containerUploadFiles.querySelector("div:first-child input#uploadFile").files;
     showFiles(id,files);
     containerUploadFiles.classList.remove("active");
+}
+
+const deleteFile=async(id,filename)=>{
+    let request = await fetch("./",{
+        method:"POST",
+        body:`action=deleteFile&id=${id}&filename=${filename}`,
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+            "X-CSRFToken":getCookie("csrftoken")
+        }
+    });
+    let data = request.json();
 }
 
 export async function pageDashboard(){
@@ -456,10 +468,20 @@ export async function pageDashboard(){
 
     // events for drag and drop files
     closeUploadFiles.addEventListener("click",()=>{
+        inputUploadFiles.value="";
+        containerUploadFiles.querySelector("#preview").innerHTML="";
         containerUploadFiles.removeAttribute("style");
     });
-    containerUploadFiles.addEventListener("click",(e)=>{
-        if(!e.target.classList.contains("fa-circle-xmark")) inputUploadFiles.click()
+    containerUploadFiles.addEventListener("click",async(e)=>{
+        let node = e.target;
+        if(node.classList.contains("delete-file")){
+            let filename = node.parentNode.querySelector("img").alt;
+            let id = node.parentNode.parentNode.parentNode.dataset.id;
+            await deleteFile(id,filename);
+            node.parentNode.remove();
+        }else if(!node.classList.contains("fa-circle-xmark")){
+            inputUploadFiles.click()
+        }
     });
     containerUploadFiles.addEventListener("change",uploadFile);
     containerUploadFiles.addEventListener("dragover",dragover);

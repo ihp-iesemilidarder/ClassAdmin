@@ -128,6 +128,18 @@ class ReqDashboard:
             logFile().message(f"{err} in {file}:{line}")
             return False
 
+    def deleteFile(self,id,filename):
+        try:
+            currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            PipeClient(str(currentHostName["ipaddress"])).send(f"function:deleteFile('{currentHostName['hostname']}','{filename}')")
+            return True
+        except BaseException as err:
+            type, object, traceback = sys.exc_info()
+            file = traceback.tb_frame.f_code.co_filename
+            line = traceback.tb_lineno
+            logFile().message(f"{err} in {file}:{line}")
+            return False
+
 # events for each client (shutdown,edit hostnamename,alert,etc)
 class EventsDashboard(ReqDashboard):
     def __init__(self,req):
@@ -169,7 +181,9 @@ class EventsDashboard(ReqDashboard):
         elif self.req.POST["action"] == "uploadFiles":
             id,name,file = self.req.POST["id"],self.req.POST["name"],self.req.POST["file"]
             return super().uploadFiles(id,name,file)
-
+        elif self.req.POST["action"] == "deleteFile":
+            id,filename = self.req.POST["id"],self.req.POST["filename"]
+            return super().deleteFile(id,filename)
     def __notifications(self):
         try:
             Json(Environment.configuration).update(["notifications"], self.req.POST["notifications"])
