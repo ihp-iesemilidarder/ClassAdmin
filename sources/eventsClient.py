@@ -110,7 +110,6 @@ class EventsClient:
     @staticmethod
     def deleteFile(hostname:str,filename:str):
         try:
-            logFile().message(f"hostname:{hostname},filename:{filename}")
             os.remove(f"{Environment.transfers}/{hostname}/{filename}")
             return True
         except:

@@ -109,3 +109,25 @@ export const sendAlert=async(node,type,title,description)=>{
         messg(`Unexpected error at send a alert at computer: ${error}`,false);
     }
 }
+
+export const screenshot=async(node)=>{
+    try{
+        let id = node.parentNode.parentNode.dataset.id;
+        let request = await fetch("./",{
+            method:"POST",
+            body:`action=screenshot&id=${id}`,
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRFToken":getCookie("csrftoken")
+            }
+        });
+        let data = await request.json()
+        if(data.result){
+            messg("The client desktop has been captured successfully",true);
+        }else{
+            messg("Error at capture the client desktop",false);
+        }
+    }catch(error){
+        messg(`Unexpected error at capture the client desktop: ${error}`,false);
+    }
+}
