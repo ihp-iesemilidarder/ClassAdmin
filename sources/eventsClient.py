@@ -1,5 +1,5 @@
 # Here, there are events required by the server
-import platform,subprocess,time,os
+import platform,subprocess,time,os,datetime,pyscreenshot
 from base64 import b64decode
 
 from sources.utils import logFile, Notify, Environment, Json
@@ -111,6 +111,16 @@ class EventsClient:
     def deleteFile(hostname:str,filename:str):
         try:
             os.remove(f"{Environment.transfers}/{hostname}/{filename}")
+            return True
+        except:
+            return False
+
+    @staticmethod
+    def screenshot(id):
+        try:
+            date = datetime.datetime.now()
+            screen = pyscreenshot.grab()
+            screen.save(f"{Environment.transfers}/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png".replace("\\","/"))
             return True
         except:
             return False
