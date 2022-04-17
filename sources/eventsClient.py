@@ -119,8 +119,11 @@ class EventsClient:
     def screenshot(id):
         try:
             date = datetime.datetime.now()
-            screen = pyscreenshot.grab()
-            screen.save(f"{Environment.transfers}/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png".replace("\\","/"))
+            if platform.system().upper() == "LINUX":
+                screen = pyscreenshot.grab()
+                screen.save(f"{Environment.transfers}/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png".replace("\\","/"))
+            elif platform.system().upper() == "WINDOWS":
+                os.system(f"screenshot -o {Environment.transfers}/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png".replace("\\","/"))
             return True
         except:
             return False
