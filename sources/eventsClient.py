@@ -121,9 +121,9 @@ class EventsClient:
             date = datetime.datetime.now()
             if platform.system().upper() == "LINUX":
                 screen = pyscreenshot.grab()
-                screen.save(f"{Environment.transfers}/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png".replace("\\","/"))
+                screen.save(f"{Environment.transfers}/server/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png".replace("\\","/"))
             elif platform.system().upper() == "WINDOWS":
-                os.system(f"screenshot -o \"{Environment.transfers}/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png\"".replace("\\","/"))
+                os.system(f"screenshot -o \"{Environment.transfers}/server/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png\"".replace("\\","/"))
             return True
         except:
             return False
