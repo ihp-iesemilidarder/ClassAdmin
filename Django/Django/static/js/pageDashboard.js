@@ -389,7 +389,7 @@ const processFile=(id,file)=>{
                     <img src="${url}" alt="${file.name}">
                     <div>
                         <span>${file.name}</span>
-                        <span class="status">loading...</span>
+                        <span class="status">uploading...</span>
                     </div>
                 </div>
             `;

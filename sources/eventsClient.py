@@ -83,34 +83,45 @@ class EventsClient:
         return True
 
     @staticmethod
-    def saveFile(hostname:str,name:str):
-        file = open(f"{Environment.transfers}/{hostname}/{name}.datauri","r")
+    def saveFile(hostname,name:str):
+        if hostname!=None:
+            path = f"{Environment.transfers}/{hostname}"
+        else:
+            path = f"{Environment.transfers}/server"
+        file = open(f"{path}/{name}.datauri","r")
         uri = file.read().replace(" ","+")
         file.close()
         headers,encoded = uri.split(",",1)
         data = b64decode(encoded)
-        with open(f"{Environment.transfers}/{hostname}/{name}", "wb") as f:
+        with open(f"{path}/{name}", "wb") as f:
             f.write(data)
-        os.remove(f"{Environment.transfers}/{hostname}/{name}.datauri")
-        Notify(f"file transfers with {hostname}",f"the client {hostname} shared you a file: {name}",False)
+        os.remove(f"{path}/{name}.datauri")
+        Notify(f"file transfers by {'the server' if hostname==None else hostname}",f"the {'server' if hostname==None else f'client {hostname}'} shared you a file: {name}",False)
         return True
 
     @staticmethod
-    def downloadFile(hostname:str,name:str,sector:str,last:bool) -> bool:
-        path = f"{Environment.transfers}/{hostname}"
-        try:
-            os.makedirs(path)
-        except:
-            None
-        with open(f"{Environment.transfers}/{hostname}/{name}.datauri", "a+") as f:
+    def downloadFile(hostname,name:str,sector:str,last:bool) -> bool:
+        if hostname!=None:
+            path = f"{Environment.transfers}/{hostname}"
+            try:
+                os.makedirs(path)
+            except:
+                None
+        else:
+            path = f"{Environment.transfers}/server"
+        with open(f"{path}/{name}.datauri", "a+") as f:
             f.write(sector)
         if last:
             EventsClient.saveFile(hostname,name)
 
     @staticmethod
-    def deleteFile(hostname:str,filename:str):
+    def deleteFile(hostname,filename:str):
         try:
-            os.remove(f"{Environment.transfers}/{hostname}/{filename}")
+            if hostname==None:
+                path = f"{Environment.transfers}/server"
+            else:
+                path = f"{Environment.transfers}/{hostname}"
+            os.remove(f"{path}/{filename}")
             return True
         except:
             return False
@@ -121,9 +132,9 @@ class EventsClient:
             date = datetime.datetime.now()
             if platform.system().upper() == "LINUX":
                 screen = pyscreenshot.grab()
-                screen.save(f"{Environment.transfers}/server/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png".replace("\\","/"))
+                screen.save(f"{Environment.transfers}/screenshots/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png")
             elif platform.system().upper() == "WINDOWS":
-                os.system(f"screenshot -o \"{Environment.transfers}/server/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png\"".replace("\\","/"))
+                os.system(f"screenshot -o \"{Environment.transfers}/screenshots/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png\"".replace("\\","/"))
             return True
         except:
             return False

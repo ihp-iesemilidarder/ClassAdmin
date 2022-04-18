@@ -118,7 +118,7 @@ class ReqDashboard:
             chunks = [str(file[i:i + n]) for i in range(0, len(file), n)]
             logFile().message(chunks)
             for sector in chunks:
-                PipeClient(str(currentHostName["ipaddress"])).send(f"function:downloadFile('{currentHostName['hostname']}','{name}','{sector}',{'True' if chunks.index(sector)==len(chunks)-1 else 'False'})")
+                PipeClient(str(currentHostName["ipaddress"])).send(f"function:downloadFile(None,'{name}','{sector}',{'True' if chunks.index(sector)==len(chunks)-1 else 'False'})")
                 time.sleep(.5)
             return True
         except BaseException as err:
@@ -131,7 +131,7 @@ class ReqDashboard:
     def deleteFile(self,id,filename):
         try:
             currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentHostName["ipaddress"])).send(f"function:deleteFile('{currentHostName['hostname']}','{filename}')")
+            PipeClient(str(currentHostName["ipaddress"])).send(f"function:deleteFile(None,'{filename}')")
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
