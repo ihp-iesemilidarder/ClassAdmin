@@ -36,5 +36,9 @@
         "id": "pageDashboard",
         "nameFileRecoveryCodes": "recoveryCodes_ClassAdmin.txt"
     },
-    "sockClients": {}
+    "Samba": {
+        "username": "ClassAdmin",
+        "password": "12345678",
+        "sharedDirectory":"ClassAdmin_Screenshots"
+    }
 }

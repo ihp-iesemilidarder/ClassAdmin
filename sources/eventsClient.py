@@ -1,9 +1,8 @@
 # Here, there are events required by the server
 import platform,subprocess,time,os,datetime,pyscreenshot
 from base64 import b64decode
-from smb.SMBConnection import SMBConnection
+
 from sources.utils import logFile, Notify, Environment, Json
-from sources.Samba import Samba
 class EventsClient:
     connection = None
     uri = ""
@@ -136,14 +135,15 @@ class EventsClient:
                 path = f"/tmp/{filename}"
                 screen = pyscreenshot.grab()
                 screen.save(path)
+                Samba.upload(filename,path)
             elif platform.system().upper() == "WINDOWS":
-                subprocess.run(f"screenshot -o \"C:/Windows/Temp/{filename}\"")
-            Samba.upload(filename,path)
-            """with open(path,"rb") as file:
-                conn = SMBConnection("ClassAdmin", "12345678", "ClassAdmin_Screenshots", "192.168.0.3", use_ntlm_v2 = True)
-                conn.connect("192.168.0.3",139)
-                conn.storeFile("ClassAdmin_Screenshots",filename,file)
-                conn.close()"""
+                path = f"C:/Windows/Temp/{filename}"
+                subprocess.run(f"screenshot -o \"{path}\"".replace("\\","/"))
+                server = Requests("services","GET","https://classadmin.server/api/servers/1").run().json()["result"]["ipaddress"]
+                username = Json(Environment.data).print(["Samba","username"])
+                password = Json(Environment.data).print(["Samba","password"])
+                sharedDirectory = Json(Environment.data).print(["Samba","shareDirectory"])
+                subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/sharedDirectory.ps1' -Operation Add -Server {server} -Username {username} -Password {password} -SharedDirectory {sharedDirectory} -FileName {filename} -File {path}"])
             os.remove(path)
             return True
         except:

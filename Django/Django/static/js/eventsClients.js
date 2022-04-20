@@ -1,150 +1,133 @@
-# Here, there are events required by the server
-import platform,subprocess,time,os,datetime,pyscreenshot
-from base64 import b64decode
+import {messg,getCookie} from './init.js';
 
-from sources.utils import logFile, Notify, Environment, Json
-class EventsClient:
-    connection = None
-    uri = ""
-    def __init__(self):
-        pass
+export const editHostName=async(e)=>{
+    let node = e.target;
+    let id = node.parentNode.parentNode.parentNode.dataset.id;
+    let hostname = node.parentNode.parentNode.querySelector("form input#hostname").value;
+    try{
+        let request = await fetch("./",{
+            method:"POST",
+            body:`action=editHostName&id=${id}&hostname=${hostname}`,
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRFToken":getCookie("csrftoken")
+            }
+        });
+        let data = await request.json()
+        if(data.result){
+            messg(`hostname edited successfully to ${hostname}`,true);
+        }else{
+            messg("Error at edit the hostname",false);
+        }
+    }catch(error){
+        messg(`Unexpected error at edit hostname: ${error}`,false);
+    }
+}
 
-    def run(self,message,conn):
-        # Very IMPORTANT that you DOESN'T add a space after of the colons (:)
-        # A example of message received:
-        # text:this is comment.
-        # function:functionName(arg1,arg2,...)
-        connection = conn
-        key,value = message.split(":",1)
-        if key == "function":
-            return exec(f"EventsClient.{value}")
-        elif key == "text":
-            logFile().message(Notify("comment",value,True),False,"INFO")
-            return True
+export const shutdownComputer=async(node)=>{
+    let id = node.parentNode.parentNode.dataset.id;
+    try{
+        let request = await fetch("./",{
+            method:"POST",
+            body:`action=shutdownHost&id=${id}`,
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRFToken":getCookie("csrftoken")
+            }
+        });
+        let data = await request.json()
+        if(data.result){
+            messg("Computer powered off successfully",true);
+        }else{
+            messg("Error at power off the computer",false);
+        }
+    }catch(error){
+        messg(`Unexpected error at power off the computer: ${error}`,false);
+    }
+}
 
-    @staticmethod
-    def shutdownHost():
-        logFile().message(Notify("shutdown","This computer will power off",True),False,"INFO")
-        if platform.system().upper() == "WINDOWS":
-            subprocess.run("shutdown -s")
-            return True
-        elif platform.system().upper() == "LINUX":
-            time.sleep(5)
-            subprocess.run("poweroff")
-            return True
+export const rebootComputer=async(node)=>{
+    let id = node.parentNode.parentNode.dataset.id;
+    try{
+        let request = await fetch("./",{
+            method:"POST",
+            body:`action=rebootHost&id=${id}`,
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRFToken":getCookie("csrftoken")
+            }
+        });
+        let data = await request.json()
+        if(data.result){
+            messg("Computer restarted successfully",true);
+        }else{
+            messg("Error at restart the computer",false);
+        }
+    }catch(error){
+        messg(`Unexpected error at restart the computer: ${error}`,false);
+    }
+}
+export const suspendComputer=async(node)=>{
+    let id = node.parentNode.parentNode.dataset.id;
+    try{
+        let request = await fetch("./",{
+            method:"POST",
+            body:`action=suspendHost&id=${id}`,
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRFToken":getCookie("csrftoken")
+            }
+        });
+        let data = await request.json()
+        if(data.result){
+            messg("the computer suspended successfully",true);
+        }else{
+            messg("Error at suspend the computer",false);
+        }
+    }catch(error){
+        messg(`Unexpected error at suspend the computer: ${error}`,false);
+    }
+}
+export const sendAlert=async(node,type,title,description)=>{
+    let id = node.parentNode.parentNode.parentNode.dataset.id;
+    try{
+        let request = await fetch("./",{
+            method:"POST",
+            body:`action=sendAlert&id=${id}&type=${type}&title=${title}&description=${description}`,
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRFToken":getCookie("csrftoken")
+            }
+        });
+        let data = await request.json()
+        if(data.result){
+            messg("The alert has been sent at client successfully",true);
+        }else{
+            messg("Error at send the alert at client",false);
+        }
+    }catch(error){
+        messg(`Unexpected error at send a alert at computer: ${error}`,false);
+    }
+}
 
-    @staticmethod
-    def rebootHost():
-        logFile().message(Notify("restart","This computer will restarted",True),False,"INFO")
-        if platform.system().upper() == "WINDOWS":
-            subprocess.run("shutdown -r")
-            return True
-        elif platform.system().upper() == "LINUX":
-            time.sleep(5)
-            subprocess.run("reboot")
-            return True
-
-    @staticmethod
-    def suspendHost():
-        logFile().message(Notify("suspend","This computer will suspended",True),False,"INFO")
-        if platform.system().upper() == "WINDOWS":
-            subprocess.run("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
-            return True
-        elif platform.system().upper() == "LINUX":
-            time.sleep(5)
-            subprocess.run("pm-suspend")
-            return True
-
-    @staticmethod
-    def editHostName(newHostname:str) -> bool:
-        Notify("Rename hostname",f"The computer will be change his hostname to {newHostname}.")
-        time.sleep(3)
-        if platform.system().upper() == "LINUX":
-            subprocess.run([f"{Environment.scripts}/Linux/editHostName.sh",newHostname,"&"])
-            return True
-        elif platform.system().upper() == "WINDOWS":
-            Notify("Reboot","You computer will be reboot in 10 seconds")
-            time.sleep(10)
-            subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/editHostName.ps1' -newHostName {newHostname}"])
-            return True
-
-    @staticmethod
-    def sendAlert(tipe:str,title:str,description:str) -> bool:
-        if tipe=="notification":
-            Notify(title,description,False)
-        else:
-            zenity = f"zenity --{tipe} --title '{title}' --text '{description}' --window-icon='{Environment.media}/images/ClassAdminLogo.png'"
-            user = Json(Environment.configuration).print(["user"])
-            if platform.system().upper()=="LINUX":
-                os.system(f"su {user} -c \"{zenity}\"")
-            elif platform.system().upper()=="WINDOWS":
-                architecture = platform.architecture()[0]
-                os.system(f"toast{architecture.replace('bit', '')} --title \"{title}\" --message \"{description}\" --icon \"{Environment.media}/images/{tipe}.png\"")
-        return True
-
-    @staticmethod
-    def saveFile(hostname,name:str):
-        if hostname!=None:
-            path = f"{Environment.transfers}/{hostname}"
-        else:
-            path = f"{Environment.transfers}/server"
-        file = open(f"{path}/{name}.datauri","r")
-        uri = file.read().replace(" ","+")
-        file.close()
-        headers,encoded = uri.split(",",1)
-        data = b64decode(encoded)
-        with open(f"{path}/{name}", "wb") as f:
-            f.write(data)
-        os.remove(f"{path}/{name}.datauri")
-        Notify(f"file transfers by {'the server' if hostname==None else hostname}",f"the {'server' if hostname==None else f'client {hostname}'} shared you a file: {name}",False)
-        return True
-
-    @staticmethod
-    def downloadFile(hostname,name:str,sector:str,last:bool) -> bool:
-        if hostname!=None:
-            path = f"{Environment.transfers}/{hostname}"
-            try:
-                os.makedirs(path)
-            except:
-                None
-        else:
-            path = f"{Environment.transfers}/server"
-        with open(f"{path}/{name}.datauri", "a+") as f:
-            f.write(sector)
-        if last:
-            EventsClient.saveFile(hostname,name)
-
-    @staticmethod
-    def deleteFile(hostname,filename:str):
-        try:
-            if hostname==None:
-                path = f"{Environment.transfers}/server"
-            else:
-                path = f"{Environment.transfers}/{hostname}"
-            os.remove(f"{path}/{filename}")
-            return True
-        except:
-            return False
-
-    @staticmethod
-    def screenshot(id):
-        try:
-            date = datetime.datetime.now()
-            filename = f"ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png"
-            if platform.system().upper() == "LINUX":
-                path = f"/tmp/{filename}"
-                screen = pyscreenshot.grab()
-                screen.save(path)
-                Samba.upload(filename,path)
-            elif platform.system().upper() == "WINDOWS":
-                path = f"C:/Windows/Temp/{filename}"
-                subprocess.run(f"screenshot -o \"{path}\"".replace("\\","/"))
-                server = Requests("services","GET","https://classadmin.server/api/servers/1").run().json()["result"]["ipaddress"]
-                username = Json(Environment.data).print(["Samba","username"])
-                password = Json(Environment.data).print(["Samba","password"])
-                sharedDirectory = Json(Environment.data).print(["Samba","shareDirectory"])
-                subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/sharedDirectory.ps1' -Operation Add -Server {server} -Username {username} -Password {password} -SharedDirectory {sharedDirectory} -FileName {filename} -File {path}"])
-            os.remove(path)
-            return True
-        except:
-            return False
+export const screenshot=async(node)=>{
+    try{
+        let id = node.parentNode.parentNode.dataset.id;
+        let request = await fetch("./",{
+            method:"POST",
+            body:`action=screenshot&id=${id}`,
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRFToken":getCookie("csrftoken")
+            }
+        });
+        let data = await request.json()
+        if(data.result){
+            messg("The client desktop has been captured successfully",true);
+        }else{
+            messg("Error at capture the client desktop",false);
+        }
+    }catch(error){
+        messg(`Unexpected error at capture the client desktop: ${error}`,false);
+    }
+}
