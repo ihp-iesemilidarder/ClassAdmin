@@ -1,8 +1,9 @@
 # Here, there are events required by the server
 import platform,subprocess,time,os,datetime,pyscreenshot
 from base64 import b64decode
-
+from smb.SMBConnection import SMBConnection
 from sources.utils import logFile, Notify, Environment, Json
+from sources.Samba import Samba
 class EventsClient:
     connection = None
     uri = ""
@@ -130,11 +131,20 @@ class EventsClient:
     def screenshot(id):
         try:
             date = datetime.datetime.now()
+            filename = f"ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png"
             if platform.system().upper() == "LINUX":
+                path = f"/tmp/{filename}"
                 screen = pyscreenshot.grab()
-                screen.save(f"{Environment.transfers}/screenshots/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png")
+                screen.save(path)
             elif platform.system().upper() == "WINDOWS":
-                os.system(f"screenshot -o \"{Environment.transfers}/screenshots/ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png\"".replace("\\","/"))
+                subprocess.run(f"screenshot -o \"C:/Windows/Temp/{filename}\"")
+            Samba.upload(filename,path)
+            """with open(path,"rb") as file:
+                conn = SMBConnection("ClassAdmin", "12345678", "ClassAdmin_Screenshots", "192.168.0.3", use_ntlm_v2 = True)
+                conn.connect("192.168.0.3",139)
+                conn.storeFile("ClassAdmin_Screenshots",filename,file)
+                conn.close()"""
+            os.remove(path)
             return True
         except:
             return False
