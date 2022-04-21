@@ -132,19 +132,18 @@ class EventsClient:
         try:
             date = datetime.datetime.now()
             filename = f"ClassAdmin_screenshot_{date.day}-{date.month}-{date.year}_{date.hour}-{date.minute}-{date.second}.png"
+            path = f"/tmp/{filename}" if platform.system().upper() == "LINUX" else f"C:/Windows/Temp/{filename}" if platform.system().upper()=="WINDOWS" else None
+            screen = pyscreenshot.grab()
+            screen.save(path)
             if platform.system().upper() == "LINUX":
-                path = f"/tmp/{filename}"
-                screen = pyscreenshot.grab()
-                screen.save(path)
                 Samba.upload(filename,path)
             elif platform.system().upper() == "WINDOWS":
-                path = f"C:/Windows/Temp/{filename}"
-                subprocess.run(f"screenshot -o \"{path}\"".replace("\\","/"))
                 server = Requests("services","GET","https://classadmin.server/api/servers/1").run().json()["result"]["ipaddress"]
                 username = Json(Environment.data).print(["Samba","username"])
                 password = Json(Environment.data).print(["Samba","password"])
                 sharedDirectory = Json(Environment.data).print(["Samba","sharedDirectory"])
                 subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/sharedDirectory.ps1' -Operation Add -Server {server} -Username {username} -Password {password} -SharedDirectory {sharedDirectory} -FileName {filename} -File {path}"])
+            logFile().message(Notify("Screenshot","The ClassAdmin admin did one screenshot of your desktop",True),False,"INFO")
             os.remove(path)
             return True
         except:
