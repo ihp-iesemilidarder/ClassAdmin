@@ -1,8 +1,9 @@
 # Here, there are events required by the server
 import platform,subprocess,time,os,datetime,pyscreenshot
 from base64 import b64decode
-
 from sources.utils import logFile, Notify, Environment, Json
+from sources.Samba import Samba
+from sources.Requests import Requests
 class EventsClient:
     connection = None
     uri = ""
@@ -142,7 +143,7 @@ class EventsClient:
                 server = Requests("services","GET","https://classadmin.server/api/servers/1").run().json()["result"]["ipaddress"]
                 username = Json(Environment.data).print(["Samba","username"])
                 password = Json(Environment.data).print(["Samba","password"])
-                sharedDirectory = Json(Environment.data).print(["Samba","shareDirectory"])
+                sharedDirectory = Json(Environment.data).print(["Samba","sharedDirectory"])
                 subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/sharedDirectory.ps1' -Operation Add -Server {server} -Username {username} -Password {password} -SharedDirectory {sharedDirectory} -FileName {filename} -File {path}"])
             os.remove(path)
             return True
