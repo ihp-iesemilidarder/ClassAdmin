@@ -152,6 +152,19 @@ class ReqDashboard:
             line = traceback.tb_lineno
             logFile().message(f"{err} in {file}:{line}")
             return False
+
+    def listPrograms(self,id):
+        try:
+            currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            PipeClient(str(currentHostName["ipaddress"])).send(f"function:listPrograms()")
+            return True
+        except BaseException as err:
+            type, object, traceback = sys.exc_info()
+            file = traceback.tb_frame.f_code.co_filename
+            line = traceback.tb_lineno
+            logFile().message(f"{err} in {file}:{line}")
+            return False
+
 # events for each client (shutdown,edit hostnamename,alert,etc)
 class EventsDashboard(ReqDashboard):
     def __init__(self,req):
@@ -199,6 +212,9 @@ class EventsDashboard(ReqDashboard):
         elif self.req.POST["action"] == "screenshot":
             id = self.req.POST["id"]
             return super().screenshot(id)
+        elif self.req.POST["action"] == "listPrograms":
+            id = self.req.POST["id"]
+            return super().listPrograms(id)
 
     def __notifications(self):
         try:

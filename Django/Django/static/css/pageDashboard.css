@@ -436,6 +436,43 @@ body > div.CONNECTED{
             white-space: pre;
         }
 
+    /*List programs*/
+        #pageDashboard div#listPrograms{
+            background: #f8f8ee;
+            border-radius: 10px;
+            position: fixed;
+            box-shadow: 1px 1px 10px rgba(0,0,0,.3);
+            left: 0;
+            right: 0;
+            margin: 0 10%;
+            display: none;
+            flex-direction: column;
+            padding: 2%;
+        }
+        #pageDashboard div#listPrograms i.fa-circle-xmark{
+            font-size: 1.5em;
+            color: red;
+            position: absolute;
+            right: -13px;
+            top: -13px;
+            background: white;
+            border-radius: 100%;
+            box-shadow: 1px 1px 10px rgb(0 0 0 / 50%);
+            cursor: pointer;
+        }
+        #pageDashboard div#listPrograms input[type="search"]{
+            background:rgba(0,0,0,.1);
+            border-radius:5px 5px 0 0;
+            border:none;
+            font-size:1em;
+            border-bottom:1px solid black;
+            padding:1%;
+            outline:none;
+            transition:.3s;
+        }
+        #pageDashboard div#listPrograms input[type="search"]:focus{
+            box-shadow:1px 1px 5px rgba(0,0,0,.2);
+        }
 @media (max-width:768px){
     #pageDashboard div#formNotification,#pageDashboard div#formEditUser{
         margin: 5%;

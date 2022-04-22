@@ -1,7 +1,7 @@
 import './lib/sha512.js';
 import './lib/FileSaver.js';
 import {enterSession, messg, getCookie} from './init.js';
-import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot} from "./eventsClients.js"
+import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot,listPrograms} from "./eventsClients.js"
 const buttonConf = document.querySelector("#pageDashboard .fa-cog");
 const closeConf = document.querySelector("#pageDashboard #config .fa-close");
 const saveConf = document.querySelector("#pageDashboard #config input[type='submit']");
@@ -260,17 +260,19 @@ export async function eventsClientsList(e){
     if(node.classList.contains("fa-user-pen")){
         showFormEdit(node);
     }else if(node.classList.contains("fa-power-off")){
-        shutdownComputer(node)
+        shutdownComputer(node);
     }else if(node.classList.contains("fa-redo")){
-        rebootComputer(node)
+        rebootComputer(node);
     }else if(node.classList.contains("fa-moon")){
-        suspendComputer(node)
+        suspendComputer(node);
     }else if(node.classList.contains("fa-bell")){
-        showFormAlert(node)
+        showFormAlert(node);
     }else if(node.classList.contains("fa-upload")){
-        showUploadBox(node)
+        showUploadBox(node);
     }else if(node.classList.contains("fa-camera")){
-        screenshot(node)
+        screenshot(node);
+    }else if(node.classList.contains("fa-ban")){
+        listPrograms(node);
     }
 }
 

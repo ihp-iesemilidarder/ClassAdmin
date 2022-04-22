@@ -131,3 +131,25 @@ export const screenshot=async(node)=>{
         messg(`Unexpected error at capture the client desktop: ${error}`,false);
     }
 }
+
+export const listPrograms=async(node)=>{
+    try{
+        let id = node.parentNode.parentNode.dataset.id;
+        let request = await fetch("./",{
+            method:"POST",
+            body:`action=listPrograms&id=${id}`,
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRFToken":getCookie("csrftoken")
+            }
+        });
+        let data = await request.json()
+        if(data.result){
+            document.querySelector("#pageDashboard div#listPrograms").style.display="flex";
+        }else{
+            messg("Error at capture the client desktop",false);
+        }
+    }catch(error){
+        messg(`Unexpected error at capture the client desktop: ${error}`,false);
+    }
+}

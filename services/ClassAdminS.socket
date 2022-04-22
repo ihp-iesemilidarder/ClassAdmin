@@ -80,5 +80,12 @@ class SocketServer:
             self.CLIENTS = Requests("services","GET","https://classadmin.server/api/servers").run().json()["result"][0]["clients"]
         except:
             raise ConnectionError
+
+    # miniserver for to allow from Django comunicate and send data.
+    def __comunicationServer(self):
+        self.eventPipe = multiprocessing.Event()
+        self.pipeServer = multiprocessing.Process(target=PipeServer, name="pipeClient", args=(self.eventPipe,))
+        threading.Thread(target=PipeServer.close, name="closePipeClient",args=(self.pipeServer, self.eventPipe,)).start()
+        self.pipeServer.start()
 if __name__=="__main__":
     SocketServer(args=sys.argv)

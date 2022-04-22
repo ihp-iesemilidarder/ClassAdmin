@@ -10,17 +10,17 @@ class EventsClient:
     def __init__(self):
         pass
 
-    def run(self,message,conn):
+    def run(self,message):
         # Very IMPORTANT that you DOESN'T add a space after of the colons (:)
         # A example of message received:
         # text:this is comment.
         # function:functionName(arg1,arg2,...)
-        connection = conn
         key,value = message.split(":",1)
+        logFile().message(key)
         if key == "function":
             return exec(f"EventsClient.{value}")
         elif key == "text":
-            logFile().message(Notify("comment",value,True),False,"INFO")
+            logFile().message(Notify("comment",value,True),True,"INFO")
             return True
 
     @staticmethod
