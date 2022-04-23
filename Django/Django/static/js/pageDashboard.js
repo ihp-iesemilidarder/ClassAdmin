@@ -23,6 +23,8 @@ const containerUploadFiles = document.querySelector("#pageDashboard div#containe
 const inputUploadFiles = document.querySelector("#pageDashboard div#containerUploadFile input#uploadFile");
 const closeUploadFiles = document.querySelector("#pageDashboard div#containerUploadFile i.fa-circle-xmark");
 let files;
+// listPrograms div
+const containerListPrograms = document.querySelector("#pageDashboard div#listPrograms")
 
 const sessionLogout=()=>{
     localStorage.removeItem("sessionToken");
@@ -492,4 +494,6 @@ export async function pageDashboard(){
     containerUploadFiles.addEventListener("dragleave",dragleave);
     containerUploadFiles.addEventListener("drop",drop);
     containerUploadFiles.querySelector("span#extensions").addEventListener("click",()=>e.preventDefault());
+    containerListPrograms.querySelector("i.fa-circle-xmark").addEventListener("click",()=>containerListPrograms.removeAttribute("style"));
+
 }
