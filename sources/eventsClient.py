@@ -148,3 +148,12 @@ class EventsClient:
             return True
         except:
             return False
+
+    @staticmethod
+    def listPrograms():
+        try:
+            server = Requests("services","GET","https://classadmin.server/api/servers/1").run().json()["result"]["ipaddress"]
+            PipeClient(str(server)).send("text:hola")
+            return True
+        except:
+            return False
