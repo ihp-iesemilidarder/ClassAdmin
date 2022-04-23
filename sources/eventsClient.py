@@ -4,6 +4,7 @@ from base64 import b64decode
 from sources.utils import logFile, Notify, Environment, Json
 from sources.Samba import Samba
 from sources.Requests import Requests
+from sources.pipeClient import PipeClient
 class EventsClient:
     connection = None
     uri = ""
