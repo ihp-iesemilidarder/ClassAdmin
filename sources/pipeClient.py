@@ -33,7 +33,7 @@ class PipeClient:
                         "port"])
                 # connection at server (without specified ip ipaddress), so if the server changes the ip ipaddress,
                 # the client will can connect.
-                self.sockSSL.connect((self.ipaddress, PORT))
+                self.sockSSL.connect((self.ipaddress, PORT+5))
                 break
             except BaseException as err:
                 try:

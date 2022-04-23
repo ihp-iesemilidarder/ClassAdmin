@@ -51,6 +51,7 @@ class PipeServer:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(Environment.SSL("crt"),Environment.SSL("key"))
         self.sockSSL = context.wrap_socket(self.sock,server_side=True)
+
     @staticmethod
     def close(process,event):
         while True:
@@ -61,5 +62,5 @@ class PipeServer:
 
     def __createSocket(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind(("",self.port))
+        self.sock.bind(("",self.port+5))
         self.sock.listen(1)
