@@ -37,8 +37,9 @@
         "nameFileRecoveryCodes": "recoveryCodes_ClassAdmin.txt"
     },
     "Samba": {
+        "server": "classadmin.server",
         "username": "ClassAdmin",
         "password": "12345678",
-        "sharedDirectory":"ClassAdmin_Screenshots"
+        "sharedDirectory":"ClassAdminS_Screenshots"
     }
 }

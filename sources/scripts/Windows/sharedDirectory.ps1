@@ -1,3 +1,7 @@
+#
+# This script copy a file to a shared folder. Used for the functionally of screenshots
+#
+
 Param(
     [String] $Operation,
     [String] $Server,

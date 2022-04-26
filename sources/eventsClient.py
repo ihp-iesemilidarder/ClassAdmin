@@ -139,7 +139,7 @@ class EventsClient:
             if platform.system().upper() == "LINUX":
                 Samba.upload(filename,path)
             elif platform.system().upper() == "WINDOWS":
-                server = Requests("services","GET","https://classadmin.server/api/servers/1").run().json()["result"]["ipaddress"]
+                server = Json(Environment.data).print(["Samba", "server"])
                 username = Json(Environment.data).print(["Samba","username"])
                 password = Json(Environment.data).print(["Samba","password"])
                 sharedDirectory = Json(Environment.data).print(["Samba","sharedDirectory"])
@@ -153,8 +153,11 @@ class EventsClient:
     @staticmethod
     def listPrograms():
         try:
-            server = Requests("services","GET","https://classadmin.server/api/servers/1").run().json()["result"]["ipaddress"]
-            PipeClient(str(server)).send("text:hola")
+            server = Json(Environment.data).print(["Samba", "server"])
+            username = Json(Environment.data).print(["Samba", "username"])
+            password = Json(Environment.data).print(["Samba", "password"])
+            sharedDirectory = Json(Environment.data).print(["Samba", "sharedDirectory"])
+            subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/listPrograms.ps1' -SharedDestination \\\\{server}\\{sharedDirectory} -Username {username} -Password {password}"])
             return True
         except:
             return False
