@@ -148,6 +148,7 @@ class EventsClient:
             os.remove(path)
             return True
         except:
+            Notify("Error unexpected","You look if you has write permissions in the ClassAdminS_Screenshots shared folder", False)
             return False
 
     @staticmethod
@@ -160,4 +161,5 @@ class EventsClient:
             subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/listPrograms.ps1' -SharedDestination \\\\{server}\\{sharedDirectory} -Username {username} -Password {password}"])
             return True
         except:
+            Notify("Error unexpected","You look if you has write permissions in the ClassAdminS_Screenshots shared folder",False)
             return False

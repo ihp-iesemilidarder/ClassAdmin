@@ -31,7 +31,7 @@ CREATE TABLE status (
 	name	VARCHAR(50)	NOT NULL,
 	CONSTRAINT status_PK PRIMARY KEY (name)
 );
-INSERT INTO status (name) VALUES ("CONNECTED"),("DISCONNECTED"),("ERROR");
+INSERT INTO status (name) VALUES ("CONNECTED"),("DISCONNECTED");
 
 ALTER TABLE clients ADD CONSTRAINT cli_status_FK FOREIGN KEY (status) REFERENCES status (name);
 

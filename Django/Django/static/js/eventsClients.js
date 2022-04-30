@@ -147,7 +147,7 @@ export const listPrograms=async(node)=>{
         if(data.result){
             document.querySelector("#pageDashboard div#listPrograms").style.display="flex";
         }else{
-            messg("Error at capture the client desktop",false);
+            messg("Error at load the client computer programs",false);
         }
     }catch(error){
         messg(`Unexpected error at capture the client desktop: ${error}`,false);
