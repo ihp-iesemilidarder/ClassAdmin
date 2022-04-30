@@ -148,7 +148,11 @@ class EventsClient:
             os.remove(path)
             return True
         except:
-            Notify("Error unexpected","You look if you has write permissions in the ClassAdminS_Screenshots shared folder", False)
+            type, object, traceback = sys.exc_info()
+            file = traceback.tb_frame.f_code.co_filename
+            line = traceback.tb_lineno
+            logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+            Notify("Error unexpected at save the screenshot","You check if you has access a shared folder ClassAdmin_Screenshots",False)
             return False
 
     @staticmethod
@@ -161,5 +165,9 @@ class EventsClient:
             subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/listPrograms.ps1' -SharedDestination \\\\{server}\\{sharedDirectory} -Username {username} -Password {password}"])
             return True
         except:
-            Notify("Error unexpected","You look if you has write permissions in the ClassAdminS_Screenshots shared folder",False)
+            type, object, traceback = sys.exc_info()
+            file = traceback.tb_frame.f_code.co_filename
+            line = traceback.tb_lineno
+            logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+            Notify("Error unexpected at save the screenshot","You check if you has access a shared folder ClassAdmin_Screenshots",False)
             return False
