@@ -1,4 +1,5 @@
 import urllib3
+from sources.utils import logFile
 from sources.Requests import Requests
 urllib3.disable_warnings()
 class Client:
@@ -37,10 +38,12 @@ class Client:
         client = Requests("services","GET",f"https://classadmin.server/api/clients/{self.ipaddress[0]}/{hostname}").run().json()["result"]
         # if there are the clients maximum connected this throw a wrong
         if clients!=None and len(list(filter(lambda cli: cli["status"]=="CONNECTED",clients))) >= maxClientsConnected:
+            logFile().message("too many clients")
             return "TooManyClients"
 
         # if the clients list is empty and the host is different, this adds the new client in the list
         if (client==None and status=="CONNECTED") or (self.__differentHostAddress(self.ipaddress[0],hostname,clients) and status=="CONNECTED"):
+            logFile().message("add client")
             Requests("services","POST",f"https://classadmin.server/api/clients",{
                     "hostname":hostname,
                     "ipaddress":self.ipaddress[0],
@@ -51,13 +54,16 @@ class Client:
 
         # if the new client's hostname is the same and is active (status CONNECTED), not add it
         elif self.__sameHostNameConnected(hostname,self.ipaddress[0],"CONNECTED",clients):
+            logFile().message("sameUser")
             return "sameUser"
 
         # update the client
         else:
+            logFile().message("update client")
             cLientsUpdate = Requests("services","GET",f"https://classadmin.server/api/clients/{self.ipaddress[0]}/{hostname}").run().json()["result"]
             # if there are more than one client, this deletes all minus one client for after update it
             if len(cLientsUpdate)>1:
+                logFile().message("remove all clients")
                 for cli in cLientsUpdate[0:len(cLientsUpdate)-1]:
                     Requests("services","DELETE",f"https://classadmin.server/api/clients/{cli['id']}").run().json()
             Requests("services","PUT",f"https://classadmin.server/api/clients/{self.ipaddress[0]}/{hostname}",{

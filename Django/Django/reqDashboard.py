@@ -1,4 +1,4 @@
-import base64,binascii,os,math,sys, json, random, platform
+import base64,binascii,os,math,sys, json, random, platform,json
 import time
 
 from sources.django import generateQR
@@ -148,7 +148,7 @@ class ReqDashboard:
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
-            file = traceback.tb_frame.f_code.co_filename
+            file = traceback.tb_frame.f_csode.co_filename
             line = traceback.tb_lineno
             logFile().message(f"{err} in {file}:{line}")
             return False
@@ -157,7 +157,10 @@ class ReqDashboard:
         try:
             currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
             PipeClient(str(currentHostName["ipaddress"])).send(f"function:listPrograms()")
-            return True
+            with open(f"{Environment.transfers}/.screenshots/listPrograms.txt","r") as file:
+                data = json.loads(file.read())
+            os.remove(f"{Environment.transfers}/.screenshots/listPrograms.txt")
+            return data
         except BaseException as err:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
