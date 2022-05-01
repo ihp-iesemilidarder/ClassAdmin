@@ -157,7 +157,7 @@ class ReqDashboard:
         try:
             currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
             PipeClient(str(currentHostName["ipaddress"])).send(f"function:listPrograms()")
-            with open(f"{Environment.transfers}/.screenshots/listPrograms.txt","r") as file:
+            with open(f"{Environment.transfers}/.screenshots/listPrograms.txt","rb") as file:
                 data = json.loads(file.read())
             os.remove(f"{Environment.transfers}/.screenshots/listPrograms.txt")
             return data
