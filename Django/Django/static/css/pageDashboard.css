@@ -473,6 +473,52 @@ body > div.CONNECTED{
         #pageDashboard div#listPrograms input[type="search"]:focus{
             box-shadow:1px 1px 5px rgba(0,0,0,.2);
         }
+        #pageDashboard div#listPrograms > div{
+            max-height: 24em;
+            overflow: auto;
+            margin: 10px 0;
+        }
+        #pageDashboard div#listPrograms > div > label{
+            cursor: pointer;
+            font-size: 1em;
+            padding: 1% 4%;
+            transition:.3s;
+            display:block;
+            position:relative;
+        }
+        #pageDashboard div#listPrograms > div > label:hover{
+            background: #dfdfd6;
+        }
+        #pageDashboard div#listPrograms > div > label input[type="checkbox"]{
+            display:none;
+        }
+        #pageDashboard div#listPrograms > div > label input[type="checkbox"] + span{
+            height: 17px;
+            width: 17px;
+            position: absolute;
+            border-radius: 100px;
+            border: 3px solid rgb(223 223 214);
+            transition:.3s;
+            transform: translateX(-30px) scale(.9);
+        }
+        #pageDashboard div#listPrograms > div > label input[type="checkbox"]:checked + span{
+            background-color: rgb(223 223 214);
+        }
+        #pageDashboard div#listPrograms > div > label input[type="checkbox"]:not(:checked) + span{
+            background-color: transparent;
+        }
+        #pageDashboard div#listPrograms > input[type="button"]{
+            background: #dfdfd6;
+            border: none;
+            padding: 1%;
+            border-radius: 5px;
+            transparent:.3s;
+            cursor:pointer;
+            transition:.3s;
+        }
+        #pageDashboard div#listPrograms > input[type="button"]:hover{
+            transform:scale(.95);
+        }
 @media (max-width:768px){
     #pageDashboard div#formNotification,#pageDashboard div#formEditUser{
         margin: 5%;
@@ -516,6 +562,13 @@ body > div.CONNECTED{
         padding: 1%;
         border-radius: 50%;
     }
+    /*label programs*/
+        #pageDashboard div#listPrograms > div > label{
+            padding: 1% 5%;
+        }
+        #pageDashboard div#listPrograms > div > label input[type="checkbox"] + span{
+            transform: translateX(-25px) scale(.9);
+        }
 }
 @media (max-width:600px){
     #pageDashboard .fa-sign-out-alt{

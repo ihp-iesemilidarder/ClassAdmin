@@ -144,6 +144,15 @@ export const listPrograms=async(node)=>{
             }
         });
         let data = await request.json()
+        for(let exe in data.result){
+            document.querySelector("#pageDashboard div#listPrograms > div").innerHTML+=`
+                <label for="${data.result[exe]}">
+                    <input type="checkbox" id="${data.result[exe]}">
+                    <span></span>
+                    ${exe}
+                </label>
+            `;
+        }
         if(data.result){
             document.querySelector("#pageDashboard div#listPrograms").style.display="flex";
         }else{

@@ -160,7 +160,7 @@ const drawListClients=(list)=>{
                     <i class="fa fa-redo" title="reboot computer" aria-hidden="true"></i>
                     <i class="fa fa-power-off" title="shutdown computer" aria-hidden="true"></i>
                     <i class="fa fa-moon" title="suspend computer" aria-hidden="true"></i>
-                    <i class="fa fa-ban" title="deny applications" aria-hidden="true"></i>
+                    <i class="fa fa-ban" title="deny programs" aria-hidden="true"></i>
                     <i class="fa fa-camera" title="screenshot" aria-hidden="true"></i>
                     <i class="fa fa-bell" title="send alert" class="send-alert"></i>
                     <i class="fa fa-upload" title="upload file" class="send-message"></i>
