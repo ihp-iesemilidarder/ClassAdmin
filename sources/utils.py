@@ -1,4 +1,4 @@
-import os,socket,logging,json,psutil, platform, certifi,sys
+import os,socket,logging,json,psutil, platform, certifi,sys,subprocess
 
 
 #This class storages all the paths for uses it in all the project

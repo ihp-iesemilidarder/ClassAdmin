@@ -162,7 +162,10 @@ class EventsClient:
             username = Json(Environment.data).print(["Samba", "username"])
             password = Json(Environment.data).print(["Samba", "password"])
             sharedDirectory = Json(Environment.data).print(["Samba", "sharedDirectory"])
-            subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/listPrograms.ps1' -SharedDestination \\\\{server}\\{sharedDirectory} -Username {username} -Password {password}"])
+            if platform.system().upper()=="WINDOWS":
+                subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/listPrograms.ps1' -SharedDestination \\\\{server}\\{sharedDirectory} -Username {username} -Password {password}"])
+            elif platform.system().upper()=="LINUX":
+                subprocess.run([f"{Environment.scripts}/Linux/listPrograms.sh",f"//{server}/{sharedDirectory}",username,password,"&"])
             return True
         except:
             type, object, traceback = sys.exc_info()
