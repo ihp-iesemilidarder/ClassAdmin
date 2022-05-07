@@ -29,6 +29,7 @@ function getJSON(){
 function saveListPrograms(){
 	echo $json > /tmp/listPrograms.txt
 	smbclient //$1/$2 $4 -U $3 -c "put /tmp/listPrograms.txt listPrograms.txt"
+	shred -uz -n 5 /tmp/listPrograms.txt
 }
 
 function init(){
