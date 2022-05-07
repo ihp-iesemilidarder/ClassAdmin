@@ -165,7 +165,7 @@ class EventsClient:
             if platform.system().upper()=="WINDOWS":
                 subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/listPrograms.ps1' -SharedDestination \\\\{server}\\{sharedDirectory} -Username {username} -Password {password}"])
             elif platform.system().upper()=="LINUX":
-                subprocess.run([f"{Environment.scripts}/Linux/listPrograms.sh",f"//{server}/{sharedDirectory}",username,password,"&"])
+                subprocess.run([f"{Environment.scripts}/Linux/listPrograms.sh",server,sharedDirectory,username,password,"&"])
             return True
         except:
             type, object, traceback = sys.exc_info()
