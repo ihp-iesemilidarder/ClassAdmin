@@ -442,15 +442,6 @@ const filterPrograms=(e)=>{
     let search = e.target.value;
     printListPrograms(search)
 }
-
-const checksPrograms=()=>{
-    let checks = containerListPrograms.querySelectorAll("div > label input[type='checkbox']:checked");
-    if(checks.length>0){
-        return true;
-    }else{
-        return false;
-    }
-}
 const fetchProgramsDeny=async(id,list)=>{
     let request = await fetch("./",{
         method:"POST",
@@ -460,7 +451,7 @@ const fetchProgramsDeny=async(id,list)=>{
             "X-CSRFToken":getCookie("csrftoken")
         }
     });
-    let data = request.json();
+    let data = await request.json();
     if(data.result){
         messg("The programs selected has denied in the client computer successfully",true);
     }else{
@@ -469,16 +460,13 @@ const fetchProgramsDeny=async(id,list)=>{
 }
 
 const denyPrograms=async(e)=>{
-    if(checksPrograms()){
-        let programs = containerListPrograms.querySelectorAll("div > label input[type='checkbox']:checked");
-        let listPrograms=[];
-        programs.forEach(program=>{
-            listPrograms.push(program.id)
-        });
-        await fetchProgramsDeny(e.target.parentNode.dataset.id,listPrograms);
-    }else{
-        messg("You need selected programs for deny it",false);
-    }
+    let programs = containerListPrograms.querySelectorAll("div > label input[type='checkbox']:checked");
+    let listPrograms=[];
+    programs.forEach(program=>{
+        listPrograms.push(program.id)
+    });
+    let data = (listPrograms.length==0)?null:listPrograms;
+    await fetchProgramsDeny(e.target.parentNode.dataset.id,data);
 }
 
 export async function pageDashboard(){

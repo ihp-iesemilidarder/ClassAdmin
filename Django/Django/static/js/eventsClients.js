@@ -158,9 +158,9 @@ export const listPrograms=async(node)=>{
                 "X-CSRFToken":getCookie("csrftoken")
             }
         });
-        let data = await request.json()
-        jsonPrograms=data.result
-        printListPrograms()
+        let data = await request.json();
+        jsonPrograms=data.result;
+        printListPrograms();
         if(data.result){
             document.querySelector("#pageDashboard div#listPrograms > span > span").textContent=node.parentNode.parentNode.querySelector(".info .hostname").textContent;
             document.querySelector("#pageDashboard div#listPrograms").dataset.id=node.parentNode.parentNode.dataset.id;

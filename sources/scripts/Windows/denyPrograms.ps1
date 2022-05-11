@@ -38,6 +38,10 @@ function prepareForDeny($path){
 }
 
 function denyPrograms($path){
+    if($Programs -eq "null"){
+        Clear-Item -Path "$path\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\explorer\DisallowRun";
+        continue;
+    }
     Clear-Item -Path "$path\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\explorer\DisallowRun";
     foreach($program in $Global:listPrograms){
         New-ItemProperty -Path "$path\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\explorer\DisallowRun" -PropertyType String -Name $program -Value $program;
