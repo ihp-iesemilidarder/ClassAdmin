@@ -174,3 +174,21 @@ class EventsClient:
             logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
             Notify("Error unexpected at save the screenshot","You check if you has access a shared folder ClassAdmin_Screenshots",False)
             return False
+
+    @staticmethod
+    def denyPrograms(programs:str):
+        try:
+            if platform.system().upper()=="WINDOWS":
+                logFile().message(f"powerhsell.exe & '{Environment.scripts}/Windows/denyPrograms.ps1' -Programs '{programs}'")
+                subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/denyPrograms.ps1' -Programs '{programs}'"])
+            elif platform.system().upper()=="LINUX":
+                subprocess.run([f"{Environment.scripts}/Linux/programsPrograms.sh",f'{programs}',"&"])
+            Notify("DenyClass","The administrator denied you programs")
+            return True
+        except:
+            type, object, traceback = sys.exc_info()
+            file = traceback.tb_frame.f_code.co_filename
+            line = traceback.tb_lineno
+            logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+            Notify("DenyClass","Error unexpected at deny the programs",False)
+            return False

@@ -1,5 +1,5 @@
 import {messg,getCookie} from './init.js';
-
+export let jsonPrograms={};
 export const editHostName=async(e)=>{
     let node = e.target;
     let id = node.parentNode.parentNode.parentNode.dataset.id;
@@ -132,6 +132,21 @@ export const screenshot=async(node)=>{
     }
 }
 
+export const printListPrograms=(search)=>{
+    document.querySelector("#pageDashboard div#listPrograms > div").innerHTML="";
+    for(let exe in jsonPrograms){
+        if(!search || String(exe).toUpperCase().includes(search.toUpperCase())){
+            document.querySelector("#pageDashboard div#listPrograms > div").innerHTML+=`
+                <label for="${jsonPrograms[exe][0]}">
+                    <input type="checkbox" id="${jsonPrograms[exe][0]}" ${jsonPrograms[exe][1]?"checked":""}>
+                    <span></span>
+                    ${exe}
+                </label>
+            `;
+        }
+    }
+}
+
 export const listPrograms=async(node)=>{
     try{
         let id = node.parentNode.parentNode.dataset.id;
@@ -144,16 +159,11 @@ export const listPrograms=async(node)=>{
             }
         });
         let data = await request.json()
-        for(let exe in data.result){
-            document.querySelector("#pageDashboard div#listPrograms > div").innerHTML+=`
-                <label for="${data.result[exe]}">
-                    <input type="checkbox" id="${data.result[exe]}">
-                    <span></span>
-                    ${exe}
-                </label>
-            `;
-        }
+        jsonPrograms=data.result
+        printListPrograms()
         if(data.result){
+            document.querySelector("#pageDashboard div#listPrograms > span > span").textContent=node.parentNode.parentNode.querySelector(".info .hostname").textContent;
+            document.querySelector("#pageDashboard div#listPrograms").dataset.id=node.parentNode.parentNode.dataset.id;
             document.querySelector("#pageDashboard div#listPrograms").style.display="flex";
         }else{
             messg("Error at load the client computer programs",false);

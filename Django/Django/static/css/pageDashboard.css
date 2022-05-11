@@ -435,7 +435,16 @@ body > div.CONNECTED{
             color:black;
             white-space: pre;
         }
-
+        #pageDashboard div#containerUploadFile > span{
+            position: absolute;
+            bottom: 0px;
+            font-size: 20px;
+            color: black;
+            background: #f8f8ee;
+            border-radius: 10px;
+            padding: .5% 3%;
+            left: 0;
+        }
     /*List programs*/
         #pageDashboard div#listPrograms{
             background: #f8f8ee;
@@ -584,10 +593,34 @@ body > div.CONNECTED{
         width:2em;
     }
     #pageDashboard #config img{
-        width:50%;
+        width:25%;
         margin:auto;
     }
     #pageDashboard #notificationDiv label:after{
         padding: 3px 13px;
+    }
+    #pageDashboard div#listPrograms{
+        max-height: 100%;
+        top: 16px;
+    }
+    #pageDashboard div#listPrograms > div > label{
+        padding: 1% 10%;
+    }
+    #pageDashboard div#listPrograms > div > label input[type="checkbox"] + span{
+        height: 12px;
+        width: 12px;
+    }
+    #divIcons i{
+        font-size: 2em;
+    }
+    #pageDashboard #config form .input{
+        margin: 2% 0;
+    }
+    #pageDashboard #config div#send {
+        bottom: 19%;
+    }
+    #pageDashboard #config i,#pageDashboard #config a{
+        font-size: 1em;
+        margin: 0 5%;
     }
 }

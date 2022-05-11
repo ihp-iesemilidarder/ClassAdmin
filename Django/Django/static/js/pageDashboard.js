@@ -1,7 +1,7 @@
 import './lib/sha512.js';
 import './lib/FileSaver.js';
 import {enterSession, messg, getCookie} from './init.js';
-import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot,listPrograms} from "./eventsClients.js"
+import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot,listPrograms,printListPrograms} from "./eventsClients.js";
 const buttonConf = document.querySelector("#pageDashboard .fa-cog");
 const closeConf = document.querySelector("#pageDashboard #config .fa-close");
 const saveConf = document.querySelector("#pageDashboard #config input[type='submit']");
@@ -241,6 +241,7 @@ function showFormEdit(node){
     containerFormEdit.dataset.id = node.parentNode.parentNode.dataset.id;
     let hostname = node.parentNode.parentNode.querySelector(".info .hostname").textContent;
     containerFormEdit.dataset.hostname = hostname;
+    containerFormEdit.querySelector("form > span > span").textContent=node.parentNode.parentNode.querySelector(".info .hostname").textContent;
     containerFormEdit.querySelector("input#hostname").value = hostname;
     containerFormEdit.style.display="block";
 }
@@ -254,6 +255,7 @@ function showFormAlert(node){
 function showUploadBox(node){
     containerUploadFiles.dataset.id = node.parentNode.parentNode.dataset.id;
     containerUploadFiles.dataset.hostname = node.parentNode.parentNode.querySelector(".info .hostname").textContent;
+    containerUploadFiles.querySelector("span > span").textContent=node.parentNode.parentNode.querySelector(".info .hostname").textContent;
     containerUploadFiles.style.display="flex";
 }
 
@@ -436,64 +438,110 @@ const deleteFile=async(id,filename)=>{
     let data = request.json();
 }
 
-export async function pageDashboard(){
-    // animation open configuration
-    buttonConf.addEventListener("click",()=>config.style.right="0");
+const filterPrograms=(e)=>{
+    let search = e.target.value;
+    printListPrograms(search)
+}
 
-    // animation close configuration
-    closeConf.addEventListener("click",()=>config.removeAttribute("style"));
-    enterSession();
-
-    // This checks if the session cookie is expired.
-    await cookie();
-
-    saveConf.addEventListener("click",await saveConfig);
-    newOTP.addEventListener("click",await reloadOTP);
-    buttonLogout.addEventListener("click", sessionLogout);
-
-    // updates in real time
-    showAliveServer();
-    updateListClients();
-    showAliveData();
-
-    // enable / disable notification checkbox
-    checkboxNotification.checked=checkNotification;
-    checkboxNotification.addEventListener("click",await activeDisableNotifications);
-    buttonUserNotification.addEventListener("click",await saveUserNotification);
-
-    // list clients' events (notification,edit hostname,shutdown,...)
-    containerClients.addEventListener("click",await eventsClientsList);
-
-    // edit client hostnamename
-    containerFormEdit.querySelector(".fa-circle-xmark").addEventListener("click",()=>containerFormEdit.removeAttribute("style"));
-    containerFormEdit.querySelector("#buttonEditClient").addEventListener("click",await editHostName);
-
-    // send alert at client
-    containerFormNotification.querySelector(".fa-circle-xmark").addEventListener("click",()=>containerFormNotification.removeAttribute("style"));
-    containerFormNotification.querySelector("#buttonSendAlert").addEventListener("click",await checkFormAlert);
-
-    // events for drag and drop files
-    closeUploadFiles.addEventListener("click",()=>{
-        inputUploadFiles.value="";
-        containerUploadFiles.querySelector("#preview").innerHTML="";
-        containerUploadFiles.removeAttribute("style");
-    });
-    containerUploadFiles.addEventListener("click",async(e)=>{
-        let node = e.target;
-        if(node.classList.contains("delete-file")){
-            let filename = node.parentNode.querySelector("img").alt;
-            let id = node.parentNode.parentNode.parentNode.dataset.id;
-            await deleteFile(id,filename);
-            node.parentNode.remove();
-        }else if(!node.classList.contains("fa-circle-xmark")){
-            inputUploadFiles.click()
+const checksPrograms=()=>{
+    let checks = containerListPrograms.querySelectorAll("div > label input[type='checkbox']:checked");
+    if(checks.length>0){
+        return true;
+    }else{
+        return false;
+    }
+}
+const fetchProgramsDeny=async(id,list)=>{
+    let request = await fetch("./",{
+        method:"POST",
+        body:`action=denyPrograms&id=${id}&list=${list}`,
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+            "X-CSRFToken":getCookie("csrftoken")
         }
     });
-    containerUploadFiles.addEventListener("change",uploadFile);
-    containerUploadFiles.addEventListener("dragover",dragover);
-    containerUploadFiles.addEventListener("dragleave",dragleave);
-    containerUploadFiles.addEventListener("drop",drop);
-    containerUploadFiles.querySelector("span#extensions").addEventListener("click",()=>e.preventDefault());
-    containerListPrograms.querySelector("i.fa-circle-xmark").addEventListener("click",()=>containerListPrograms.removeAttribute("style"));
+    let data = request.json();
+    if(data.result){
+        messg("The programs selected has denied in the client computer successfully",true);
+    }else{
+        messg("Error unexpected at deny the programs in the client computer",false)
+    }
+}
 
+const denyPrograms=async(e)=>{
+    if(checksPrograms()){
+        let programs = containerListPrograms.querySelectorAll("div > label input[type='checkbox']:checked");
+        let listPrograms=[];
+        programs.forEach(program=>{
+            listPrograms.push(program.id)
+        });
+        await fetchProgramsDeny(e.target.parentNode.dataset.id,listPrograms);
+    }else{
+        messg("You need selected programs for deny it",false);
+    }
+}
+
+export async function pageDashboard(){
+    // animation open configuration
+        buttonConf.addEventListener("click",()=>config.style.right="0");
+
+    // animation close configuration
+        closeConf.addEventListener("click",()=>config.removeAttribute("style"));
+        enterSession();
+
+    // This checks if the session cookie is expired.
+        await cookie();
+
+        saveConf.addEventListener("click",await saveConfig);
+        newOTP.addEventListener("click",await reloadOTP);
+        buttonLogout.addEventListener("click", sessionLogout);
+
+    // updates in real time
+        showAliveServer();
+        updateListClients();
+        showAliveData();
+
+    // enable / disable notification checkbox
+        checkboxNotification.checked=checkNotification;
+        checkboxNotification.addEventListener("click",await activeDisableNotifications);
+        buttonUserNotification.addEventListener("click",await saveUserNotification);
+
+    // list clients' events (notification,edit hostname,shutdown,...)
+        containerClients.addEventListener("click",await eventsClientsList);
+
+    // edit client hostnamename
+        containerFormEdit.querySelector(".fa-circle-xmark").addEventListener("click",()=>containerFormEdit.removeAttribute("style"));
+        containerFormEdit.querySelector("#buttonEditClient").addEventListener("click",await editHostName);
+
+    // send alert at client
+        containerFormNotification.querySelector(".fa-circle-xmark").addEventListener("click",()=>containerFormNotification.removeAttribute("style"));
+        containerFormNotification.querySelector("#buttonSendAlert").addEventListener("click",await checkFormAlert);
+
+    // events for drag and drop files
+        closeUploadFiles.addEventListener("click",()=>{
+            inputUploadFiles.value="";
+            containerUploadFiles.querySelector("#preview").innerHTML="";
+            containerUploadFiles.removeAttribute("style");
+        });
+        containerUploadFiles.addEventListener("click",async(e)=>{
+            let node = e.target;
+            if(node.classList.contains("delete-file")){
+                let filename = node.parentNode.querySelector("img").alt;
+                let id = node.parentNode.parentNode.parentNode.dataset.id;
+                await deleteFile(id,filename);
+                node.parentNode.remove();
+            }else if(!node.classList.contains("fa-circle-xmark")){
+                inputUploadFiles.click()
+            }
+        });
+        containerUploadFiles.addEventListener("change",uploadFile);
+        containerUploadFiles.addEventListener("dragover",dragover);
+        containerUploadFiles.addEventListener("dragleave",dragleave);
+        containerUploadFiles.addEventListener("drop",drop);
+        containerUploadFiles.querySelector("span#extensions").addEventListener("click",()=>e.preventDefault());
+
+    // event for list programs to deny
+        containerListPrograms.querySelector("i.fa-circle-xmark").addEventListener("click",()=>containerListPrograms.removeAttribute("style"));
+        containerListPrograms.querySelector("input[type='search']").addEventListener("keyup",filterPrograms);
+        containerListPrograms.querySelector("input[type='button']").addEventListener("click",await denyPrograms);
 }

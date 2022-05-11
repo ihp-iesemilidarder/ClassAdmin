@@ -19,8 +19,9 @@ function addExe($1,$el, $list){
     $name = $name.Substring(0,$name.Length-4);
     $splitPath = $1.CreateShortcut($el.FullName).TargetPath.Split("\");
     $path = $splitPath[$splitPath.Length-1];
+    $denied = if (Get-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\explorer\DisallowRun" -Name $path) {$true} else {$false}
     if(!$Global:exes.ContainsValue($path)){
-        $Global:exes.Add($name,$path);
+        $Global:exes.Add($name,@($path,$denied));
     }
 }
 
