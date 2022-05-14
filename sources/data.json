@@ -6,7 +6,7 @@
         "database": "ClassAdmin"
     },
     "OTP": {
-        "key": "KYU7I3OU3QBPBFDHYFXIEZUF",
+        "key": "UYNYPN25L3FUPAANE7WF5TXF",
         "recoveryCodes": [
             "546-879",
             "057-352",
@@ -21,9 +21,7 @@
             "583-291",
             "781-473",
             "015-405",
-            "456-027",
-            "198-215",
-            "157-013"
+            "456-027"
         ]
     },
     "pageLogin": {
@@ -40,6 +38,6 @@
         "server": "classadmin.server",
         "username": "ClassAdmin",
         "password": "12345678",
-        "sharedDirectory":"ClassAdminS_Screenshots"
+        "sharedDirectory": "ClassAdminS_Screenshots"
     }
 }

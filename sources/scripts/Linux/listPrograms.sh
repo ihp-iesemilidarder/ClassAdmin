@@ -1,8 +1,26 @@
 #!/bin/bash
+#
+# This script list the programs of client computer
+#
+
+function commandExist(){
+        local file
+        file=$(command -v -- "$1")
+        file=$(readlink -e -- "$file") && [ which "$file" ] && REPLY=$file
+} 2> /dev/null
+
 function getListPrograms(){
 	listPrograms=`ls /usr/share/applications/*.desktop`
 	listPrograms=(${listPrograms// /})
 }
+
+# helped by Stéphane Chazelas (Unix & Linux)
+# https://unix.stackexchange.com/questions/702494/how-to-pass-a-parameter-in-a-command-without-run-the-parameter-content/702495#702495
+function denyCheck(){
+	local file
+	file=$(command -v -- "$1")
+	file=$(readlink -e -- "$file") && [ -x "$file" ] && REPLY=$file
+} 2> /dev/null
 
 function getJSON(){
 	for index in ${!listPrograms[@]}
@@ -11,17 +29,23 @@ function getJSON(){
 		name=`cat ${listPrograms[$index]} | grep -E "^Name="`
 		IFS="=" read -ra name <<< $name
 		name=${name[1]/\n/}
-		binary=`cat ${listPrograms[$index]} | grep -E "^Exec="`
-		IFS="=" read -ra binary <<< $binary
-		binary=${binary[1]}
-		IFS=" " read -ra binary <<< $binary
-		binary=${binary[0]/\n/}
-		if [[ $last = $index ]];then
-			json=$json"\"${name/%$'\r'/}\":\"${binary/%$'\r'/}\"}"
-		elif [[ $index = 0 ]];then
-			json=$json"{\"${name/%$'\r'/}\":\"${binary/%$'\r'/}\","
+		binary=`cat "${listPrograms[$index]}" | grep -E "^Exec="`
+		IFS="=" read -ra binary <<< "$binary"
+		binary="${binary[1]}"
+		IFS=" " read -ra binary <<< "$binary"
+		if denyCheck "${binary/%$'\r'/}";then
+			deny="false"
+		elif ! commandExist "${binary/%$'\r'/}";then
+			deny="null"
 		else
-			json=$json"\"${name/%$'\r'/}\":\"${binary/%$'\r'/}\","
+			deny="true"
+		fi
+		if [[ $last = $index ]];then
+			json=$json"\"${name/%$'\r'/}\":[\"${binary/%$'\r'/}\",$deny]}" # delete the ^M of string
+		elif [[ $index = 0 ]];then
+			json=$json"{\"${name/%$'\r'/}\":[\"${binary/%$'\r'/}\",$deny],"
+		else
+			json=$json"\"${name/%$'\r'/}\":[\"${binary/%$'\r'/}\",$deny],"
 		fi
 	done
 }

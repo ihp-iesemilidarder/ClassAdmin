@@ -136,9 +136,17 @@ export const printListPrograms=(search)=>{
     document.querySelector("#pageDashboard div#listPrograms > div").innerHTML="";
     for(let exe in jsonPrograms){
         if(!search || String(exe).toUpperCase().includes(search.toUpperCase())){
+            let attr;
+            if(jsonPrograms[exe][1]){
+                attr="checked"
+            }else if(jsonPrograms[exe][1]==null){
+                attr="disabled"
+            }else{
+                attr=""
+            }
             document.querySelector("#pageDashboard div#listPrograms > div").innerHTML+=`
                 <label for="${jsonPrograms[exe][0]}">
-                    <input type="checkbox" id="${jsonPrograms[exe][0]}" ${jsonPrograms[exe][1]?"checked":""}>
+                    <input type="checkbox" id="${jsonPrograms[exe][0]}" ${attr}>
                     <span></span>
                     ${exe}
                 </label>

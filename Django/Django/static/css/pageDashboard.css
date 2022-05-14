@@ -516,6 +516,11 @@ body > div.CONNECTED{
         #pageDashboard div#listPrograms > div > label input[type="checkbox"]:not(:checked) + span{
             background-color: transparent;
         }
+        #pageDashboard div#listPrograms > div > label input[type="checkbox"]:disabled + span{
+            background-color: rgb(234 0 36 / .5);
+            border:none;
+            cursor: no-drop;
+        }
         #pageDashboard div#listPrograms > input[type="button"]{
             background: #dfdfd6;
             border: none;
