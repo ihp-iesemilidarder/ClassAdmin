@@ -1,5 +1,5 @@
 # Here, there are events required by the server
-import platform,subprocess,time,os,datetime,pyscreenshot
+import platform,subprocess,time,os,datetime,pyscreenshot,sys
 from base64 import b64decode
 from sources.utils import logFile, Notify, Environment, Json
 from sources.Samba import Samba
