@@ -3,12 +3,6 @@
 # This script list the programs of client computer
 #
 
-function commandExist(){
-        local file
-        file=$(command -v -- "$1")
-        file=$(readlink -e -- "$file") && [ which "$file" ] && REPLY=$file
-} 2> /dev/null
-
 function getListPrograms(){
 	listPrograms=`ls /usr/share/applications/*.desktop`
 	listPrograms=(${listPrograms// /})
@@ -35,8 +29,6 @@ function getJSON(){
 		IFS=" " read -ra binary <<< "$binary"
 		if denyCheck "${binary/%$'\r'/}";then
 			deny="false"
-		elif ! commandExist "${binary/%$'\r'/}";then
-			deny="null"
 		else
 			deny="true"
 		fi

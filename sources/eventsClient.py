@@ -147,7 +147,7 @@ class EventsClient:
             logFile().message(Notify("Screenshot","The ClassAdmin admin did one screenshot of your desktop",True),False,"INFO")
             os.remove(path)
             return True
-        except:
+        except BaseException as err:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
@@ -167,7 +167,7 @@ class EventsClient:
             elif platform.system().upper()=="LINUX":
                 subprocess.run([f"{Environment.scripts}/Linux/listPrograms.sh",server,sharedDirectory,username,password,"&"])
             return True
-        except:
+        except BaseException as err:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
@@ -179,13 +179,15 @@ class EventsClient:
     def denyPrograms(programs:str):
         try:
             if platform.system().upper()=="WINDOWS":
-                logFile().message(f"powerhsell.exe & '{Environment.scripts}/Windows/denyPrograms.ps1' -Programs '{programs}'")
                 subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/denyPrograms.ps1' -Programs '{programs}'"])
             elif platform.system().upper()=="LINUX":
-                subprocess.run([f"{Environment.scripts}/Linux/programsPrograms.sh",f'{programs}',"&"])
-            Notify("DenyClass","The administrator denied you programs")
+                subprocess.run([f"{Environment.scripts}/Linux/denyPrograms.sh",f'{programs.replace(","," ")}',"&"])
+            if len(programs)==0:
+                Notify("DenyClass","The administrator allowed all the programs")
+            else:
+                Notify("DenyClass","The administrator denied same programs")
             return True
-        except:
+        except BaseException as err:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno

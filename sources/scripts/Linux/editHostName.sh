@@ -1,8 +1,4 @@
 #!/bin/bash
-#
-# This command eidt the client computer name
-#
-
 newHostName=$1
 
 if [[ -z $* ]];then
