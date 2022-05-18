@@ -133,10 +133,14 @@ export const screenshot=async(node)=>{
 }
 
 export const printListPrograms=(search)=>{
-    document.querySelector("#pageDashboard div#listPrograms > div").innerHTML="";
+    document.querySelector("#pageDashboard div#listPrograms > form > div").innerHTML="";
+    let name;
+    let increment=0;
     for(let exe in jsonPrograms){
         if(!search || String(exe).toUpperCase().includes(search.toUpperCase())){
             let attr;
+            (jsonPrograms[exe][0]==name)?increment++:increment=0;
+            let id=`${jsonPrograms[exe][0]}-${increment}`;
             if(jsonPrograms[exe][1]){
                 attr="checked"
             }else if(jsonPrograms[exe][1]==null){
@@ -144,13 +148,14 @@ export const printListPrograms=(search)=>{
             }else{
                 attr=""
             }
-            document.querySelector("#pageDashboard div#listPrograms > div").innerHTML+=`
-                <label for="${jsonPrograms[exe][0]}">
-                    <input type="checkbox" id="${jsonPrograms[exe][0]}" ${attr}>
+            document.querySelector("#pageDashboard div#listPrograms > form > div").innerHTML+=`
+                <label for="${id}">
+                    <input type="checkbox" id="${id}" title="${exe}" data-name="${jsonPrograms[exe][0]}" ${attr}>
                     <span></span>
                     ${exe}
                 </label>
             `;
+            name=jsonPrograms[exe][0];
         }
     }
 }
@@ -179,4 +184,42 @@ export const listPrograms=async(node)=>{
     }catch(error){
         messg(`Unexpected error at capture the client desktop: ${error}`,false);
     }
+}
+export const checkStatus=(e)=>{
+    let check = e.target.checked;
+    let name = e.target.title;
+    jsonPrograms[name][1]=check;
+    console.log(jsonPrograms)
+}
+
+const fetchProgramsDeny=async(id,list)=>{
+    let request = await fetch("./",{
+        method:"POST",
+        body:`action=denyPrograms&id=${id}&list=${list}`,
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+            "X-CSRFToken":getCookie("csrftoken")
+        }
+    });
+    let data = await request.json();
+    if(data.result){
+        messg("The programs selected has denied in the client computer successfully",true);
+    }else{
+        messg("Error unexpected at deny the programs in the client computer",false)
+    }
+}
+
+export const denyPrograms=async(e)=>{
+    let programs = containerListPrograms.querySelectorAll("div > label input[type='checkbox']:checked");
+    let listPrograms=[];
+    programs.forEach(program=>{
+        listPrograms.push(program.id)
+    });
+    let data = (listPrograms.length==0)?null:listPrograms;
+    await fetchProgramsDeny(e.target.parentNode.dataset.id,data);
+}
+
+export const filterPrograms=(e)=>{
+    let search = e.target.value;
+    printListPrograms(search)
 }

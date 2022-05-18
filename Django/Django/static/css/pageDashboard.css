@@ -482,12 +482,12 @@ body > div.CONNECTED{
         #pageDashboard div#listPrograms input[type="search"]:focus{
             box-shadow:1px 1px 5px rgba(0,0,0,.2);
         }
-        #pageDashboard div#listPrograms > div{
+        #pageDashboard div#listPrograms div{
             max-height: 24em;
             overflow: auto;
             margin: 10px 0;
         }
-        #pageDashboard div#listPrograms > div > label{
+        #pageDashboard div#listPrograms div > label{
             cursor: pointer;
             font-size: 1em;
             padding: 1% 4%;
@@ -495,13 +495,13 @@ body > div.CONNECTED{
             display:block;
             position:relative;
         }
-        #pageDashboard div#listPrograms > div > label:hover{
+        #pageDashboard div#listPrograms div > label:hover{
             background: #dfdfd6;
         }
-        #pageDashboard div#listPrograms > div > label input[type="checkbox"]{
+        #pageDashboard div#listPrograms div > label input[type="checkbox"]{
             display:none;
         }
-        #pageDashboard div#listPrograms > div > label input[type="checkbox"] + span{
+        #pageDashboard div#listPrograms div > label input[type="checkbox"] + span{
             height: 17px;
             width: 17px;
             position: absolute;
@@ -510,18 +510,18 @@ body > div.CONNECTED{
             transition:.3s;
             transform: translateX(-30px) scale(.9);
         }
-        #pageDashboard div#listPrograms > div > label input[type="checkbox"]:checked + span{
+        #pageDashboard div#listPrograms div > label input[type="checkbox"]:checked + span{
             background-color: rgb(223 223 214);
         }
-        #pageDashboard div#listPrograms > div > label input[type="checkbox"]:not(:checked) + span{
+        #pageDashboard div#listPrograms div > label input[type="checkbox"]:not(:checked) + span{
             background-color: transparent;
         }
-        #pageDashboard div#listPrograms > div > label input[type="checkbox"]:disabled + span{
+        #pageDashboard div#listPrograms div > label input[type="checkbox"]:disabled + span{
             background-color: rgb(234 0 36 / .5);
             border:none;
             cursor: no-drop;
         }
-        #pageDashboard div#listPrograms > input[type="button"]{
+        #pageDashboard div#listPrograms input[type="button"],#pageDashboard div#listPrograms input[type="reset"]{
             background: #dfdfd6;
             border: none;
             padding: 1%;
@@ -529,9 +529,13 @@ body > div.CONNECTED{
             transparent:.3s;
             cursor:pointer;
             transition:.3s;
+            width:100%;
         }
-        #pageDashboard div#listPrograms > input[type="button"]:hover{
+        #pageDashboard div#listPrograms input[type="reset"]:hover,#pageDashboard div#listPrograms input[type="button"]:hover{
             transform:scale(.95);
+        }
+        #pageDashboard div#listPrograms input[type="reset"]{
+            background:#fc898994;
         }
 @media (max-width:768px){
     #pageDashboard div#formNotification,#pageDashboard div#formEditUser{
@@ -577,10 +581,10 @@ body > div.CONNECTED{
         border-radius: 50%;
     }
     /*label programs*/
-        #pageDashboard div#listPrograms > div > label{
+        #pageDashboard div#listPrograms div > label{
             padding: 1% 5%;
         }
-        #pageDashboard div#listPrograms > div > label input[type="checkbox"] + span{
+        #pageDashboard div#listPrograms div > label input[type="checkbox"] + span{
             transform: translateX(-25px) scale(.9);
         }
 }
@@ -608,10 +612,10 @@ body > div.CONNECTED{
         max-height: 100%;
         top: 16px;
     }
-    #pageDashboard div#listPrograms > div > label{
+    #pageDashboard div#listPrograms div > label{
         padding: 1% 10%;
     }
-    #pageDashboard div#listPrograms > div > label input[type="checkbox"] + span{
+    #pageDashboard div#listPrograms div > label input[type="checkbox"] + span{
         height: 12px;
         width: 12px;
     }

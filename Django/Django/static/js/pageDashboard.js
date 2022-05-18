@@ -1,7 +1,7 @@
 import './lib/sha512.js';
 import './lib/FileSaver.js';
 import {enterSession, messg, getCookie} from './init.js';
-import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot,listPrograms,printListPrograms} from "./eventsClients.js";
+import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot,listPrograms,printListPrograms,checkStatus,denyPrograms,filterPrograms} from "./eventsClients.js";
 const buttonConf = document.querySelector("#pageDashboard .fa-cog");
 const closeConf = document.querySelector("#pageDashboard #config .fa-close");
 const saveConf = document.querySelector("#pageDashboard #config input[type='submit']");
@@ -438,37 +438,6 @@ const deleteFile=async(id,filename)=>{
     let data = request.json();
 }
 
-const filterPrograms=(e)=>{
-    let search = e.target.value;
-    printListPrograms(search)
-}
-const fetchProgramsDeny=async(id,list)=>{
-    let request = await fetch("./",{
-        method:"POST",
-        body:`action=denyPrograms&id=${id}&list=${list}`,
-        headers:{
-            "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-            "X-CSRFToken":getCookie("csrftoken")
-        }
-    });
-    let data = await request.json();
-    if(data.result){
-        messg("The programs selected has denied in the client computer successfully",true);
-    }else{
-        messg("Error unexpected at deny the programs in the client computer",false)
-    }
-}
-
-const denyPrograms=async(e)=>{
-    let programs = containerListPrograms.querySelectorAll("div > label input[type='checkbox']:checked");
-    let listPrograms=[];
-    programs.forEach(program=>{
-        listPrograms.push(program.id)
-    });
-    let data = (listPrograms.length==0)?null:listPrograms;
-    await fetchProgramsDeny(e.target.parentNode.dataset.id,data);
-}
-
 export async function pageDashboard(){
     // animation open configuration
         buttonConf.addEventListener("click",()=>config.style.right="0");
@@ -532,4 +501,5 @@ export async function pageDashboard(){
         containerListPrograms.querySelector("i.fa-circle-xmark").addEventListener("click",()=>containerListPrograms.removeAttribute("style"));
         containerListPrograms.querySelector("input[type='search']").addEventListener("keyup",filterPrograms);
         containerListPrograms.querySelector("input[type='button']").addEventListener("click",await denyPrograms);
+        containerListPrograms.addEventListener("change",checkStatus);
 }
