@@ -206,11 +206,10 @@ const fetchProgramsDeny=async(id,list)=>{
 }
 
 export const denyPrograms=async(e)=>{
-    let programs = containerListPrograms.querySelectorAll("div > label input[type='checkbox']:checked");
+    let programs = Object.keys(jsonPrograms).filter(key=>jsonPrograms[key][1]==true);
     let listPrograms=[];
-    programs.forEach(program=>{
-        listPrograms.push(program.id.replace(/-([0-9]+)$/,""))
-    });
-    let data = (listPrograms.length==0)?null:listPrograms;
+    console.log(programs);
+    programs.filter(el=>listPrograms.push(jsonPrograms[el][0]))
+    let data = (programs.length==0)?null:listPrograms;
     await fetchProgramsDeny(e.target.parentNode.parentNode.dataset.id,data);
 }
