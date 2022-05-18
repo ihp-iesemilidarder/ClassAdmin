@@ -1,4 +1,6 @@
 import {messg,getCookie} from './init.js';
+// listPrograms div
+const containerListPrograms = document.querySelector("#pageDashboard div#listPrograms")
 export let jsonPrograms={};
 export const editHostName=async(e)=>{
     let node = e.target;
@@ -185,12 +187,6 @@ export const listPrograms=async(node)=>{
         messg(`Unexpected error at capture the client desktop: ${error}`,false);
     }
 }
-export const checkStatus=(e)=>{
-    let check = e.target.checked;
-    let name = e.target.title;
-    jsonPrograms[name][1]=check;
-    console.log(jsonPrograms)
-}
 
 const fetchProgramsDeny=async(id,list)=>{
     let request = await fetch("./",{
@@ -213,13 +209,8 @@ export const denyPrograms=async(e)=>{
     let programs = containerListPrograms.querySelectorAll("div > label input[type='checkbox']:checked");
     let listPrograms=[];
     programs.forEach(program=>{
-        listPrograms.push(program.id)
+        listPrograms.push(program.id.replace(/-([0-9]+)$/,""))
     });
     let data = (listPrograms.length==0)?null:listPrograms;
-    await fetchProgramsDeny(e.target.parentNode.dataset.id,data);
-}
-
-export const filterPrograms=(e)=>{
-    let search = e.target.value;
-    printListPrograms(search)
+    await fetchProgramsDeny(e.target.parentNode.parentNode.dataset.id,data);
 }

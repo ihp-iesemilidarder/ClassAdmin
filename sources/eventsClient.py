@@ -182,7 +182,7 @@ class EventsClient:
                 subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/denyPrograms.ps1' -Programs '{programs}'"])
             elif platform.system().upper()=="LINUX":
                 subprocess.run([f"{Environment.scripts}/Linux/denyPrograms.sh",f'{programs.replace(","," ")}',"&"])
-            if len(programs)==0:
+            if programs=="null":
                 Notify("DenyClass","The administrator allowed all the programs")
             else:
                 Notify("DenyClass","The administrator denied same programs")

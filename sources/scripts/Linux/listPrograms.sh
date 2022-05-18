@@ -22,7 +22,7 @@ function getJSON(){
 		last=$((${#listPrograms[@]}-1))
 		name=`cat ${listPrograms[$index]} | grep -E "^Name="`
 		IFS="=" read -ra name <<< $name
-		name=${name[1]/\n/}
+		name=${name[1]}
 		binary=`cat "${listPrograms[$index]}" | grep -E "^Exec="`
 		IFS="=" read -ra binary <<< "$binary"
 		binary="${binary[1]}"

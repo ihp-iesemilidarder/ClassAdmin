@@ -1,7 +1,7 @@
 import './lib/sha512.js';
 import './lib/FileSaver.js';
 import {enterSession, messg, getCookie} from './init.js';
-import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot,listPrograms,printListPrograms,checkStatus,denyPrograms,filterPrograms} from "./eventsClients.js";
+import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot,listPrograms,printListPrograms,jsonPrograms,denyPrograms} from "./eventsClients.js";
 const buttonConf = document.querySelector("#pageDashboard .fa-cog");
 const closeConf = document.querySelector("#pageDashboard #config .fa-close");
 const saveConf = document.querySelector("#pageDashboard #config input[type='submit']");
@@ -437,6 +437,25 @@ const deleteFile=async(id,filename)=>{
     });
     let data = request.json();
 }
+const checkStatus=(e)=>{
+    let check = e.target.checked;
+    let name = e.target.title;
+    jsonPrograms[name][1]=check;
+    console.log(jsonPrograms)
+}
+
+const filterPrograms=(e)=>{
+    let search = e.target.value;
+    printListPrograms(search)
+}
+
+const uncheckPrograms=()=>{
+    for(let program in jsonPrograms){
+        jsonPrograms[program][1]=false;
+    }
+    document.querySelector("#listPrograms form").reset();
+    console.log(jsonPrograms);
+}
 
 export async function pageDashboard(){
     // animation open configuration
@@ -501,5 +520,6 @@ export async function pageDashboard(){
         containerListPrograms.querySelector("i.fa-circle-xmark").addEventListener("click",()=>containerListPrograms.removeAttribute("style"));
         containerListPrograms.querySelector("input[type='search']").addEventListener("keyup",filterPrograms);
         containerListPrograms.querySelector("input[type='button']").addEventListener("click",await denyPrograms);
+        containerListPrograms.querySelector("input[type='reset']").addEventListener("click",await uncheckPrograms);
         containerListPrograms.addEventListener("change",checkStatus);
 }
