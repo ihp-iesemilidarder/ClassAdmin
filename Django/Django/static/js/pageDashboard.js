@@ -1,7 +1,7 @@
 import './lib/sha512.js';
 import './lib/FileSaver.js';
 import {enterSession, messg, getCookie} from './init.js';
-import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot,listPrograms,printListPrograms,jsonPrograms,denyPrograms} from "./eventsClients.js";
+import {editHostName,shutdownComputer,rebootComputer,suspendComputer,sendAlert,screenshot,listPrograms,printListPrograms,jsonPrograms,denyPrograms,deleteClient} from "./eventsClients.js";
 const buttonConf = document.querySelector("#pageDashboard .fa-cog");
 const closeConf = document.querySelector("#pageDashboard #config .fa-close");
 const saveConf = document.querySelector("#pageDashboard #config input[type='submit']");
@@ -277,6 +277,8 @@ export async function eventsClientsList(e){
         screenshot(node);
     }else if(node.classList.contains("fa-ban")){
         listPrograms(node);
+    }else if(node.classList.contains("fa-trash")){
+        deleteClient(node);
     }
 }
 

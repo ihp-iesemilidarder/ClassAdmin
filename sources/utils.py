@@ -9,6 +9,7 @@ class Environment:
     def SSL(type:str):
             return f"{os.environ['CLASSADMIN_SSL']}/ClassAdmin.{type}"
 
+    commands = f"{os.environ['CLASSADMIN_HOME']}/commands"
     log = f"{os.environ['CLASSADMIN_LOG']}"
     transfers = f"{os.environ['CLASSADMIN_HOME']}/transfers"
     scripts = f"{os.environ['CLASSADMIN_HOME']}/sources/scripts"

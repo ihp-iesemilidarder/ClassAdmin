@@ -213,3 +213,25 @@ export const denyPrograms=async(e)=>{
     let data = (programs.length==0)?null:listPrograms;
     await fetchProgramsDeny(e.target.parentNode.parentNode.dataset.id,data);
 }
+
+export const deleteClient=async(node)=>{
+    let id = node.parentNode.parentNode.parentNode.dataset.id;
+    try{
+        let request = await fetch("./",{
+            method:"POST",
+            body:`action=deleteClient&id=${id}`,
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "X-CSRFToken":getCookie("csrftoken")
+            }
+        });
+        let data = await request.json()
+        if(data.result){
+            messg("The client has deleted and uninstalled successfully",true);
+        }else{
+            messg("Error at delete and uninstall the client",false);
+        }
+    }catch(error){
+        messg(`Unexpected error at delete and uninstall the client: ${error}`,false);
+    }
+}

@@ -181,6 +181,19 @@ class ReqDashboard:
             logFile().message(f"{err} in {file}:{line}")
             return False
 
+    def deleteClient(self,id):
+        try:
+            currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            PipeClient(str(currentHostName["ipaddress"])).send(f"function:denyPrograms('{list}')")
+            Requests("apache","DELETE",f"https://classadmin.server/api/clients/{id}").run()
+            return True
+        except BaseException as err:
+            type, object, traceback = sys.exc_info()
+            file = traceback.tb_frame.f_code.co_filename
+            line = traceback.tb_lineno
+            logFile().message(f"{err} in {file}:{line}")
+            return False
+
 # events for each client (shutdown,edit hostnamename,alert,etc)
 class EventsDashboard(ReqDashboard):
     def __init__(self,req):
@@ -234,6 +247,9 @@ class EventsDashboard(ReqDashboard):
         elif self.req.POST["action"] == "denyPrograms":
             id, list = self.req.POST["id"], self.req.POST["list"]
             return super().denyPrograms(id,list)
+        elif self.req.POST["action"] == "deleteClient":
+            id = self.req.POST["id"]
+            return super().deleteClient(id)
 
     def __notifications(self):
         try:
