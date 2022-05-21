@@ -1,3 +1,7 @@
+#
+# This script uninstall the ClassAdmin program. The packages installed won't uninstall
+#
+
 Param(
     [Switch] $Force
 )
