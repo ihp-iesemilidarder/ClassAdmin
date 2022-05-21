@@ -32,7 +32,7 @@ function deleteConfigurationXampp(){
 function deleteScheduleTask(){
     Write-Host "Deleting schedule task created for ClassAdmin." -NoNewline;
     Stop-ScheduledTask -TaskName django 2> $null;
-    Unregister-ScheduledTask -TaskName django 2> $null;
+    Unregister-ScheduledTask -Confirm: $false -TaskName "django" 2> $null;
     Write-Host "OK" -ForegroundColor Green;
 }
 
@@ -64,19 +64,26 @@ function deleteClassAdminUser(){
 }
 
 function deleteSMBShare(){
-    Write-Host "Deleting ClassAdmin SMB Share" -NoNewline;
-    Remove-SmbShare -Name "ClassAdminS_Screenshots" 2> $null;
+    Write-Host "Deleting ClassAdmin SMB Share." -NoNewline;
+    Remove-SmbShare -Confirm $true -Name "ClassAdminS_Screenshots" 2> $null;
+    Write-Host "OK" -ForegroundColor Green;
+}
+
+function deleteClassAdminData(){
+    Write-Host "Deleting ClassAdmin data." -NoNewline;
+    Remove-Item -Path "C:\Program Files\ClassAdmin" -Recurse -Force -Confirm 2> $null;
     Write-Host "OK" -ForegroundColor Green;
 }
 
 function init(){
+    deleteClassAdminService;
     deleteEnvironmentsVariables;
     deleteConfigurationXampp;
+    deleteSSLXampp;
     deleteScheduleTask;
     deleteHosts;
-    deleteSSLXampp;
-    deleteClassAdminService;
     deleteClassAdminUser;
     deleteSMBShare;
+    deleteClassAdminData;
 }
 init;
