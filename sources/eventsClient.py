@@ -194,20 +194,18 @@ class EventsClient:
             logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
             Notify("DenyClass","Error unexpected at deny the programs",False)
             return False
-
     @staticmethod
-    def deleteClient():
+    def closeClient():
         try:
-            Notify("Uninstalled successfully", "The ClassAdmin program has uninstalled succesfully")
             if platform.system().upper()=="WINDOWS":
-                subprocess.run(["powershell.exe",f"& '{Environment.commands}/Windows/uninstall-ClassAdmin.ps1' -Force"])
+                subprocess.run(["nssm","ClassAdmin","stop"])
             elif platform.system().upper()=="LINUX":
-                subprocess.run([f"{Environment.commands}/Linux/uninstall-ClassAdmin","-F"])
+                subprocess.run(["systemctl","stop","ClassAdmin"])
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
             logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
-            Notify("DenyClass","Error unexpected at delete and uninstall the programs",False)
+            Notify("Error unexpected at close the client",False)
             return False

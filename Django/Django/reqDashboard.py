@@ -184,7 +184,7 @@ class ReqDashboard:
     def deleteClient(self,id):
         try:
             currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
-            PipeClient(str(currentHostName["ipaddress"])).send(f"function:deleteClient()")
+            PipeClient(str(currentHostName["ipaddress"])).send(f"function:closeClient()")
             Requests("apache","DELETE",f"https://classadmin.server/api/clients/{id}").run()
             return True
         except BaseException as err:
