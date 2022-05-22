@@ -183,11 +183,12 @@ class ReqDashboard:
 
     def deleteClient(self,id):
         try:
-            Requests("apache", "DELETE", f"https://classadmin.server/api/clients/{id}").run()
             currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
+            Requests("apache", "DELETE", f"https://classadmin.server/api/clients/{id}").run()
             PipeClient(str(currentHostName["ipaddress"])).send(f"function:closeClient()")
             return True
         except BaseException as err:
+            Requests("apache", "DELETE", f"https://classadmin.server/api/clients/{id}").run()
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno

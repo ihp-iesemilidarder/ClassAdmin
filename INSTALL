@@ -10,74 +10,116 @@ fi
 
 # If you want to look the process. Uncomment this function and comment the current operation function
 #
-#function operation(){
-#  echo "================================================================================================================"
-#  echo $1
-#  echo "================================================================================================================"
-#  $2
-#}
 function operation(){
-	function loading(){
-		while [ true ]
-		do
-			echo -ne "."
-			sleep 2
-		done
-	}
-	echo -ne $1
-	loading&
-	PID_loading=$!
-	# if the installation or uninstallation have dialogs, it doesn't show it, but is executed.
-	if [[ $3 = 1 ]];then
-		$2
-		echo -ne "\033[1;32mOK\033[0m"
-	else
-		DEBIAN_FRONTEND=nointeractive $2 > /dev/null 2>&1
-		echo -ne "\033[1;32mOK\033[0m"
-	fi
-	kill -19 $PID_loading > /dev/null 2>&1
-	echo ""
+  echo "================================================================================================================"
+  echo $1
+  echo "================================================================================================================"
+  $2
 }
+#function operation(){
+#	function loading(){
+#		while [ true ]
+#		do
+#			echo -ne "."
+#			sleep 2
+#		done
+#	}
+#	echo -ne $1
+#	loading&
+#	PID_loading=$!
+#	# if the installation or uninstallation have dialogs, it doesn't show it, but is executed.
+#	if [[ $3 = 1 ]];then
+#		$2
+#		echo -ne "\033[1;32mOK\033[0m"
+#	else
+#		DEBIAN_FRONTEND=nointeractive $2 > /dev/null 2>&1
+#		echo -ne "\033[1;32mOK\033[0m"
+#	fi
+#	kill -19 $PID_loading > /dev/null 2>&1
+#	echo ""
+#}
 echo -ne "Do you want install the ClassAdminS server or ClassAdmin client? [ClassAdmin/ClassAdminS]: "
 read ask
 if [[ $ask == "ClassAdmin" ]];then
         operation "Updating repositories." "apt-get update -y"
         operation "Installing packages." "apt-get install -y python3 python3-pip git zenity scrot"
-        operation "Deleting Django/ and init.sql." "rm -rf ./Django && rm -f ./init.sql && rm -f ./services/ClassAdminS.socket && rm -f ./Daemon/ClassAdminS.service"
+        operation "Deleting ClassAdminS server data" "rm -rf ./Django && rm -f ./init.sql && rm -f ./services/ClassAdminS.socket && rm -f ./Daemon/ClassAdminS.service"
         operation "Installing pipreqs python3 library." "pip3 install pipreqs"
-	operation "Getting python3 libraries necesary." "pipreqs ./"
-	operation "Installing python3 libraries." "pip3 install -r ./requirements.txt"
-	pip3 install pysmb 2> /dev/null
-        operation "Adding environtment variables" $(sed -i '/CLASSADMIN/d' /etc/environment && echo 'CLASSADMIN_HOME=/etc/ClassAdmin' >> /etc/environment && echo 'CLASSADMIN_LOG=/var/log/ClassAdmin.log' >> /etc/environment && echo 'CLASSADMIN_SSL=/etc/ClassAdmin/ssl' >> /etc/environment && sed -i '/PYTHONPATH/d' /etc/environment && echo 'PYTHONPATH=/etc/ClassAdmin' >> /etc/environment)
-        operation "Installing ClassAdmin CA Bundle" $(cp ./ssl/ClassAdmin.crt /usr/local/share/ca-certificates && update-ca-certificates)
+        operation "Getting python3 libraries necesary." "pipreqs ./"
+        operation "Installing python3 libraries." "pip3 install -r ./requirements.txt"
+        pip3 install pysmb 2> /dev/null
+        operation "Adding environtment variables." $(sed -i '/CLASSADMIN/d' /etc/environment && echo 'CLASSADMIN_HOME=/etc/ClassAdmin' >> /etc/environment && echo 'CLASSADMIN_LOG=/var/log/ClassAdmin.log' >> /etc/environment && echo 'CLASSADMIN_SSL=/etc/ClassAdmin/ssl' >> /etc/environment && sed -i '/PYTHONPATH/d' /etc/environment && echo 'PYTHONPATH=/etc/ClassAdmin' >> /etc/environment)
+        operation "Installing ClassAdmin CA Bundle." $(cp ./ssl/ClassAdmin.crt /usr/local/share/ca-certificates && update-ca-certificates)
         server=""
         while [[ $(echo $server | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}") == "" ]];
         do
           echo -ne "\033[1;34m[?]\033[0m Which is ClassAdminS server IP address?: "
           read server
         done
-        operation "Adding dns in /etc/hosts" $(sed -i '/classadmin.server/d' /etc/hosts && echo "$server     classadmin.server" >> /etc/hosts)
-        operation "Installing ClasAdmin service" $(cp ./Daemon/ClassAdmin.service /lib/systemd/system && systemctl daemon-reload)
-	notification=""
+        operation "Adding dns in /etc/hosts." $(sed -i '/classadmin.server/d' /etc/hosts && echo "$server     classadmin.server" >> /etc/hosts)
+        operation "Installing ClasAdmin service." $(cp ./Daemon/ClassAdmin.service /lib/systemd/system && systemctl daemon-reload)
+	      notification=""
         while [[ $notification != "true" && $notification != "false" ]];
         do
           echo -ne "\033[1;34m[?]\033[0m Do you want that ClassAdmin service send system notifications? [true/false]: "
           read notification
         done
-        operation "Configurating notifications" $(sed -i "s/\"notifications\": \"true\"/\"notifications\": \"$notification\"/g" ./services/ClassAdmin.conf)
+        operation "Configurating notifications." $(sed -i "s/\"notifications\": \"true\"/\"notifications\": \"$notification\"/g" ./services/ClassAdmin.conf)
         user=""
         while [[ $user == "" ]];
         do
           echo -ne "The notifications will be execute as user...: "
           read user
         done
-        operation "Notifications will be execute as $user" $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf)
-        operation "Changing permissions for ClassAdmin proyect" $(chmod o+w /var/log)
-        operation "Creating ClassAdmin user" $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin)
-        operation "Grantting permissons to X Server" $(echo 'if [ "$DISPLAY" != "" ]' >> /etc/profile && echo 'then' >> /etc/profile && echo "	xhost +si:localuser:root" >> /etc/profile && echo 'fi' >> /etc/profile && xhost +si:localuser:root)
-        operation "Enabling ClassAdmin service in the boot" $(systemctl enable ClassAdmin)
-        operation "Starting ClassAdmin service" $(systemctl start ClassAdmin)
-	echo -e "\033[1;32m[+]\033[0m ClassAdmin installation completed"
+        operation "Notifications will be execute as $user." $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf)
+        operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log)
+        operation "Creating ClassAdmin user." $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin)
+        operation "Grantting permissons to X Server." $(echo 'if [ "$DISPLAY" != "" ]' >> /etc/profile && echo 'then' >> /etc/profile && echo "	xhost +si:localuser:root" >> /etc/profile && echo 'fi' >> /etc/profile && xhost +si:localuser:root)
+        operation "Enabling ClassAdmin service in the boot." $(systemctl enable ClassAdmin)
+        operation "Starting ClassAdmin service." $(systemctl start ClassAdmin)
+	      echo -e "\033[1;32m[+]\033[0m ClassAdmin installation completed"
+elif [[ $ask == "ClassAdminS" ]];then
+        operation "Updating repositories." "apt-get update -y"
+        operation "Deleting ClassAdmin client data." "rm -f ./services/ClassAdmin.socket && rm -f ./Daemon/ClassAdmin.service"
+	      operation "Installing packages." "apt-get install -y django==3.2.7 apache2 libapache2-mod-wsgi-py3 python3 python3-pip python3-pillow python3-pil.imagetk mariadb-server samba git zenity pm-utils smbclient"
+        operation "Installing pipreqs python3 library." "pip3 install pipreqs"
+        operation "Getting python3 libraries necesary." "pipreqs ./"
+        operation "Installing python3 libraries." "pip3 install -r ./requirements.txt"
+        pip3 install pysmb 2> /dev/null
+        operation "Adding environtment variables." $(sed -i '/CLASSADMIN/d' /etc/environment && echo 'CLASSADMIN_HOME=/etc/ClassAdmin' >> /etc/environment && echo 'CLASSADMIN_LOG=/var/log/ClassAdmin.log' >> /etc/environment && echo 'CLASSADMIN_SSL=/etc/ClassAdmin/ssl' >> /etc/environment && sed -i '/PYTHONPATH/d' /etc/environment && echo 'PYTHONPATH=/etc/ClassAdmin' >> /etc/environment && echo "export CLASSADMIN_HOME=/etc/ClassAdmin" >> /etc/apache2/envvars && echo "export CLASSADMIN_LOG=/var/log/ClassAdmin.log" >> /etc/apache2/envvars && echo "export CLASSADMIN_SSL=/etc/ClassAdmin/ssl" >> /etc/apache2/envvars)
+        operation "Installing ClassAdmin CA Bundle." $(cp ./ssl/ClassAdmin.crt /usr/local/share/ca-certificates && update-ca-certificates)
+        operation "Installing apache2 modules" $(a2enmod ssl mod_wsgi rewrite)
+        operation "Enabling apache2 VirtualHosts sites" $(cp -r ClassAdmin/apache2.conf.d/linux/ClassAdmin* /etc/apache2/sites-available/; a2ensite ClassAdminS ClassAdminS-ssl)
+        server=""
+              while [[ $(echo $server | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}") == "" ]];
+              do
+                echo -ne "\033[1;34m[?]\033[0m Which is ClassAdminS server IP address?: "
+                read server
+              done
+        operation "Adding dns in /etc/hosts." $(sed -i '/classadmin.server/d' /etc/hosts && echo "$server     classadmin.server" >> /etc/hosts)
+        operation "Installing ClasAdminS service." $(cp ./Daemon/ClassAdminS.service /lib/systemd/system && systemctl daemon-reload)
+        notification=""
+        while [[ $notification != "true" && $notification != "false" ]];
+        do
+          echo -ne "\033[1;34m[?]\033[0m Do you want that ClassAdmin service send system notifications? [true/false]: "
+          read notification
+        done
+        operation "Configurating notifications." $(sed -i "s/\"notifications\": \"true\"/\"notifications\": \"$notification\"/g" ./services/ClassAdmin.conf)
+        user=""
+        while [[ $user == "" ]];
+        do
+          echo -ne "The notifications will be execute as user...: "
+          read user
+        done
+        operation "Notifications will be execute as $user." $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf)
+        operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log && chown -R root:www-data . && chmod -R g+w . && chown www-data:ClassAdmin ./transfers/.screenshots/ && chmod -R 770 ./transfers/.screenshots)
+        operation "Configurating MariaDB/mySQL" $(sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf 2> /dev/null; sed -E -i "s/(.*)max_allowed_packet(.*)=(.*)/max_allowed_packet = 1M/g" /etc/mysql/mariadb.conf.d/50-server.cnf; sed -E -i "s/(.*)max_connections(.*)=(.*)/max_connections = 1000/g" /etc/mysql/mariadb.conf.d/50-server.cnf)
+        operation "Creating ClassAdmin database" $(mysql -u root -e "source ./init.sql")
+        operation "Creating ClassAdminS_Screenshots shred folder" $(echo "[ClassAdminS_Screenshots]" >> /etc/samba/smb.conf && echo "   path = /etc/ClassAdmin/transfers/.screenshots" >> /etc/samba/smb.conf && echo "   available = yes" >> /etc/samba/smb.conf && echo "   browseable = yes" >> /etc/samba/smb.conf && echo "   writable = yes" >> /etc/samba/smb.conf && echo "   guest ok = no" >> /etc/samba/smb.conf && echo "   create mask = 0770" >> /etc/samba/smb.conf && echo "   directory mask = 0770" >> /etc/samba/smb.conf && echo "   force group = www-data" >> /etc/samba/smb.conf)
+        operation "Creating ClassAdmin user." $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin)
+        operation "Enabling ClassAdminS service in the boot." $(systemctl enable ClassAdminS)
+        operation "Starting ClassAdminS service." $(systemctl start ClassAdminS)
+        echo -e "\033[1;32m[+]\033[0m ClassAdminS installation completed"
 else
         exit 1
 fi
