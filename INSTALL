@@ -82,9 +82,9 @@ elif [[ $ask == "ClassAdminS" ]];then
         operation "Updating repositories." "apt-get update -y"
         operation "Deleting ClassAdmin client data." "rm -f ./services/ClassAdmin.socket && rm -f ./Daemon/ClassAdmin.service"
         operation "Installing packages." "apt-get install -y apache2 libapache2-mod-wsgi-py3 python3 python3-pip python3-pil.imagetk python3-pillow mariadb-server samba git zenity pm-utils smbclient"
-#        operation "Installing pipreqs python3 library." "pip3 install pipreqs"
-#        operation "Getting python3 libraries necesary." "pipreqs ./"
-#        operation "Installing python3 libraries." "pip3 install -r ./requirements.txt"
+        operation "Installing pipreqs and Django==3.2.7 python3 libraries." "pip3 install pipreqs Django==3.2.7"
+        operation "Getting python3 libraries necesary." "pipreqs ./"
+        operation "Installing python3 libraries." "pip3 install -r ./requirements.txt"
 #        pip3 install pysmb 2> /dev/null
 #        operation "Adding environtment variables." $(sed -i '/CLASSADMIN/d' /etc/environment && echo 'CLASSADMIN_HOME=/etc/ClassAdmin' >> /etc/environment && echo 'CLASSADMIN_LOG=/var/log/ClassAdmin.log' >> /etc/environment && echo 'CLASSADMIN_SSL=/etc/ClassAdmin/ssl' >> /etc/environment && sed -i '/PYTHONPATH/d' /etc/environment && echo 'PYTHONPATH=/etc/ClassAdmin' >> /etc/environment && echo "export CLASSADMIN_HOME=/etc/ClassAdmin" >> /etc/apache2/envvars && echo "export CLASSADMIN_LOG=/var/log/ClassAdmin.log" >> /etc/apache2/envvars && echo "export CLASSADMIN_SSL=/etc/ClassAdmin/ssl" >> /etc/apache2/envvars)
 #        operation "Installing ClassAdmin CA Bundle." $(cp ./ssl/ClassAdmin.crt /usr/local/share/ca-certificates && update-ca-certificates)
