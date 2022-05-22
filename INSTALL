@@ -9,62 +9,51 @@ if [[ $(whoami) != "root" ]];then
 fi
 
 function operation(){
-        function loading(){
-                while [ true ]
-                do
-                        echo -ne "."
-                        sleep 2
-                done
-        }
-        echo -ne $1
-        loading&
-        PID_loading=$!
-        # if the installation or uninstallation have dialogs, it doesn't show it, but is executed.
-        if [[ $3 = 1 ]];then
-                $2
-                echo -ne "\033[1;32mOK\033[0m"
-        else
-                DEBIAN_FRONTEND=nointeractive $2 > /dev/null 2>&1
-                echo -ne "\033[1;32mOK\033[0m"
-        fi
-        kill -19 $PID_loading > /dev/null 2>&1
-        echo ""
+	echo "========================================================================================="
+	echo $1
+	echo "========================================================================================="
+	$2
 }
 echo -ne "Do you want install the ClassAdminS server or ClassAdmin client? [ClassAdmin/ClassAdminS]: "
 read ask
 if [[ $ask == "ClassAdmin" ]];then
-        operation "updating repositories." "apt-get update -y"
+        operation "Updating repositories." "apt-get update -y"
         operation "Installing packages." "apt-get install -y python3 python3-pip git zenity scrot"
-        operation "Deleting Django/ and init.sql." "rm -rf ./Django && shred -uz -n 5 ./init.sql && shred -uz -n 5 ./services/ClassAdminS.socket && shred -uz -n 5 ./Daemon/ClassAdminS.service"
-        operation "Install python3 libraries." "pip3 install json hashlib base64 requests io random binascii math os sys platform pillow threading multiprocessing sockets plyer pyscreenshot datetime"
-        operation "Adding environtment variables." "echo 'CLASSADMIN_HOME=/etc/ClassAdmin' >> /etc/environtment && echo 'CLASSADMIN_LOG=/var/log/ClassAdmin.log' >> /etc/environtment && echo 'CLASSADMIN_SSL=/etc/ClassAdmin/ssl' >> /etc/environtment && sed -i '/PYTHONPATH/d' /etc/environment && echo 'PYTHONPATH=/etc/ClassAdmin' >> /etc/environtment"
-        operation "Installing ClassAdmin CA Bundle" "cp ./ssl/ClassAdmin.crt /usr/local/share/ca-certificates/ && update-ca-certificates"
+        operation "Deleting Django/ and init.sql." "rm -rf ./Django && rm -f ./init.sql && rm -f ./services/ClassAdminS.socket && rm -f ./Daemon/ClassAdminS.service"
+        operation "Installing pipreqs python3 library." "pip3 install pipreqs"
+	operation "Getting python3 libraries necesary." "pipreqs ./"
+	operation "Installing python3 libraries." "pip3 install -r ./requirements.txt"
+	pip3 install pysmb 2> /dev/null
+        operation "Adding environtment variables" $(sed -i '/CLASSADMIN/d' /etc/environment && echo 'CLASSADMIN_HOME=/etc/ClassAdmin' >> /etc/environment && echo 'CLASSADMIN_LOG=/var/log/ClassAdmin.log' >> /etc/environment && echo 'CLASSADMIN_SSL=/etc/ClassAdmin/ssl' >> /etc/environment && sed -i '/PYTHONPATH/d' /etc/environment && echo 'PYTHONPATH=/etc/ClassAdmin' >> /etc/environment)
+        operation "Installing ClassAdmin CA Bundle" $(cp ./ssl/ClassAdmin.crt /usr/local/share/ca-certificates && update-ca-certificates)
         server=""
         while [[ $(echo $server | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}") == "" ]];
         do
-          echo -ne "Which is ClassAdminS server IP address?"
+          echo -ne "\033[1;34m[?]\033[0m Which is ClassAdminS server IP address?: "
           read server
         done
-        operation "adding dns in /etc/hosts" "echo '$server     classadmin.server' >> /etc/hosts"
-        operation "Installing ClasAdmin service." "cp ./Daemon/ClassAdmin.service /lib/systemd/system && systemctl daemon-reload"
-        notification=""
-        while [[ $notification != "true" || $notification != "false" ]];
+        operation "Adding dns in /etc/hosts" $(sed -i '/classadmin.server/d' /etc/hosts && echo "$server     classadmin.server" >> /etc/hosts)
+        operation "Installing ClasAdmin service" $(cp ./Daemon/ClassAdmin.service /lib/systemd/system && systemctl daemon-reload)
+	notification=""
+        while [[ $notification != "true" && $notification != "false" ]];
         do
-          echo -ne "Do you want that ClassAdmin service send system notifications? [true/false]: "
+          echo -ne "\033[1;34m[?]\033[0m Do you want that ClassAdmin service send system notifications? [true/false]: "
           read notification
         done
-        operation "Configurating notifications." "sed -i 's/\"notifications\": \"true\"/\"notifications\": \"$notification\"' ./services/ClassAdmin.conf"
+        operation "Configurating notifications" $(sed -i "s/\"notifications\": \"true\"/\"notifications\": \"$notification\"/g" ./services/ClassAdmin.conf)
         user=""
         while [[ $user == "" ]];
         do
           echo -ne "The notifications will be execute as user...: "
           read user
         done
-        operation "Notifications will be execute as $user." "sed -i 's/\"user\":\"whoami\"/\"user\":\"$user\"' ./services/ClassAdmin.conf"
-        operation "changing permissions for ClassAdmin proyect" "chmod o+w /var/log"
-        operation "Creating ClassAdmin user" "adduser -p $(openssl passwd -1 12345678) --force-badname ClassAdmin"
-
-        echo -e "\033[1;32m[+]\033[0m ClassAdmin installation completed"
+        operation "Notifications will be execute as $user" $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf)
+        operation "Changing permissions for ClassAdmin proyect" $(chmod o+w /var/log)
+        operation "Creating ClassAdmin user" $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin)
+	operation "Grantting permissons to X Server" $(echo 'if [ "$DISPLAY" != "" ]' >> /etc/profile && echo 'then' >> /etc/profile && echo "	xhost +si:localuser:root" >> /etc/profile && echo 'fi' >> /etc/profile)
+        operation "Enabling ClassAdmin service in the boot" $(systemctl enable ClassAdmin)
+        operation "Starting ClassAdmin service" $(systemctl start ClassAdmin)
+	echo -e "\033[1;32m[+]\033[0m ClassAdmin installation completed"
 else
         exit 1
 fi
