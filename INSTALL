@@ -50,7 +50,7 @@ if [[ $ask == "ClassAdmin" ]];then
         operation "Notifications will be execute as $user" $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf)
         operation "Changing permissions for ClassAdmin proyect" $(chmod o+w /var/log)
         operation "Creating ClassAdmin user" $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin)
-	operation "Grantting permissons to X Server" $(echo 'if [ "$DISPLAY" != "" ]' >> /etc/profile && echo 'then' >> /etc/profile && echo "	xhost +si:localuser:root" >> /etc/profile && echo 'fi' >> /etc/profile)
+        operation "Grantting permissons to X Server" $(echo 'if [ "$DISPLAY" != "" ]' >> /etc/profile && echo 'then' >> /etc/profile && echo "	xhost +si:localuser:root" >> /etc/profile && echo 'fi' >> /etc/profile && xhost +si:localuser:root)
         operation "Enabling ClassAdmin service in the boot" $(systemctl enable ClassAdmin)
         operation "Starting ClassAdmin service" $(systemctl start ClassAdmin)
 	echo -e "\033[1;32m[+]\033[0m ClassAdmin installation completed"
