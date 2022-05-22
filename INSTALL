@@ -8,6 +8,14 @@ if [[ $(whoami) != "root" ]];then
         exit
 fi
 
+# If you want to look the process. Uncomment this function and comment the current operation function
+#
+#function operation(){
+#  echo "================================================================================================================"
+#  echo $1
+#  echo "================================================================================================================"
+#  $2
+#}
 function operation(){
 	function loading(){
 		while [ true ]
