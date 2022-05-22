@@ -52,6 +52,8 @@ operation "Deleting apache2 ClassAdminS VirtualHosts." $(a2dissite ClassAdmin* 2
 operation "Deleting user ClassAdmin in mySQL." $(mysql -u root -p12345678 -e 'DROP USER ClassAdmin;' 2> /dev/null)
 operation "Deleting ClassAdmin hosts." $(sed -i '/classadmin.server/d' /etc/hosts 2> /dev/null)
 operation "Deleting ClassAdmin user." $(deluser --remove-all-files ClassAdmin 2> /dev/null)
+# With the help of Dudi Boy (stackoverflow)
+# https://stackoverflow.com/questions/72324373/how-to-select-a-group-lines-by-your-content-of-a-file-in-gnu-linux
 operation "Deleting X Server permissions added for ClassAdmin software." $(sed -i "$(cat -n /etc/profile | gawk '/if \[ "\$DISPLAY" != "" \]/,/fi/{print $1}' | tr '\n' ',' | sed 's/,$//g' | sed -E 's/,(.+),/,/g')d" /etc/profile)
 operation "Deleting shared folder of ClassAdmin software." $(sed "$(cat -n /etc/samba/smb.conf | gawk '/\[ClassAdminS_Screenshots\]/,/force group = www-data/{print $1}' | tr '\n' ',' | sed 's/,$//g' | sed -E 's/,(.+),/,/g')d" /etc/samba/smb.conf)
 operation "Deleting the ClassAdmin data." $(find / -iname '*ClassAdmin*' -exec rm -rf {} + 2> /dev/null)
