@@ -215,7 +215,7 @@ export const denyPrograms=async(e)=>{
 }
 
 export const deleteClient=async(node)=>{
-    let id = node.parentNode.parentNode.parentNode.dataset.id;
+    let id = node.parentNode.parentNode.dataset.id;
     try{
         let request = await fetch("./",{
             method:"POST",
