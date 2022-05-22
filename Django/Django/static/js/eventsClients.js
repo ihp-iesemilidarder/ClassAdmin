@@ -227,9 +227,9 @@ export const deleteClient=async(node)=>{
         });
         let data = await request.json()
         if(data.result){
-            messg("The client has deleted and uninstalled successfully",true);
+            messg("The client has deleted successfully",true);
         }else{
-            messg("Error at delete and uninstall the client",false);
+            messg("Error at delete the client",false);
         }
     }catch(error){
         messg(`Unexpected error at delete and uninstall the client: ${error}`,false);
