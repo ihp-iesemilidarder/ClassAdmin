@@ -17,3 +17,14 @@ mysql.connector
 pymysql
 pyscreenshot
 pysmb
+socket
+multiprocessing
+threading
+ssl
+time
+urllib3
+re
+datetime
+signal
+logging
+certifi
