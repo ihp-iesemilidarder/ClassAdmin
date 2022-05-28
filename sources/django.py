@@ -1,3 +1,8 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This script file is used as module. This is used in the app Django.
+#
 import hashlib,pyotp,base64,qrcode,mysql.connector
 from io import BytesIO
 # this import is inside a try because the sockets files need it, and since his path is different the import path also is different

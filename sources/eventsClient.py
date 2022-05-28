@@ -1,4 +1,9 @@
-# Here, there are events required by the server
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This EventsClient class is used in Client program (ClassAdmin.socket).
+# Here is the functions called since Django app of each client.
+#
 import platform,subprocess,time,os,datetime,pyscreenshot,sys
 from base64 import b64decode
 from sources.utils import logFile, Notify, Environment, Json

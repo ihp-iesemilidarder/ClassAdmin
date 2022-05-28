@@ -1,3 +1,8 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This Server class is used for change the server ip address or his port, so as close the the clients connecteds.
+#
 import sys
 from sources.utils import getIpAddress, logFile
 from sources.Requests import Requests

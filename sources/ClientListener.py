@@ -1,3 +1,10 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This ClientListener class is used at create the client subprocess.
+# And this class is responsible of interact (intermediary) between the client program and server program.
+# This sends and receive messages of client and server
+#
 import time, sys, ssl
 from sources.Client import Client
 from sources.utils import logFile, Environment, Notify
@@ -44,6 +51,7 @@ class ClientListener:
         context.load_cert_chain(Environment.SSL("crt"),Environment.SSL("key"))
         return context.wrap_socket(sock,server_side=True)
 
+    # This method is the main, is responsible of receive and send data between client/server. Thanks at miniClient/miniServer
     def __listenData(self):
         while True:
             data = self.conn.recv(1024)
@@ -65,7 +73,7 @@ class ClientListener:
             elif len(data)==0:
                 raise SystemExit
 
-    # This method get as argument the process child. For join it at parent process
+    # This method get as argument the process child. For join it at parent process. This delete the subprocess at end.
     @staticmethod
     def exitSubprocess(event,process):
         while True:

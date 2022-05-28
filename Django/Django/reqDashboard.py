@@ -1,3 +1,10 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This script file is responsible of do the requests at clients (shutdown,restart,etc.)
+# Since JavaScript does a fetch() in the url '/dashboard'. Here gets the 'action' POST or 'notifications' POST and run his function.
+# This functions use the pipeClient class for communicate his with the client program (EventsClient.py)
+#
 import base64,binascii,os,math,sys, json, random, platform,json
 import time
 from sources.django import generateQR

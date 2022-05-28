@@ -22,9 +22,11 @@ def pageLogin(req):
 
 # function of 'dashboard/' url
 def pageDashboard(req):
+    # if the user do a request to /dashboard will run this if statement
     if req.method == "POST":
         return JsonResponse({"result":ReqDashboard(req).run()})
     else:
+        # This run the dashboard webpage
         port = Requests("apache","GET","https://classadmin.server/api/servers").run().json()["result"][0]["port"]
 
         clients = Requests("apache","GET","https://classadmin.server/api/clients").run().json()["result"]

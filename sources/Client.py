@@ -1,3 +1,8 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This Client class registres each client connected, adding it at ClassAdmin database. So checks before of register it, if the client is not duplicated, connected, etc.
+#
 import urllib3
 from sources.Requests import Requests
 urllib3.disable_warnings()

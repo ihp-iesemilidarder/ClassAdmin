@@ -1,5 +1,9 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This script file is used as module. Here is the functions and class used in all the project.
+#
 import os,socket,logging,json,psutil, platform, certifi,sys,subprocess
-
 
 #This class storages all the paths for uses it in all the project
 class Environment:

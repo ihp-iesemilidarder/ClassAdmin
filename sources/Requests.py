@@ -1,3 +1,8 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This Requests class is used for to do reqeusts at ClassAdmin API Rest
+#
 import requests,json
 from sources.utils import Environment
 from requests.adapters import HTTPAdapter

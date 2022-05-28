@@ -1,10 +1,16 @@
 #!/usr/bin/python3
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This is Client program
+#
 import sys, socket, urllib3, time, ssl, os, multiprocessing, threading
 from sources.pipeServer import PipeServer
 from sources.eventsClient import EventsClient
 from sources.handlerSignals import HandlerSignals
 from sources.utils import Environment, logFile, Notify
 from sources.Requests import Requests
+# Client main class
 class SocketClient:
     def __init__(self, **kwargs):
         try:
@@ -56,6 +62,7 @@ class SocketClient:
         threading.Thread(target=PipeServer.close, name="closePipeServer",args=(self.pipeServer, self.eventPipe,)).start()
         self.pipeServer.start()
 
+    # This method listen the messages received by the server for the EventsClient class.
     def __body(self):
         Notify("Connected sucessfully", logFile().message(f"ClassAdmin connected", True, "INFO"))
         self.sockSSL.send(f"HelloServer: {socket.gethostname()}".encode("utf-8"))
@@ -75,6 +82,7 @@ class SocketClient:
             elif len(data) == 0:
                 raise SystemExit
 
+    # This method listen the server for connect.
     def __handlerServer(self):
         Notify("Start ClassAdmin", logFile().message(f"Good days :D. Service ClassAdmin started.", True, "INFO"))
         while True:
@@ -106,6 +114,6 @@ class SocketClient:
         self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         self.context.load_verify_locations(Environment.CA)
 
-
+# This gets the arguments by command line. example: './ClassAdmin.socket PC1'
 if __name__ == "__main__":
     SocketClient(args=sys.argv)

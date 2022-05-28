@@ -1,3 +1,6 @@
+#
+# This show the API endpoints
+#
 from django.urls import path
 
 from .views.viewStatus import viewStatus

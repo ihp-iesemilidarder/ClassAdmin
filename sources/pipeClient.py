@@ -1,4 +1,10 @@
 #!/usr/bin/python3
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This PipeClient class is used for send data at ip address specificated. (At client, normally)
+# This class is used by the server normally, but can be used by the client also.
+#
 import os,socket,sys,time,urllib3
 import ssl
 from base64 import b64encode
@@ -45,6 +51,7 @@ class PipeClient:
                     pass
             time.sleep(.5)
 
+    # main method for send the data
     def send(self,data):
         self.sockSSL.send(data.encode("utf-8"))
         time.sleep(1)

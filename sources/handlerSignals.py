@@ -1,3 +1,8 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This HandlerSignals class is used at close the client (ClassAdmin.socket) or (ClassAdminS.socket)
+#
 import signal, platform
 class HandlerSignals:
     def __init__(self,sock):

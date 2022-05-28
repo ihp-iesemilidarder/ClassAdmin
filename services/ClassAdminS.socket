@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This is Server program
+#
 import sys,socket,urllib3,time,multiprocessing, threading
 from sources.ClientListener import ClientListener
 from sources.handlerSignals import HandlerSignals
@@ -6,6 +11,7 @@ from sources.utils import logFile, Hosts, getIpAddress, Notify
 from sources.Server import Server
 from sources.Requests import Requests
 from sources.pipeServer import PipeServer
+# Server main class
 class SocketServer:
     def __init__(self,**kwargs):
         try:
@@ -35,6 +41,7 @@ class SocketServer:
                 else:
                     Notify("Error",logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
 
+        # close server
         finally:
             try:
                 self.eventPipe.set()
@@ -44,6 +51,7 @@ class SocketServer:
                 None
             Notify("Turnning off ClassAdminS",logFile().message("Good Bye. What you have a good day :)", True, "INFO"))
 
+    # this method listen each client connected, and for each client create us a ClientListener class subprocess
     def __handlerClients(self):
         try:
             while self.sock:
@@ -69,12 +77,14 @@ class SocketServer:
         Notify("Start ClassAdminS",logFile().message(f"Good days :D. I am listenning {self.CLIENTS} clients by port {self.PORT}.",True,"INFO"))
         self.__handlerClients()
 
+    # This checks if the arguments in command line are valids.
     def __checkParams(self):
         if len(self.args)==1 or len(self.args)>2:
             raise BaseException(-5000,f"The script need 1 argument\n\tClassAdminS.socket <port>",True)
         elif int(self.args[1])<1 or int(self.args[1])>65535:
             raise BaseException(-5000, f"The port must be a range beetwen 1 and 65535", True)
 
+    # This puts values of globals variables declared in the __init__ method.
     def __globalsVars(self):
         self.bufferClient = []
         try:

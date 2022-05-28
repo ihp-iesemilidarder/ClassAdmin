@@ -1,10 +1,15 @@
 #!/usr/bin/python3
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This pipServer class is used for listen the data sent by the pipeClient.
+# This class is used in each client button of Django app.
+#
 import time,socket,ssl,urllib3,sys
 from sources.Requests import Requests
 from sources.utils import Environment, Notify, logFile
 from sources.eventsClient import EventsClient
 
-# Miniserver that has each client, for so Django will can comunicate
 class PipeServer:
     def __init__(self,event):
         try:
@@ -26,7 +31,7 @@ class PipeServer:
                 event.set()
             except:
                 None
-
+    # this listen the client connected puntually and his data
     def __handlerClient(self):
         while self.sockSSL:
             self.conn,self.addr = self.sockSSL.accept()
