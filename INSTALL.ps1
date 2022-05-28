@@ -42,6 +42,8 @@ function librariesPython3(){
     py -m pip install pywin32 2> $null;
     py -m pip install psutil 2> $null;
     py -m pip install pymysql 2> $null;
+    py -m pip install pysmb 2> $null;
+    py -m pip install pyscreenshot 2> $null;
     Write-Host "[success]" -ForegroundColor Green;
 }
 
@@ -92,7 +94,8 @@ function installService($service,$description){
     Write-Host "=========================================================================================="
     $user = Read-Host "System Username that will run the service"
     $password = Read-Host -AsSecureString "System user password that will run the service";
-    nssm install $service 'C:\Program Files\ClassAdmin\services' "$service.socket";
+    nssm install $service 'C:\Users\user\AppData\Local\Programs\Python\Python310\python.exe' "$service.socket";
+    nssm set $service AppDirectory 'C:\Program Files\ClassAdmin\services';
     nssm set $service DisplayName $service;
     nssm set $service Description "$description";
     nssm set $service Start SERVICE_AUTO_START;
@@ -108,7 +111,24 @@ function activeNotifications(){
     if($notificationAsk -eq "true" -or $notificationAsk -eq "false"){
         $result = '"notifications":"'+$notificationAsk+'",';
         (Get-Content './services/ClassAdmin.conf') | %{$_ -replace '"notifications"(.*)',$result} | Set-Content '.\services\ClassAdmin.conf';
+        Write-Host "[success]" -ForegroundColor Green;
     }
+}
+
+function createClassAdminUser(){
+    Write-Host "=========================================================================================="
+    Write-Host "Creating ClassAdmin user."
+    Write-Host "=========================================================================================="
+    New-LocalUser -Description "ClassAdmin" -Name "ClassAdmin" -FullName "ClassAdmin" -PasswordNeverExpires -AccountNeverExpires -UserMayNotChangePassword -Confirm:$false -Password ("12345678" | ConvertTo-SecureString -AsPlainText -Force);
+    Write-Host "[success]" -ForegroundColor Green;
+}
+
+function startService($service){
+    Write-Host "=========================================================================================="
+    Write-Host "Starting $service service."
+    Write-Host "=========================================================================================="
+    nssm start $service;
+    Write-Host "[success]" -ForegroundColor Green;
 }
 
 Write-Host "[?]" -ForegroundColor Blue -NoNewline;
@@ -126,6 +146,8 @@ if($ask -eq "ClassAdmin"){
     addHosts;
     installService $ask "Start ClassAdmin Client";
     activeNotifications;
+    createClassAdminUser;
+    startService $ask;
 }elseif($ask -eq "ClassAdminS"){
 }else{
     Break;

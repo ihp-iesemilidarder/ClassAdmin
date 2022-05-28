@@ -8,6 +8,7 @@ from sources.Requests import Requests
 urllib3.disable_warnings()
 jsonFile = Json(Environment.data).print()
 
+# fumction of main page
 def pageLogin(req):
     # When the user does click, or event AJAX
     if req.is_ajax():
@@ -19,6 +20,7 @@ def pageLogin(req):
     else:
         return render(req,"pageLogin.html",jsonFile["pageLogin"])
 
+# function of 'dashboard/' url
 def pageDashboard(req):
     if req.method == "POST":
         return JsonResponse({"result":ReqDashboard(req).run()})

@@ -1,12 +1,11 @@
 import base64,binascii,os,math,sys, json, random, platform,json
 import time
-
 from sources.django import generateQR
 from sources.pipeClient import PipeClient
 from sources.utils import Environment, logFile, Json, existProcess
 from sources.Requests import Requests
 from sources.Server import Server
-
+# This class contains the events functions of client
 class ReqDashboard:
     def __init__(self,request):
         super()
@@ -195,7 +194,7 @@ class ReqDashboard:
             logFile().message(f"{err} in {file}:{line}")
             return False
 
-# events for each client (shutdown,edit hostnamename,alert,etc)
+# This class call to the events functions of client (shutdown,edit hostnamename,alert,etc)
 class EventsDashboard(ReqDashboard):
     def __init__(self,req):
         super().__init__(req)

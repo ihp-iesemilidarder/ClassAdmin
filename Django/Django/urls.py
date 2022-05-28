@@ -16,6 +16,7 @@ Including another URLconf
 from django.urls import path, include
 from .views import *
 from api import urls as api_urls
+# Here is the differents urls of website
 urlpatterns = [
     path('',pageLogin),
     path('dashboard/',pageDashboard),
