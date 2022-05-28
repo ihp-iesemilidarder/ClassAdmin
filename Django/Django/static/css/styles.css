@@ -35,6 +35,17 @@ div#message{
     box-shadow:0px 0px 10px rgba(0,0,0,.5);
     transition:.5s;
 }
+#license{
+    bottom: 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+#license img{
+    width: 50px;
+}
 @media (max-width:768px){
     div#message{
         padding: 3%!important;
