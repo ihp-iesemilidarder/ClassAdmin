@@ -1,3 +1,8 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This script file is used for install the service client in Windows
+#
 if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(`
 [Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Warning "Insufficient permissions to run this script."
@@ -55,8 +60,15 @@ function addSystemEnvironmentVariables(){
     New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Name "CLASSADMIN_LOG" -PropertyType "String" -Value "C:\Program Files\ClassAdmin\ClassAdmin.log";
     New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Name "CLASSADMIN_SSL" -PropertyType "String" -Value "C:\Program Files\ClassAdmin\ssl";
     New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Name "PYTHONPATH" -PropertyType "String" -Value "C:\Program Files\ClassAdmin";
-    $valuePath = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -Name "Path").Path+"C:\Program Files\ClassAdmin\commands\Windows;C:\Program Files\nssm-2.24\win64" 2> $null;
-    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -Name "path" -Value $valuePath 2> $null;
+    $valuePath = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -Name "Path").Path
+    if((Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -Name "Path").Path.indexOf("C:\Program Files\nssm-2.24\win64") -eq -1){
+        $valuePath+=";C:\Program Files\nssm-2.24\win64";
+        Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -Name "path" -Value $valuePath 2> $null;
+    }
+    if((Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -Name "Path").Path.indexOf("C:\Program Files\ClassAdmin\commands\Windows") -eq -1){
+        $valuePath+=";C:\Program Files\ClassAdmin\commands\Windows";
+        Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" -Name "path" -Value $valuePath 2> $null;
+    }
     Write-Host "[success]" -ForegroundColor Green;
 }
 
@@ -92,16 +104,19 @@ function installService($service,$description){
     Write-Host "=========================================================================================="
     Write-Host "Installing $service service."
     Write-Host "=========================================================================================="
-    $user = Read-Host "System Username that will run the service"
-    $password = Read-Host -AsSecureString "System user password that will run the service";
-    nssm install $service 'C:\Users\user\AppData\Local\Programs\Python\Python310\python.exe' "$service.socket";
+    $user = $env:USERNAME;
+    nssm remove ClassAdmin confirm;
+    nssm install $service "C:\Users\$user\AppData\Local\Programs\Python\Python310\python.exe" "$service.socket";
     nssm set $service AppDirectory 'C:\Program Files\ClassAdmin\services';
     nssm set $service DisplayName $service;
     nssm set $service Description "$description";
     nssm set $service Start SERVICE_AUTO_START;
     nssm set $service DependOnService Schedule;
     nssm set $service AppPriority BELOW_NORMAL_PRIORITY_CLASS;
-    nssm set $service ObjectName ".\$user" "$password"
+    nssm set $service ObjectName "$user";
+    Write-Host "[i]" -ForegroundColor Blue -NoNewline;
+    Write-Host " You go to 'Log On' and you type the username and password of local machine.You indicates the username '.\$user'. This indicates the user that will run the service."
+    nssm edit $service;
     Write-Host "[success]" -ForegroundColor Green;
 }
 
@@ -123,14 +138,6 @@ function createClassAdminUser(){
     Write-Host "[success]" -ForegroundColor Green;
 }
 
-function startService($service){
-    Write-Host "=========================================================================================="
-    Write-Host "Starting $service service."
-    Write-Host "=========================================================================================="
-    nssm start $service;
-    Write-Host "[success]" -ForegroundColor Green;
-}
-
 Write-Host "[?]" -ForegroundColor Blue -NoNewline;
 $ask=Read-Host " Do you want install the ClassAdminS server or ClassAdmin client? [ClassAdmin/ClassAdminS]";
 
@@ -147,7 +154,8 @@ if($ask -eq "ClassAdmin"){
     installService $ask "Start ClassAdmin Client";
     activeNotifications;
     createClassAdminUser;
-    startService $ask;
+    Write-Host "[!]" -ForegroundColor Blue -NoNewline;
+    Write-Host " start CMD as administrator and you execute: nssm start ClassAdmin."
 }elseif($ask -eq "ClassAdminS"){
 }else{
     Break;

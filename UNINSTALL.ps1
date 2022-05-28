@@ -1,7 +1,8 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
 #
-# This script uninstall the ClassAdmin program. The packages installed won't uninstall
+# This script file is used for uninstall the service (server or client) in Windows
 #
-
 Param(
     [Switch] $Force
 )

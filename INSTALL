@@ -1,3 +1,8 @@
+# Author: Ivan Heredia Planas
+# 2 CFGS ASIX
+#
+# This script file is used for install the service (server or client) in Linux
+#
 if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(`
 [Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Warning "Insufficient permissions to run this script."
