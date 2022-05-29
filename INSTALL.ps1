@@ -120,7 +120,6 @@ function installService($service,$description){
     nssm set $service Start SERVICE_AUTO_START;
     nssm set $service DependOnService Schedule;
     nssm set $service AppPriority BELOW_NORMAL_PRIORITY_CLASS;
-    nssm set $service ObjectName "$user";
     Write-Host "[i]" -ForegroundColor Blue -NoNewline;
     Write-Host " You go to 'Log On' and you type the username and password of local machine.You indicates the username '.\$user'. This indicates the user that will run the service."
     nssm edit $service;
