@@ -77,7 +77,7 @@ if [[ $ask == "ClassAdmin" ]];then
         	read user
         done
         operation "Notifications will be execute as $user." $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf)
-        operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log)
+        operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log && chown www-data:www-data)
         operation "Creating ClassAdmin user." $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin)
         operation "Grantting permissons to X Server." $(echo 'if [ "$DISPLAY" != "" ]' >> /etc/profile && echo 'then' >> /etc/profile && echo "	xhost +si:localuser:root" >> /etc/profile && echo 'fi' >> /etc/profile && xhost +si:localuser:root)
         operation "Enabling ClassAdmin service in the boot." $(systemctl enable ClassAdmin)
@@ -115,7 +115,7 @@ elif [[ $ask == "ClassAdminS" ]];then
         done
         operation "Notifications will be execute as $user." $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf 2> /dev/null)
         operation "Creating ClassAdmin user." $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin 2> /dev/null)
-        operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log 2> /dev/null && chown -R root:www-data . 2> /dev/null && chmod -R g+w . 2> /dev/null && chown www-data:ClassAdmin ./transfers/.screenshots/ 2> /dev/null && chmod -R 770 ./transfers/.screenshots 2> /dev/null)
+        operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log 2> /dev/null && chown -R root:www-data . 2> /dev/null && chmod -R g+w . 2> /dev/null && chown www-data:ClassAdmin ./transfers/.screenshots/ 2> /dev/null && chmod -R 770 ./transfers/.screenshots 2> /dev/null && chown www-data:www-data /var/log/ClassAdmin.log)
         operation "Configurating MariaDB/mySQL." $(sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf 2> /dev/null; sed -E -i "s/(.*)max_allowed_packet(.*)=(.*)/max_allowed_packet = 1G/g" /etc/mysql/mariadb.conf.d/50-server.cnf 2> /dev/null; sed -E -i "s/(.*)max_connections(.*)=(.*)/max_connections = 1000/g" /etc/mysql/mariadb.conf.d/50-server.cnf 2> /dev/null)
         operation "Creating ClassAdmin database." $(mysql -u root -e "source ./init.sql" 2> /dev/null)
         operation "Creating ClassAdminS_Screenshots shared folder." $(echo "[ClassAdminS_Screenshots]" >> /etc/samba/smb.conf && echo "   path = /etc/ClassAdmin/transfers/.screenshots" >> /etc/samba/smb.conf && echo "   available = yes" >> /etc/samba/smb.conf && echo "   browseable = yes" >> /etc/samba/smb.conf && echo "   writable = yes" >> /etc/samba/smb.conf && echo "   guest ok = no" >> /etc/samba/smb.conf && echo "   create mask = 0770" >> /etc/samba/smb.conf && echo "   directory mask = 0770" >> /etc/samba/smb.conf && echo "   force group = www-data" >> /etc/samba/smb.conf && echo "   valid users = ClassAdmin" >> /etc/samba/smb.conf)
