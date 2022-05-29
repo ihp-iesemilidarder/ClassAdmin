@@ -42,6 +42,7 @@ div#message{
     width: 100%;
     font-size: 12px;
     margin-bottom: 15px;
+    background:rgba(255,255,255,.5);
 }
 #license img{
     width: 50px;
