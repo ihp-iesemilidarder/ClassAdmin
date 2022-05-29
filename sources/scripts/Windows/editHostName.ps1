@@ -12,7 +12,7 @@
 #
 
 Param(
-    [String] $newHostname;
+    [String] $newHostname
 )
 if(!$newHostName){
     Write-Host '[!]' -ForegroundColor Red -NoNewline;
