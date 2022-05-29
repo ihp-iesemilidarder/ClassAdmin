@@ -141,6 +141,7 @@ body > div.CONNECTED{
         height: 100vh;
         top: 0;
         box-shadow: 1px 1px 20px rgba(0,0,0,.2);
+        z-index:9999;
     }
     #pageDashboard #config form{
         display:flex;
@@ -349,6 +350,7 @@ body > div.CONNECTED{
             border: 5px dashed;
             transition:.3s;
             margin: 5%;
+            z-index:9999;
         }
         #pageDashboard div#containerUploadFile span#extensions{
             font-size: 30%;

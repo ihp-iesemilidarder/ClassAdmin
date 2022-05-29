@@ -50,7 +50,7 @@ echo -ne "Do you want install the ClassAdminS server or ClassAdmin client? [Clas
 read ask
 if [[ $ask == "ClassAdmin" ]];then
         operation "Updating repositories." "apt-get update -y"
-        operation "Installing packages." "apt-get install -y python3 python3-pip git zenity scrot"
+        operation "Installing packages." "apt-get install -y python3 python3-pip git zenity scrot pm-utils smbclient"
         operation "Deleting ClassAdminS server data" "rm -rf ./Django && rm -f ./init.sql && rm -f ./services/ClassAdminS.socket && rm -f ./Daemon/ClassAdminS.service"
         operation "Installing python3 libraries." $(pip3 install json 2> /dev/null; pip3 install hashlib 2> /dev/null; pip3 install base64 2> /dev/null; pip3 install requests 2> /dev/null; pip3 install io 2> /dev/null; pip3 install random 2> /dev/null; pip3 install binascii 2> /dev/null; pip3 install math 2> /dev/null; pip3 install os 2> /dev/null; pip3 install sys 2> /dev/null; pip3 install platform 2> /dev/null; pip3 install psutil 2> /dev/null; pip3 install mysql.connector 2> /dev/null; pip3 install pymysql 2> /dev/null; pip3 install pyscreenshot 2> /dev/null; pip3 install pysmb 2> /dev/null; pip3 install socket 2> /dev/null; pip3 install multiprocessing 2> /dev/null; pip3 install threading 2> /dev/null; pip3 install ssl 2> /dev/null; pip3 install time 2> /dev/null; pip3 install urllib3 2> /dev/null; pip3 install re 2> /dev/null; pip3 install datetime 2> /dev/null; pip3 install signal 2> /dev/null; pip3 install logging 2> /dev/null; pip3 install certifi 2> /dev/null)
         operation "Adding environtment variables." $(sed -i '/CLASSADMIN/d' /etc/environment && echo 'CLASSADMIN_HOME=/etc/ClassAdmin' >> /etc/environment && echo 'CLASSADMIN_LOG=/var/log/ClassAdmin.log' >> /etc/environment && echo 'CLASSADMIN_SSL=/etc/ClassAdmin/ssl' >> /etc/environment && sed -i '/PYTHONPATH/d' /etc/environment && echo 'PYTHONPATH=/etc/ClassAdmin' >> /etc/environment)
@@ -77,7 +77,7 @@ if [[ $ask == "ClassAdmin" ]];then
         	read user
         done
         operation "Notifications will be execute as $user." $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf)
-        operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log && chown www-data:www-data)
+        operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log 2> /dev/null && chown -R root:www-data . 2> /dev/null && chmod -R g+w . 2> /dev/null && chown www-data:ClassAdmin ./transfers/.screenshots/ 2> /dev/null && chmod -R 770 ./transfers/.screenshots 2> /dev/null && chown www-data:www-data /var/log/ClassAdmin.log)
         operation "Creating ClassAdmin user." $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin)
         operation "Grantting permissons to X Server." $(echo 'if [ "$DISPLAY" != "" ]' >> /etc/profile && echo 'then' >> /etc/profile && echo "	xhost +si:localuser:root" >> /etc/profile && echo 'fi' >> /etc/profile && xhost +si:localuser:root)
         operation "Enabling ClassAdmin service in the boot." $(systemctl enable ClassAdmin)

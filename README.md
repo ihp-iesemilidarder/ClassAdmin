@@ -8,6 +8,10 @@ At download the project execute the scripts INSTALL.sh (linux bash) or INSTALL.p
 If you don't execute it, execute the comamnd in the current directory:
   chmod o+w /var/log 2> /dev/null && chown -R root:www-data . 2> /dev/null && chmod -R g+w . 2> /dev/null && chown www-data:ClassAdmin ./transfers/.screenshots/ 2> /dev/null && chmod -R 770 ./transfers/.screenshots 2> /dev/null
 
+# NOTES
+If don't show the notifications or popups in the machines, you edit in the function sendAlert (eventsClient.py) and function Notify (utils.py) the zenity commands adding '--display <display>'.
+For you think you display environment you do: echo $DISPLAY and add the content in the zenity. Example:
+    zenity --notification --title title --text message --display :10.0
 Contact:
     Ivan Heredia Planas
     ivanherediaplanas@protonmail.com
