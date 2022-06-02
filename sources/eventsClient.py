@@ -87,7 +87,7 @@ class EventsClient:
         if tipe=="notification":
             Notify(title,description,False)
         else:
-            zenity = f"zenity --{tipe} --title '{title}' --text '{description}' --window-icon='{Environment.media}/images/ClassAdminLogo.png'"
+            zenity = f"zenity --{tipe} --title '{title}' --text '{description}' --window-icon='{Environment.media}/images/ClassAdminLogo.png' --display :0"
             user = Json(Environment.configuration).print(["user"])
             if platform.system().upper()=="LINUX":
                 os.system(f"su {user} -c \"{zenity}\"")

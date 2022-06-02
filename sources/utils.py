@@ -174,7 +174,7 @@ def Notify(title:str,message:str,output=True):
     if(json.loads(status)):
         user = Json(Environment.configuration).print(["user"])
         architecture = platform.architecture()[0]
-        zenity = f"zenity --notification --title \"{title}\" --text \"{message}\" --window-icon=\"{Environment.media}/images/ClassAdminLogo.png\""
+        zenity = f"zenity --notification --title \"{title}\" --text \"{message}\" --window-icon=\"{Environment.media}/images/ClassAdminLogo.png\" --display :0"
         toast = f"toast{architecture.replace('bit', '')} --title \"{title}\" --message \"{message}\" --icon \"{Environment.media}/images/ClassAdminLogo.png\" "
         command = f"su {user} -c '{zenity}'" if platform.system().upper() == 'LINUX' else toast
         os.system(command)
