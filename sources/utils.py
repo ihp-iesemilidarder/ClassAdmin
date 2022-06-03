@@ -31,7 +31,7 @@ class Environment:
     configuration = f"{os.environ['CLASSADMIN_HOME']}/services/ClassAdmin.conf"
 
 #This class write lines in the log file /var/log/ClassAdmin.log
-class logFile:
+class LogFile:
     def __init__(self,django:bool=False):
         if django:
             Django = ': Django '
@@ -88,7 +88,7 @@ class Json:
         try:
             try:
                 # if the value is a list or integer....
-                logFile().message(type(value))
+                LogFile().message(type(value))
                 #add news types in the left
                 if type(value) == list or int(value):
                     command+=f"={value}"
@@ -101,7 +101,7 @@ class Json:
         except:
             # else the value will be decode (everything bytes object is convert in string)
             command+=f"='{value.decode()}'"
-        logFile(True).message(command)
+        LogFile(True).message(command)
         exec(command)
         self.__save()
 

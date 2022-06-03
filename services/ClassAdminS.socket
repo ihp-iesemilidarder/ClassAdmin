@@ -14,7 +14,7 @@
 import sys,socket,urllib3,time,multiprocessing, threading
 from sources.ClientListener import ClientListener
 from sources.handlerSignals import HandlerSignals
-from sources.utils import logFile, Hosts, getIpAddress, Notify
+from sources.utils import LogFile, Hosts, getIpAddress, Notify
 from sources.Server import Server
 from sources.Requests import Requests
 from sources.pipeServer import PipeServer
@@ -38,15 +38,15 @@ class SocketServer:
         #When the service has a error unexpected
         except BaseException as err:
             if err.args[0]==-5000:
-                Notify("Error",logFile().message(err.args[1],err.args[2],"ERROR"))
+                Notify("Error", LogFile().message(err.args[1], err.args[2], "ERROR"))
             else:
                 type, object, traceback = sys.exc_info()
                 file = traceback.tb_frame.f_code.co_filename
                 line = traceback.tb_lineno
                 if type==ConnectionError:
-                    Notify("Error",logFile().message(f"Connection at database failed in {file}:{line}. I am sorry", True, "ERROR"))
+                    Notify("Error", LogFile().message(f"Connection at database failed in {file}:{line}. I am sorry", True, "ERROR"))
                 else:
-                    Notify("Error",logFile().message(f"{err} in {file}:{line}",True,"ERROR"))
+                    Notify("Error", LogFile().message(f"{err} in {file}:{line}", True, "ERROR"))
 
         # close server
         finally:
@@ -56,7 +56,7 @@ class SocketServer:
                 self.sock.close()
             except:
                 None
-            Notify("Turnning off ClassAdminS",logFile().message("Good Bye. What you have a good day :)", True, "INFO"))
+            Notify("Turnning off ClassAdminS", LogFile().message("Good Bye. What you have a good day :)", True, "INFO"))
 
     # this method listen each client connected, and for each client create us a ClientListener class subprocess
     def __handlerClients(self):
@@ -81,7 +81,7 @@ class SocketServer:
         self.sock.listen(self.CLIENTS)
         self.__comunicationServer()
         HandlerSignals(self.sock)
-        Notify("Start ClassAdminS",logFile().message(f"Good days :D. I am listenning {self.CLIENTS} clients by port {self.PORT}.",True,"INFO"))
+        Notify("Start ClassAdminS", LogFile().message(f"Good days :D. I am listenning {self.CLIENTS} clients by port {self.PORT}.", True, "INFO"))
         self.__handlerClients()
 
     # This checks if the arguments in command line are valids.

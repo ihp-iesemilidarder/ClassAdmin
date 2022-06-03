@@ -10,7 +10,7 @@
 #
 # This Samba class is used for upload file at shared folder.
 #
-from sources.utils import logFile, Json, Environment
+from sources.utils import LogFile, Json, Environment
 from sources.Requests import Requests
 from smb.SMBConnection import SMBConnection
 class Samba:

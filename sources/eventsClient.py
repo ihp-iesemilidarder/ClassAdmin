@@ -13,7 +13,7 @@
 #
 import platform,subprocess,time,os,datetime,pyscreenshot,sys
 from base64 import b64decode
-from sources.utils import logFile, Notify, Environment, Json
+from sources.utils import LogFile, Notify, Environment, Json
 from sources.Samba import Samba
 from sources.Requests import Requests
 from sources.pipeClient import PipeClient
@@ -29,16 +29,16 @@ class EventsClient:
         # text:this is comment.
         # function:functionName(arg1,arg2,...)
         key,value = message.split(":",1)
-        logFile().message(key)
+        LogFile().message(key)
         if key == "function":
             return exec(f"EventsClient.{value}")
         elif key == "text":
-            logFile().message(Notify("comment",value,True),True,"INFO")
+            LogFile().message(Notify("comment", value, True), True, "INFO")
             return True
 
     @staticmethod
     def shutdownHost():
-        logFile().message(Notify("shutdown","This computer will power off",True),False,"INFO")
+        LogFile().message(Notify("shutdown", "This computer will power off", True), False, "INFO")
         if platform.system().upper() == "WINDOWS":
             subprocess.run("shutdown -s")
             return True
@@ -49,7 +49,7 @@ class EventsClient:
 
     @staticmethod
     def rebootHost():
-        logFile().message(Notify("restart","This computer will restarted",True),False,"INFO")
+        LogFile().message(Notify("restart", "This computer will restarted", True), False, "INFO")
         if platform.system().upper() == "WINDOWS":
             subprocess.run("shutdown -r")
             return True
@@ -60,7 +60,7 @@ class EventsClient:
 
     @staticmethod
     def suspendHost():
-        logFile().message(Notify("suspend","This computer will suspended",True),False,"INFO")
+        LogFile().message(Notify("suspend", "This computer will suspended", True), False, "INFO")
         if platform.system().upper() == "WINDOWS":
             subprocess.run("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
             return True
@@ -156,14 +156,14 @@ class EventsClient:
                 password = Json(Environment.data).print(["Samba","password"])
                 sharedDirectory = Json(Environment.data).print(["Samba","sharedDirectory"])
                 subprocess.run(["powershell.exe",f"& '{Environment.scripts}/Windows/sharedDirectory.ps1' -Operation Add -Server {server} -Username {username} -Password {password} -SharedDirectory {sharedDirectory} -FileName {filename} -File {path}"])
-            logFile().message(Notify("Screenshot","The ClassAdmin admin did one screenshot of your desktop",True),False,"INFO")
+            LogFile().message(Notify("Screenshot", "The ClassAdmin admin did one screenshot of your desktop", True), False, "INFO")
             os.remove(path)
             return True
         except BaseException as err:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+            LogFile().message(LogFile().message(f"{err} in {file}:{line}", True, "ERROR"))
             Notify("Error unexpected at save the screenshot","You check if you has access a shared folder ClassAdmin_Screenshots",False)
             return False
 
@@ -183,7 +183,7 @@ class EventsClient:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+            LogFile().message(LogFile().message(f"{err} in {file}:{line}", True, "ERROR"))
             Notify("Error unexpected at save the screenshot","You check if you has access a shared folder ClassAdmin_Screenshots",False)
             return False
 
@@ -203,7 +203,7 @@ class EventsClient:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+            LogFile().message(LogFile().message(f"{err} in {file}:{line}", True, "ERROR"))
             Notify("DenyClass","Error unexpected at deny the programs",False)
             return False
     @staticmethod
@@ -218,6 +218,6 @@ class EventsClient:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+            LogFile().message(LogFile().message(f"{err} in {file}:{line}", True, "ERROR"))
             Notify("Error unexpected at close the client",False)
             return False

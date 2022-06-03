@@ -14,7 +14,7 @@
 #
 import time,socket,ssl,urllib3,sys
 from sources.Requests import Requests
-from sources.utils import Environment, Notify, logFile
+from sources.utils import Environment, Notify, LogFile
 from sources.eventsClient import EventsClient
 
 class PipeServer:
@@ -31,7 +31,7 @@ class PipeServer:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            Notify("Error",logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+            Notify("Error", LogFile().message(f"{err} in {file}:{line}", True, "ERROR"))
         finally:
             try:
                 self.sockSSL.close()

@@ -11,7 +11,7 @@
 # This Server class is used for change the server ip address or his port, so as close the the clients connecteds.
 #
 import sys
-from sources.utils import getIpAddress, logFile
+from sources.utils import getIpAddress, LogFile
 from sources.Requests import Requests
 class Server:
 
@@ -24,7 +24,7 @@ class Server:
 
         if getIpAddress()!=IP:
             Requests("services","PATCH","https://classadmin.server/api/servers/1",{"ipaddress":getIpAddress()}).run()
-            print(logFile().message(f"changing IP ipaddress to {getIpAddress()}...",True,"INFO"))
+            print(LogFile().message(f"changing IP ipaddress to {getIpAddress()}...", True, "INFO"))
 
     @staticmethod
     def changePort(port:int):
@@ -38,9 +38,9 @@ class Server:
             Requests("apache","PATCH","https://classadmin.server/api/clients/CONNECTED",{"status":"DISCONNECTED"}).run()
         except BaseException as err:
             if err.args[0] == -5000:
-                print(logFile().message(err.args[1], err.args[2], "ERROR"))
+                print(LogFile().message(err.args[1], err.args[2], "ERROR"))
             else:
                 type, object, traceback = sys.exc_info()
                 file = traceback.tb_frame.f_code.co_filename
                 line = traceback.tb_lineno
-                print(logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+                print(LogFile().message(f"{err} in {file}:{line}", True, "ERROR"))

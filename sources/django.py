@@ -17,7 +17,7 @@ try:
     from Django import reqDashboard
 except:
     from Django.Django import reqDashboard
-from sources.utils import Environment, Json,logFile, existProcess
+from sources.utils import Environment, Json,LogFile, existProcess
 
 #This function gets service status color
 def styleStatusColor():
@@ -83,7 +83,7 @@ def loginAdmin(password:str,otp:str,recovery:bool=False) -> bool:
         else:
             return False
     except Exception as err:
-        return logFile().message(f"Error in the login -> {err}",True)
+        return LogFile().message(f"Error in the login -> {err}", True)
 
 def generateQR():
     stream = BytesIO()

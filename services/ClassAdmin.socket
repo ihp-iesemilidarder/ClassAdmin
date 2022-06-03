@@ -15,7 +15,7 @@ import sys, socket, urllib3, time, ssl, os, multiprocessing, threading
 from sources.pipeServer import PipeServer
 from sources.eventsClient import EventsClient
 from sources.handlerSignals import HandlerSignals
-from sources.utils import Environment, logFile, Notify
+from sources.utils import Environment, LogFile, Notify
 from sources.Requests import Requests
 # Client main class
 class SocketClient:
@@ -34,22 +34,22 @@ class SocketClient:
             # This I use it for the TooManyClients and sameUser messages.
             try:
                 if err.args[0] == -5000:
-                    Notify("Error", logFile().message(err.args[1], err.args[2], "ERROR"))
+                    Notify("Error", LogFile().message(err.args[1], err.args[2], "ERROR"))
             except:
                 None
 
         # When the service has a error unexpected
         except BaseException as err:
             if err.args[0] == -5000:
-                Notify("Error", logFile().message(err.args[1], err.args[2], "ERROR"))
+                Notify("Error", LogFile().message(err.args[1], err.args[2], "ERROR"))
             else:
                 type, object, traceback = sys.exc_info()
                 file = traceback.tb_frame.f_code.co_filename
                 line = traceback.tb_lineno
                 if type(err) == ConnectionError:
-                    Notify("Error", logFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
+                    Notify("Error", LogFile().message(f"Connection at database failed in {file}:{line}", True, "ERROR"))
                 else:
-                    Notify("Error", logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+                    Notify("Error", LogFile().message(f"{err} in {file}:{line}", True, "ERROR"))
 
         finally:
             try:
@@ -59,7 +59,7 @@ class SocketClient:
                 self.sockSSL.close()
             except:
                 None
-            Notify("Turnning off ClassAdmin", logFile().message("Good bye :). What you have a good day", True, "INFO"))
+            Notify("Turnning off ClassAdmin", LogFile().message("Good bye :). What you have a good day", True, "INFO"))
             exit()
 
     # miniserver for to allow from Django comunicate and send data.
@@ -71,27 +71,27 @@ class SocketClient:
 
     # This method listen the messages received by the server for the EventsClient class.
     def __body(self):
-        Notify("Connected sucessfully", logFile().message(f"ClassAdmin connected", True, "INFO"))
+        Notify("Connected sucessfully", LogFile().message(f"ClassAdmin connected", True, "INFO"))
         self.sockSSL.send(f"HelloServer: {socket.gethostname()}".encode("utf-8"))
         while True:
             data = self.sockSSL.recv(1024)
             text = data.decode("utf-8")
-            logFile().message(text)
+            LogFile().message(text)
             if text.startswith("sig."):
                 exec(f"raise {text.split('.', 1)[1]}")
             elif text.startswith("act."):
                 args = text.split(".")[2:]
                 text = text.split('.')[1]
-                logFile().message(f"{text}")
+                LogFile().message(f"{text}")
                 EventsClient(f"{text}").run(args)
             elif data:
-                Notify("Message", logFile().message(text, True, "INFO"))
+                Notify("Message", LogFile().message(text, True, "INFO"))
             elif len(data) == 0:
                 raise SystemExit
 
     # This method listen the server for connect.
     def __handlerServer(self):
-        Notify("Start ClassAdmin", logFile().message(f"Good days :D. Service ClassAdmin started.", True, "INFO"))
+        Notify("Start ClassAdmin", LogFile().message(f"Good days :D. Service ClassAdmin started.", True, "INFO"))
         while True:
             try:
                 PORT = int(

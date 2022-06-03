@@ -16,7 +16,7 @@ import base64,binascii,os,math,sys, json, random, platform,json
 import time
 from sources.django import generateQR
 from sources.pipeClient import PipeClient
-from sources.utils import Environment, logFile, Json, existProcess
+from sources.utils import Environment, LogFile, Json, existProcess
 from sources.Requests import Requests
 from sources.Server import Server
 # This class contains the events functions of client
@@ -30,14 +30,14 @@ class ReqDashboard:
 
     def saveUserNotification(self,user:str):
         try:
-            logFile(True).message(f"user modified {user}", False)
+            LogFile(True).message(f"user modified {user}", False)
             Json(Environment.configuration).update(["user"],user)
             return True
         except Exception as err:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile(True).message(f"Error during the OTP reload: {err} in {file}:{line}", False)
+            LogFile(True).message(f"Error during the OTP reload: {err} in {file}:{line}", False)
             return False
 
     def showData(self):
@@ -61,7 +61,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile(True).message(f"Error during the OTP reload: {err} in {file}:{line}", False)
+            LogFile(True).message(f"Error during the OTP reload: {err} in {file}:{line}", False)
             return False
 
     def shutdownHost(self,id):
@@ -73,7 +73,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def rebootHost(self,id):
@@ -85,7 +85,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def suspendHost(self,id):
@@ -97,7 +97,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def editHostName(self,id,hostname):
@@ -109,7 +109,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def sendAlert(self,id,tipe,title,description):
@@ -121,7 +121,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def uploadFiles(self,id,name,file):
@@ -129,7 +129,7 @@ class ReqDashboard:
             currentHostName = Requests("apache", "GET", f"https://classadmin.server/api/clients/{id}").run().json()["result"]
             n = 15000
             chunks = [str(file[i:i + n]) for i in range(0, len(file), n)]
-            logFile().message(chunks)
+            LogFile().message(chunks)
             for sector in chunks:
                 PipeClient(str(currentHostName["ipaddress"])).send(f"function:downloadFile(None,'{name}','{sector}',{'True' if chunks.index(sector)==len(chunks)-1 else 'False'})")
                 time.sleep(.5)
@@ -138,7 +138,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def deleteFile(self,id,filename):
@@ -150,7 +150,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def screenshot(self,id):
@@ -163,7 +163,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_csode.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def listPrograms(self,id):
@@ -179,7 +179,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def denyPrograms(self,id,list):
@@ -191,7 +191,7 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
     def deleteClient(self,id):
@@ -205,10 +205,10 @@ class ReqDashboard:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile().message(f"{err} in {file}:{line}")
+            LogFile().message(f"{err} in {file}:{line}")
             return False
 
-# This class call to the events functions of client (shutdown,edit hostnamename,alert,etc)
+# This class call to the events functions of client (shutdown,edit hostname,alert,etc)
 class EventsDashboard(ReqDashboard):
     def __init__(self,req):
         super().__init__(req)
@@ -273,7 +273,7 @@ class EventsDashboard(ReqDashboard):
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile(True).message(f"Error at disable/enable the notifications: {err} in {file}:{line}", False)
+            LogFile(True).message(f"Error at disable/enable the notifications: {err} in {file}:{line}", False)
             return f"Error at disable/enable the notifications: {err} in {file}:{line}"
 
 # This class generates the OTP recovery Codes
@@ -312,7 +312,7 @@ class RecoveryCodes:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile(True).message(f"Error at generate URI recoveryCodes OTP: {err} in {file}:{line}", False)
+            LogFile(True).message(f"Error at generate URI recoveryCodes OTP: {err} in {file}:{line}", False)
             return False
 
     def __checkCodes(self):
@@ -329,7 +329,7 @@ class RecoveryCodes:
             type, object, traceback = sys.exc_info()
             file = traceback.tb_frame.f_code.co_filename
             line = traceback.tb_lineno
-            logFile(True).message(f"Error during the download recoveryCodes OTP: {err} in {file}:{line}", False)
+            LogFile(True).message(f"Error during the download recoveryCodes OTP: {err} in {file}:{line}", False)
             return False
 
     def authRecoveryCodes(self,key:str) -> bool:

@@ -14,7 +14,7 @@
 #
 import time, sys, ssl
 from sources.Client import Client
-from sources.utils import logFile, Environment, Notify
+from sources.utils import LogFile, Environment, Notify
 
 class ClientListener:
     def __init__(self,conn,addr,event):
@@ -26,18 +26,18 @@ class ClientListener:
             self.__listenData()
         except (KeyboardInterrupt,SystemExit):
             try:
-                Notify(f"{self.hostname} left",logFile().message(f"The host {self.hostname} ({self.addr[0]}:{self.addr[1]}) left :(", True, "INFO"))
+                Notify(f"{self.hostname} left", LogFile().message(f"The host {self.hostname} ({self.addr[0]}:{self.addr[1]}) left :(", True, "INFO"))
             except:
                 None
         except BaseException as err:
             print(err)
             if err.errno == 104:
-                Notify(f"{self.hostname} left unexpected",logFile().message(f"The host {self.hostname} ({self.addr[0]}:{self.addr[1]}) left unexpected :(", True, "INFO"))
+                Notify(f"{self.hostname} left unexpected", LogFile().message(f"The host {self.hostname} ({self.addr[0]}:{self.addr[1]}) left unexpected :(", True, "INFO"))
             else:
                 type, object, traceback = sys.exc_info()
                 file = traceback.tb_frame.f_code.co_filename
                 line = traceback.tb_lineno
-                Notify("Error",logFile().message(f"{err} in {file}:{line}", True, "ERROR"))
+                Notify("Error", LogFile().message(f"{err} in {file}:{line}", True, "ERROR"))
         finally:
             try:
                 self.conn.close()
@@ -74,7 +74,7 @@ class ClientListener:
                     elif client=="TooManyClients":
                         self.conn.send("sig.SystemExit(-5000,'Too many clients connected. You try it more later',True)".encode("utf-8"))
                     else:
-                        Notify(f"{self.hostname} connected",logFile().message(f"The host {self.hostname} ({self.addr[0]}:{self.addr[1]}) is connected :)", True, "INFO"))
+                        Notify(f"{self.hostname} connected", LogFile().message(f"The host {self.hostname} ({self.addr[0]}:{self.addr[1]}) is connected :)", True, "INFO"))
                 else:
                     print(data)
             elif len(data)==0:
