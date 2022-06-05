@@ -12,6 +12,9 @@ If you don't execute it, execute the comamnd in the current directory:
 If don't show the notifications or popups in the machines, you edit in the function sendAlert (eventsClient.py) and function Notify (utils.py) the zenity commands adding '--display <display>'.
 For you think you display environment you do: echo $DISPLAY and add the content in the zenity. Example:
     zenity --notification --title title --text message --display :10.0
-Contact:
+# DOCUMENTATION
+  You have the documentation in the repository in directory documentation/
+  
+# CONTACT
     Ivan Heredia Planas
     ivanherediaplanas@protonmail.com
