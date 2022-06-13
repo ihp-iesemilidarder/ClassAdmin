@@ -76,7 +76,7 @@ if [[ $ask == "ClassAdmin" ]];then
         	echo -ne "The notifications will be execute as user...: "
         	read user
         done
-        operation "Notifications will be execute as $user." $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf)
+        operation "Notifications will be execute as $user." $(sed -i -E "s/\"user\":(.*)/\"user\":\"$user\"/g" ./services/ClassAdmin.conf)
         operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log 2> /dev/null && chown -R root:www-data . 2> /dev/null && chmod -R g+w . 2> /dev/null && chown www-data:ClassAdmin ./transfers/.screenshots/ 2> /dev/null && chmod -R 770 ./transfers/.screenshots 2> /dev/null && chown www-data:www-data /var/log/ClassAdmin.log)
         operation "Creating ClassAdmin user." $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin)
         operation "Grantting permissons to X Server." $(echo 'if [ "$DISPLAY" != "" ]' >> /etc/profile && echo 'then' >> /etc/profile && echo "	xhost +si:localuser:root" >> /etc/profile && echo 'fi' >> /etc/profile && xhost +si:localuser:root)
@@ -113,7 +113,7 @@ elif [[ $ask == "ClassAdminS" ]];then
         	echo -ne "The notifications will be execute as user...: "
         	read user
         done
-        operation "Notifications will be execute as $user." $(sed -i "s/\"user\":\"whoami\"/\"user\":\"$user\"/g" ./services/ClassAdmin.conf 2> /dev/null)
+        operation "Notifications will be execute as $user." $(sed -i -E "s/\"user\":(.*)/\"user\":\"$user\"/g" ./services/ClassAdmin.conf 2> /dev/null)
         operation "Creating ClassAdmin user." $(useradd -p $(openssl passwd -6 12345678) -d /home/ClassAdmin -m -k --badname ClassAdmin 2> /dev/null)
         operation "Changing permissions for ClassAdmin proyect." $(chmod o+w /var/log 2> /dev/null && chown -R root:www-data . 2> /dev/null && chmod -R g+w . 2> /dev/null && chown www-data:ClassAdmin ./transfers/.screenshots/ 2> /dev/null && chmod -R 770 ./transfers/.screenshots 2> /dev/null && chown www-data:www-data /var/log/ClassAdmin.log)
         operation "Configurating MariaDB/mySQL." $(sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf 2> /dev/null; sed -E -i "s/(.*)max_allowed_packet(.*)=(.*)/max_allowed_packet = 1G/g" /etc/mysql/mariadb.conf.d/50-server.cnf 2> /dev/null; sed -E -i "s/(.*)max_connections(.*)=(.*)/max_connections = 1000/g" /etc/mysql/mariadb.conf.d/50-server.cnf 2> /dev/null)
